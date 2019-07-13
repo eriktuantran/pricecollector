@@ -1,0 +1,6 @@
+*.pdb
+*.bin
+*exe.config
+PricesCollector/obj
+PricesCollector/bin/x86/Debug/Newtonsoft.Json.xml
+.vs
