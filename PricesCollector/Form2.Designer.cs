@@ -39,15 +39,15 @@
             this.progressBarUpdateDb = new System.Windows.Forms.ProgressBar();
             this.progressBarFetching = new System.Windows.Forms.ProgressBar();
             this.id = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.link = new System.Windows.Forms.DataGridViewLinkColumn();
             this.store = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.group = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.sku = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.active = new System.Windows.Forms.DataGridViewCheckBoxColumn();
-            this.group = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.current_price = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.common_price = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.lowest_price = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.common_price = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.other_seller = new System.Windows.Forms.DataGridViewComboBoxColumn();
+            this.link = new System.Windows.Forms.DataGridViewLinkColumn();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.timerValue)).BeginInit();
@@ -61,15 +61,15 @@
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridView1.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.id,
-            this.link,
             this.store,
+            this.group,
             this.sku,
             this.active,
-            this.group,
             this.current_price,
-            this.common_price,
             this.lowest_price,
-            this.other_seller});
+            this.common_price,
+            this.other_seller,
+            this.link});
             this.dataGridView1.Location = new System.Drawing.Point(12, 161);
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.RowTemplate.Height = 33;
@@ -107,9 +107,9 @@
             this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(214, 82);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(76, 25);
+            this.label2.Size = new System.Drawing.Size(82, 25);
             this.label2.TabIndex = 9;
-            this.label2.Text = "minute";
+            this.label2.Text = "second";
             // 
             // label1
             // 
@@ -152,7 +152,7 @@
             // 
             // progressBarFetching
             // 
-            this.progressBarFetching.Location = new System.Drawing.Point(702, 73);
+            this.progressBarFetching.Location = new System.Drawing.Point(679, 73);
             this.progressBarFetching.Name = "progressBarFetching";
             this.progressBarFetching.Size = new System.Drawing.Size(236, 43);
             this.progressBarFetching.TabIndex = 11;
@@ -164,19 +164,19 @@
             this.id.Name = "id";
             this.id.Width = 77;
             // 
-            // link
-            // 
-            this.link.HeaderText = "Link";
-            this.link.Name = "link";
-            this.link.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.link.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
-            // 
             // store
             // 
             this.store.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.store.HeaderText = "Store";
+            this.store.HeaderText = "Seller name";
             this.store.Name = "store";
-            this.store.Width = 108;
+            this.store.Width = 171;
+            // 
+            // group
+            // 
+            this.group.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            this.group.HeaderText = "Group";
+            this.group.Name = "group";
+            this.group.Width = 116;
             // 
             // sku
             // 
@@ -191,26 +191,12 @@
             this.active.Name = "active";
             this.active.Width = 77;
             // 
-            // group
-            // 
-            this.group.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.group.HeaderText = "Group";
-            this.group.Name = "group";
-            this.group.Width = 116;
-            // 
             // current_price
             // 
             this.current_price.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
             this.current_price.HeaderText = "Current price";
             this.current_price.Name = "current_price";
             this.current_price.Width = 181;
-            // 
-            // common_price
-            // 
-            this.common_price.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            this.common_price.HeaderText = "Market  price";
-            this.common_price.Name = "common_price";
-            this.common_price.Width = 182;
             // 
             // lowest_price
             // 
@@ -219,11 +205,25 @@
             this.lowest_price.Name = "lowest_price";
             this.lowest_price.Width = 178;
             // 
+            // common_price
+            // 
+            this.common_price.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            this.common_price.HeaderText = "Market  price";
+            this.common_price.Name = "common_price";
+            this.common_price.Width = 182;
+            // 
             // other_seller
             // 
-            this.other_seller.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
             this.other_seller.HeaderText = "Other seller";
             this.other_seller.Name = "other_seller";
+            this.other_seller.Width = 120;
+            // 
+            // link
+            // 
+            this.link.HeaderText = "Link";
+            this.link.Name = "link";
+            this.link.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.link.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
             // 
             // Form2
             // 
@@ -261,14 +261,14 @@
         private System.Windows.Forms.ProgressBar progressBarUpdateDb;
         private System.Windows.Forms.ProgressBar progressBarFetching;
         private System.Windows.Forms.DataGridViewTextBoxColumn id;
-        private System.Windows.Forms.DataGridViewLinkColumn link;
         private System.Windows.Forms.DataGridViewTextBoxColumn store;
+        private System.Windows.Forms.DataGridViewTextBoxColumn group;
         private System.Windows.Forms.DataGridViewTextBoxColumn sku;
         private System.Windows.Forms.DataGridViewCheckBoxColumn active;
-        private System.Windows.Forms.DataGridViewTextBoxColumn group;
         private System.Windows.Forms.DataGridViewTextBoxColumn current_price;
-        private System.Windows.Forms.DataGridViewTextBoxColumn common_price;
         private System.Windows.Forms.DataGridViewTextBoxColumn lowest_price;
+        private System.Windows.Forms.DataGridViewTextBoxColumn common_price;
         private System.Windows.Forms.DataGridViewComboBoxColumn other_seller;
+        private System.Windows.Forms.DataGridViewLinkColumn link;
     }
 }

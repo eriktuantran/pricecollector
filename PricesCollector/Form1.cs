@@ -111,7 +111,7 @@ namespace PricesCollector
                 data.link,
                 data.productName,
                 data.sku,
-                data.storeName,
+                data.sellerName,
                 data.currentPrice.ToString()
             };
             dataGridView1.Rows.Add(row);

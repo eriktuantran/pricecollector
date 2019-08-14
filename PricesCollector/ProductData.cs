@@ -23,7 +23,7 @@ namespace PricesCollector
         public string productName = "";
         public int currentPrice = 0;
         public int listPrice = 0;
-        public string storeName = "";
+        public string sellerName = "";
         public string sku = "";
 
         public List<Product> otherSeller = new List<Product>();
@@ -114,7 +114,7 @@ namespace PricesCollector
             {
                 Console.WriteLine("LINK ERROR: " + this.link);
 
-                this.storeName = "### LINK ERROR";
+                this.sellerName = "### LINK ERROR";
                 return;
             }
 
@@ -123,7 +123,7 @@ namespace PricesCollector
 
             try
             {
-                this.storeName = (string)currentSellerJson["currentSeller"]["name"];
+                this.sellerName = (string)currentSellerJson["currentSeller"]["name"];
                 this.productName = productName;
                 try
                 {
@@ -203,7 +203,7 @@ namespace PricesCollector
 
         public void dump()
         {
-            Console.WriteLine("currentName : {0} : price: {1}", storeName, currentPrice);
+            Console.WriteLine("currentName : {0} : price: {1}", sellerName, currentPrice);
             foreach (var d in otherSeller)
             {
                 Console.WriteLine("Product name: {0} : price: {1}", d.name, d.price);

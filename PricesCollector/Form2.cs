@@ -325,12 +325,12 @@ namespace PricesCollector
                         otherSellerStringToDB += product.price + "_" + product.name + "\n";
                     }
 
-                    Console.WriteLine("{0} _ {1} _ {2} _ {3} _ {4}", item.Key, data.link, data.storeName, data.currentPrice.ToString(), data.lowestPrice.ToString());
+                    Console.WriteLine("{0} _ {1} _ {2} _ {3} _ {4}", item.Key, data.link, data.sellerName, data.currentPrice.ToString(), data.lowestPrice.ToString());
 
                     MySqlCommand cmd = new MySqlCommand();
                     cmd.Connection = connection;
                     cmd.CommandText = "update product set ";
-                    cmd.CommandText += "store ='" + data.storeName + "',";
+                    cmd.CommandText += "seller_name ='" + data.sellerName + "',";
                     cmd.CommandText += "sku ='" + data.sku + "',";
                     cmd.CommandText += "current_price ='" + data.currentPrice.ToString() + "',";
                     cmd.CommandText += "common_price ='" + data.listPrice.ToString() + "',";
@@ -350,7 +350,7 @@ namespace PricesCollector
             dataGridView1.Rows.Clear();
             if (this.OpenConnection() == true)
             {
-                mySqlDataAdapter = new MySqlDataAdapter("select id,link,store,sku,active,product_group,current_price,common_price,lowest_price,other_seller from product", connection);
+                mySqlDataAdapter = new MySqlDataAdapter("select id,seller_name,product_group,sku,active,current_price,lowest_price,common_price,other_seller,link from product", connection);
                 DataSet DS = new DataSet();
                 mySqlDataAdapter.Fill(DS);
 
