@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.btnParse = new System.Windows.Forms.Button();
             this.txtUrl = new System.Windows.Forms.RichTextBox();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
@@ -36,7 +37,10 @@
             this.timerValue = new System.Windows.Forms.NumericUpDown();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
+            this.button1 = new System.Windows.Forms.Button();
             this.Id = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Active = new System.Windows.Forms.DataGridViewCheckBoxColumn();
+            this.link = new System.Windows.Forms.DataGridViewLinkColumn();
             this.Product = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.SKU = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Store = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -63,8 +67,7 @@
             this.txtUrl.Name = "txtUrl";
             this.txtUrl.Size = new System.Drawing.Size(1284, 298);
             this.txtUrl.TabIndex = 1;
-            this.txtUrl.Text = "https://tiki.vn/totolink-n150usm-usb-wifi-chuan-n-toc-do-150mbps-p481696.html?spi" +
-    "d=9799612";
+            this.txtUrl.Text = resources.GetString("txtUrl.Text");
             this.txtUrl.TextChanged += new System.EventHandler(this.txtUrl_TextChanged);
             // 
             // dataGridView1
@@ -75,6 +78,8 @@
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dataGridView1.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.Id,
+            this.Active,
+            this.link,
             this.Product,
             this.SKU,
             this.Store,
@@ -84,7 +89,7 @@
             this.dataGridView1.Location = new System.Drawing.Point(12, 348);
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.RowTemplate.Height = 33;
-            this.dataGridView1.Size = new System.Drawing.Size(1554, 596);
+            this.dataGridView1.Size = new System.Drawing.Size(1771, 596);
             this.dataGridView1.TabIndex = 3;
             this.dataGridView1.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellContentClick);
             // 
@@ -135,12 +140,32 @@
             this.label2.TabIndex = 6;
             this.label2.Text = "minute";
             // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(1458, 30);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(113, 67);
+            this.button1.TabIndex = 7;
+            this.button1.Text = "Populate dict";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.buttonPopulateDictionaryLink_Click);
+            // 
             // Id
             // 
             this.Id.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
             this.Id.HeaderText = "Id";
             this.Id.Name = "Id";
             this.Id.Width = 74;
+            // 
+            // Active
+            // 
+            this.Active.HeaderText = "Active";
+            this.Active.Name = "Active";
+            // 
+            // link
+            // 
+            this.link.HeaderText = "link";
+            this.link.Name = "link";
             // 
             // Product
             // 
@@ -176,7 +201,8 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1578, 956);
+            this.ClientSize = new System.Drawing.Size(1795, 956);
+            this.Controls.Add(this.button1);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.timerValue);
@@ -203,7 +229,10 @@
         private System.Windows.Forms.NumericUpDown timerValue;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Button button1;
         private System.Windows.Forms.DataGridViewTextBoxColumn Id;
+        private System.Windows.Forms.DataGridViewCheckBoxColumn Active;
+        private System.Windows.Forms.DataGridViewLinkColumn link;
         private System.Windows.Forms.DataGridViewTextBoxColumn Product;
         private System.Windows.Forms.DataGridViewTextBoxColumn SKU;
         private System.Windows.Forms.DataGridViewTextBoxColumn Store;

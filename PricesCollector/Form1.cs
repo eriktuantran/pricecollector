@@ -12,16 +12,59 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
+
 namespace PricesCollector
 {
+    using MyDictionary = System.Collections.Generic.Dictionary<int, ProductData>;
+
     public partial class Form1 : Form
     {
+        MyDictionary productDict = new MyDictionary();
+
         public Form1()
         {
             InitializeComponent();
             timer1.Interval = (int)timerValue.Value * 1000 * 60;
-
         }
+
+        private int column(string columnName)
+        {
+            var dataGridViewColumn = dataGridView1.Columns[columnName];
+            if (dataGridViewColumn != null)
+            {
+                return dataGridView1.Columns.IndexOf(dataGridViewColumn);
+            }
+            else
+            {
+                Console.WriteLine("### Column: {0} does not exist", columnName);
+                return -1;
+            }
+        }
+        private void buttonPopulateDictionaryLink_Click(object sender, EventArgs e)
+        {
+            productDict.Clear();
+
+            int productIndex = 0;
+            foreach (var lk in txtUrl.Text.Split('\n'))
+            {
+                string link = lk.Trim();
+                if (link == "" && !link.Contains("tiki.vn")) continue;
+
+                ProductData dat = new ProductData();
+                dat.link = link;
+
+                Random r = new Random();
+                dat.isActive = r.Next(100) <= 50 ? true : false;
+
+                productDict[productIndex++] = dat;
+            }
+
+            foreach (var d in productDict)
+            {
+                Console.WriteLine(d.Value.link);
+            }
+        }
+
         private void Form1_Load(object sender, EventArgs e)
         {
             string expireStr = "2019-09-30";
@@ -35,161 +78,74 @@ namespace PricesCollector
             }
         }
 
-        public string ReplaceAt(string input, int index, char newChar)
-        {
-            if (input == null)
-            {
-                throw new ArgumentNullException("input");
-            }
-            StringBuilder builder = new StringBuilder(input);
-            builder[index] = newChar;
-            return builder.ToString();
-        }
 
         private void btnParse_Click(object sender, EventArgs e)
         {
-
-
-
             populateDatagridview();
         }
 
         void populateDatagridview()
         {
             dataGridView1.Rows.Clear();
-            int productIndex = 0;
-            foreach (var lk in txtUrl.Text.Split('\n'))
+
+            foreach (var d in productDict)
             {
-                string link = lk.Trim();
-                if (link == "" && !link.Contains("tiki.vn")) continue;
-
-                Console.WriteLine(link);
-
-                ProductData data = getDataFromTikiLink(link);
-                data.link = link;
-                data.productId = productIndex;
-                productIndex++;
-                datagridview(data);
-            }
-        }
-
-        
-
-        private ProductData getDataFromTikiLink(string link)
-        {
-            ProductData data = new ProductData();
-
-            string currentSellerLine = "";
-            string productName = "";
-            string otherSellerLine = "";
-
-            try
-            {
-                var client = new WebClient();
-                var stream = client.OpenRead(link);
-
-                using (var reader = new StreamReader(stream))
-                {
-                    string line;
-                    while ((line = reader.ReadLine()) != null)
-                    {
-                        if (line.Contains("currentSeller"))
-                        {
-                            currentSellerLine = line;
-
-                        }
-                        if (line.Contains("otherSeller"))
-                        {
-                            otherSellerLine = line;
-
-                        }
-                        if (line.Contains("var name ="))
-                        {
-                            productName = line.Replace("var name =", "").Trim();
-                            productName = productName.Replace("\"", "");
-                        }
-
-                        if (currentSellerLine != "" && otherSellerLine != "" && productName != "")
-                        {
-                            break;
-                        }
-                    }
-                }
-            }
-            catch
-            {
-                return data;
+                d.Value.productId = d.Key;
+                d.Value.populateDataFromTikiLink();
+                Console.WriteLine("Tuan key=[{0}]", d.Key);
             }
 
-            JObject currentSellerJson = convertTikiDataToJson(currentSellerLine);
-            JObject otherSellerJson = convertTikiDataToJson(otherSellerLine);
-
-            try
+            foreach (var d in productDict)
             {
-                data.storeName = (string)currentSellerJson["currentSeller"]["name"];
-                data.productName = productName;
-                data.currentPrice = Int32.Parse((string)currentSellerJson["currentSeller"]["price"]);
-                data.sku = (string)currentSellerJson["currentSeller"]["sku"];
-
-                foreach (var obj in otherSellerJson["otherSeller"])
-                {
-                    Product p = new Product();
-                    p.name = (string)obj["name"];
-                    p.price = Int32.Parse((string)obj["price"]);
-                    data.otherSeller.Add(p);
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.ToString());
+                datagridview(d.Value);
             }
 
-            return data;
         }
 
         private void datagridview(ProductData data)
         {
-            string[] row = new string[] { data.productId.ToString(), data.productName, data.sku, data.storeName, data.currentPrice.ToString() };
+            string[] row = new string[]
+            {
+                data.productId.ToString(),
+                "True",
+                data.link,
+                data.productName,
+                data.sku,
+                data.storeName,
+                data.currentPrice.ToString()
+            };
             dataGridView1.Rows.Add(row);
 
 
-            //DataGridViewComboBoxColumn cmb = new DataGridViewComboBoxColumn();
+            //dataGridView1.Rows[data.productId].Cells[column("Lowest")].Value = list[0].price.ToString();
 
-            //cmb.HeaderText = "Other Seller";
-            //cmb.Name = "cmb";
-            //cmb.MaxDropDownItems = 4;
-
-            List<Product> list = data.SortedList();
-
-            DataGridViewComboBoxCell cmb = (DataGridViewComboBoxCell)dataGridView1.Rows[data.productId].Cells[6];
-            foreach (var i in list)
-            {
-                cmb.Items.Add(i.price + ": " + i.name);
-            }
+            DataGridViewCheckBoxCell checkBox = (DataGridViewCheckBoxCell)dataGridView1.Rows[data.productId].Cells[column("Active")];
+            
 
             try
             {
+                List<Product> list = data.SortedList();
+                DataGridViewComboBoxCell cmb = (DataGridViewComboBoxCell)dataGridView1.Rows[data.productId].Cells[column("OtherSeller")];
+                foreach (var i in list)
+                {
+                    cmb.Items.Add(i.price + ": " + i.name);
+                }
 
-                dataGridView1.Rows[data.productId].Cells[5].Value = list[0].price.ToString();
+                dataGridView1.Rows[data.productId].Cells[column("Lowest")].Value = list[0].price.ToString();
 
                 if (list[0].price < data.currentPrice)
                 {
-                    dataGridView1.Rows[data.productId].Cells[5].Style.BackColor = Color.Red;
+                    dataGridView1.Rows[data.productId].Cells[column("Lowest")].Style.BackColor = Color.Red;
                 }
                 else
                 {
-                    dataGridView1.Rows[data.productId].Cells[5].Style.BackColor = Color.Green;
+                    dataGridView1.Rows[data.productId].Cells[column("Lowest")].Style.BackColor = Color.Green;
                 }
             }
-            catch { }
-
-            //DataGridViewButtonColumn btn = new DataGridViewButtonColumn();
-            //dataGridView1.Columns.Add(btn);
-            //btn.HeaderText = "Click Data";
-            //btn.Text = "Click Here";
-            //btn.Name = "btn";
-            //btn.UseColumnTextForButtonValue = true;
-
+            catch (Exception e)
+            {
+                Console.WriteLine("Failed at lowest price");
+            }
         }
 
         private void dataGridView1_CellClick(object sender, DataGridViewCellEventArgs e)
@@ -200,33 +156,6 @@ namespace PricesCollector
             }
         }
 
-        private JObject convertTikiDataToJson(string raw)
-        {
-            JObject jsonObject = new JObject();
-
-            string jsonStr = raw.Trim();
-
-            //head
-            jsonStr = jsonStr.Replace("var ", "{");
-            int pos = jsonStr.IndexOf("=");
-            jsonStr = ReplaceAt(jsonStr, pos, ':');
-
-            //tail
-            pos = jsonStr.LastIndexOf(";");
-            if (pos >= 0)
-            {
-                jsonStr = jsonStr.Remove(pos);
-            }
-            jsonStr += "}";
-
-            try
-            {
-                jsonObject = JObject.Parse(jsonStr);
-            }
-            catch { }
-
-            return jsonObject;
-        }
 
         private void txtUrl_TextChanged(object sender, EventArgs e)
         {
