@@ -91,7 +91,7 @@ namespace PricesCollector
             foreach (var d in productDict)
             {
                 d.Value.productId = d.Key;
-                d.Value.populateDataFromTikiLink();
+                d.Value.populateDataFromTikiLinkVersion2();
                 Console.WriteLine("Tuan key=[{0}]", d.Key);
             }
 
