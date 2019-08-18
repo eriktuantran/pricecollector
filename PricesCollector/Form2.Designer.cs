@@ -32,15 +32,6 @@
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form2));
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
-            this.menuStrip1 = new System.Windows.Forms.MenuStrip();
-            this.fetchDataToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.exportToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.settingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.timerUpdateDb = new System.Windows.Forms.Timer(this.components);
-            this.progressBarUpdateDb = new System.Windows.Forms.ProgressBar();
-            this.progressBarFetching = new System.Windows.Forms.ProgressBar();
-            this.btnStop = new System.Windows.Forms.Button();
-            this.importDataToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.id = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.seller_name = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.group = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -53,6 +44,16 @@
             this.other_seller = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.active = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.link = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.menuStrip1 = new System.Windows.Forms.MenuStrip();
+            this.fetchDataToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.settingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.importDataToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.timerUpdateDb = new System.Windows.Forms.Timer(this.components);
+            this.progressBarUpdateDb = new System.Windows.Forms.ProgressBar();
+            this.progressBarFetching = new System.Windows.Forms.ProgressBar();
+            this.btnStop = new System.Windows.Forms.Button();
+            this.importCSVToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.exportExcelToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -87,79 +88,6 @@
             this.dataGridView1.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellContentClick);
             this.dataGridView1.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellValueChanged);
             this.dataGridView1.RowValidated += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_RowValidated);
-            // 
-            // menuStrip1
-            // 
-            this.menuStrip1.ImageScalingSize = new System.Drawing.Size(32, 32);
-            this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.fetchDataToolStripMenuItem,
-            this.exportToolStripMenuItem,
-            this.settingToolStripMenuItem,
-            this.importDataToolStripMenuItem});
-            this.menuStrip1.Location = new System.Drawing.Point(0, 0);
-            this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(1836, 40);
-            this.menuStrip1.TabIndex = 1;
-            this.menuStrip1.Text = "menuStrip1";
-            // 
-            // fetchDataToolStripMenuItem
-            // 
-            this.fetchDataToolStripMenuItem.Name = "fetchDataToolStripMenuItem";
-            this.fetchDataToolStripMenuItem.Size = new System.Drawing.Size(129, 36);
-            this.fetchDataToolStripMenuItem.Text = "Fetch Tiki";
-            this.fetchDataToolStripMenuItem.Click += new System.EventHandler(this.fetchDataToolStripMenuItem_Click);
-            // 
-            // exportToolStripMenuItem
-            // 
-            this.exportToolStripMenuItem.Name = "exportToolStripMenuItem";
-            this.exportToolStripMenuItem.Size = new System.Drawing.Size(160, 36);
-            this.exportToolStripMenuItem.Text = "Export Excell";
-            this.exportToolStripMenuItem.Click += new System.EventHandler(this.exportToolStripMenuItem_Click);
-            // 
-            // settingToolStripMenuItem
-            // 
-            this.settingToolStripMenuItem.Name = "settingToolStripMenuItem";
-            this.settingToolStripMenuItem.Size = new System.Drawing.Size(103, 36);
-            this.settingToolStripMenuItem.Text = "Setting";
-            this.settingToolStripMenuItem.Click += new System.EventHandler(this.settingToolStripMenuItem_Click);
-            // 
-            // timerUpdateDb
-            // 
-            this.timerUpdateDb.Interval = 10000;
-            this.timerUpdateDb.Tick += new System.EventHandler(this.timerUpdateDB_Tick);
-            // 
-            // progressBarUpdateDb
-            // 
-            this.progressBarUpdateDb.Location = new System.Drawing.Point(13, 62);
-            this.progressBarUpdateDb.Margin = new System.Windows.Forms.Padding(4);
-            this.progressBarUpdateDb.Name = "progressBarUpdateDb";
-            this.progressBarUpdateDb.Size = new System.Drawing.Size(324, 42);
-            this.progressBarUpdateDb.TabIndex = 10;
-            // 
-            // progressBarFetching
-            // 
-            this.progressBarFetching.Location = new System.Drawing.Point(362, 62);
-            this.progressBarFetching.Margin = new System.Windows.Forms.Padding(4);
-            this.progressBarFetching.Name = "progressBarFetching";
-            this.progressBarFetching.Size = new System.Drawing.Size(236, 42);
-            this.progressBarFetching.TabIndex = 11;
-            // 
-            // btnStop
-            // 
-            this.btnStop.Location = new System.Drawing.Point(628, 62);
-            this.btnStop.Name = "btnStop";
-            this.btnStop.Size = new System.Drawing.Size(108, 47);
-            this.btnStop.TabIndex = 12;
-            this.btnStop.Text = "Stop";
-            this.btnStop.UseVisualStyleBackColor = true;
-            this.btnStop.Click += new System.EventHandler(this.btnStop_Click);
-            // 
-            // importDataToolStripMenuItem
-            // 
-            this.importDataToolStripMenuItem.Name = "importDataToolStripMenuItem";
-            this.importDataToolStripMenuItem.Size = new System.Drawing.Size(151, 36);
-            this.importDataToolStripMenuItem.Text = "Import data";
-            this.importDataToolStripMenuItem.Click += new System.EventHandler(this.importDataToolStripMenuItem_Click);
             // 
             // id
             // 
@@ -232,6 +160,87 @@
             this.link.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
             this.link.Width = 863;
             // 
+            // menuStrip1
+            // 
+            this.menuStrip1.ImageScalingSize = new System.Drawing.Size(32, 32);
+            this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.fetchDataToolStripMenuItem,
+            this.settingToolStripMenuItem,
+            this.importDataToolStripMenuItem});
+            this.menuStrip1.Location = new System.Drawing.Point(0, 0);
+            this.menuStrip1.Name = "menuStrip1";
+            this.menuStrip1.Size = new System.Drawing.Size(1836, 40);
+            this.menuStrip1.TabIndex = 1;
+            this.menuStrip1.Text = "menuStrip1";
+            // 
+            // fetchDataToolStripMenuItem
+            // 
+            this.fetchDataToolStripMenuItem.Name = "fetchDataToolStripMenuItem";
+            this.fetchDataToolStripMenuItem.Size = new System.Drawing.Size(129, 36);
+            this.fetchDataToolStripMenuItem.Text = "Fetch Tiki";
+            this.fetchDataToolStripMenuItem.Click += new System.EventHandler(this.fetchDataToolStripMenuItem_Click);
+            // 
+            // settingToolStripMenuItem
+            // 
+            this.settingToolStripMenuItem.Name = "settingToolStripMenuItem";
+            this.settingToolStripMenuItem.Size = new System.Drawing.Size(103, 36);
+            this.settingToolStripMenuItem.Text = "Setting";
+            this.settingToolStripMenuItem.Click += new System.EventHandler(this.settingToolStripMenuItem_Click);
+            // 
+            // importDataToolStripMenuItem
+            // 
+            this.importDataToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.importCSVToolStripMenuItem,
+            this.exportExcelToolStripMenuItem});
+            this.importDataToolStripMenuItem.Name = "importDataToolStripMenuItem";
+            this.importDataToolStripMenuItem.Size = new System.Drawing.Size(76, 36);
+            this.importDataToolStripMenuItem.Text = "Data";
+            // 
+            // timerUpdateDb
+            // 
+            this.timerUpdateDb.Interval = 10000;
+            this.timerUpdateDb.Tick += new System.EventHandler(this.timerUpdateDB_Tick);
+            // 
+            // progressBarUpdateDb
+            // 
+            this.progressBarUpdateDb.Location = new System.Drawing.Point(13, 62);
+            this.progressBarUpdateDb.Margin = new System.Windows.Forms.Padding(4);
+            this.progressBarUpdateDb.Name = "progressBarUpdateDb";
+            this.progressBarUpdateDb.Size = new System.Drawing.Size(324, 42);
+            this.progressBarUpdateDb.TabIndex = 10;
+            // 
+            // progressBarFetching
+            // 
+            this.progressBarFetching.Location = new System.Drawing.Point(362, 62);
+            this.progressBarFetching.Margin = new System.Windows.Forms.Padding(4);
+            this.progressBarFetching.Name = "progressBarFetching";
+            this.progressBarFetching.Size = new System.Drawing.Size(236, 42);
+            this.progressBarFetching.TabIndex = 11;
+            // 
+            // btnStop
+            // 
+            this.btnStop.Location = new System.Drawing.Point(628, 62);
+            this.btnStop.Name = "btnStop";
+            this.btnStop.Size = new System.Drawing.Size(108, 47);
+            this.btnStop.TabIndex = 12;
+            this.btnStop.Text = "Stop";
+            this.btnStop.UseVisualStyleBackColor = true;
+            this.btnStop.Click += new System.EventHandler(this.btnStop_Click);
+            // 
+            // importCSVToolStripMenuItem
+            // 
+            this.importCSVToolStripMenuItem.Name = "importCSVToolStripMenuItem";
+            this.importCSVToolStripMenuItem.Size = new System.Drawing.Size(324, 38);
+            this.importCSVToolStripMenuItem.Text = "Import data";
+            this.importCSVToolStripMenuItem.Click += new System.EventHandler(this.importCSVToolStripMenuItem_Click);
+            // 
+            // exportExcelToolStripMenuItem
+            // 
+            this.exportExcelToolStripMenuItem.Name = "exportExcelToolStripMenuItem";
+            this.exportExcelToolStripMenuItem.Size = new System.Drawing.Size(324, 38);
+            this.exportExcelToolStripMenuItem.Text = "Export Excel";
+            this.exportExcelToolStripMenuItem.Click += new System.EventHandler(this.exportExcelToolStripMenuItem_Click);
+            // 
             // Form2
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
@@ -264,7 +273,6 @@
         private System.Windows.Forms.Timer timerUpdateDb;
         private System.Windows.Forms.ProgressBar progressBarUpdateDb;
         private System.Windows.Forms.ProgressBar progressBarFetching;
-        private System.Windows.Forms.ToolStripMenuItem exportToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem settingToolStripMenuItem;
         private System.Windows.Forms.Button btnStop;
         private System.Windows.Forms.ToolStripMenuItem importDataToolStripMenuItem;
@@ -280,5 +288,7 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn other_seller;
         private System.Windows.Forms.DataGridViewCheckBoxColumn active;
         private System.Windows.Forms.DataGridViewTextBoxColumn link;
+        private System.Windows.Forms.ToolStripMenuItem importCSVToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem exportExcelToolStripMenuItem;
     }
 }

@@ -179,7 +179,7 @@ namespace PricesCollector
         {
             if(e.RowIndex < 0)
             {
-                Console.WriteLine("Header Line, ignore");
+                //Console.WriteLine("Header Line, ignore");
                 return;
             }
 
@@ -308,7 +308,6 @@ namespace PricesCollector
                             string id = reader.GetString(0);
                             string link = reader.GetString(1);
                             string active = reader.GetString(2).ToLower();
-                            Console.WriteLine(active);
                             ProductData dat = new ProductData();
                             dat.link = link;
                             dat.productId = Int32.Parse(id);
@@ -518,8 +517,14 @@ namespace PricesCollector
                         dataGridView1.Rows[rowIndex].Cells["current_price"].Style.BackColor = Color.Green;
                     }
 
+                    //Link color
+                    var obj = (DataGridViewTextBoxCell)dataGridView1.Rows[rowIndex].Cells["link"];
+                    obj.Style.ForeColor = Color.Blue;
+
                     rowIndex++;
                 }
+                
+
             }
         }
 
@@ -729,7 +734,7 @@ namespace PricesCollector
             app.Quit();
         }
 
-        private void exportToolStripMenuItem_Click(object sender, EventArgs e)
+        private void exportExcelToolStripMenuItem_Click(object sender, EventArgs e)
         {
             DateTime now = DateTime.Now;
             string timeStamp = now.ToString("yyyy-MM-dd-HH-mm-ss");
@@ -808,51 +813,10 @@ namespace PricesCollector
 
         }
 
-        private void importDataToolStripMenuItem_Click(object sender, EventArgs e)
+        private void importCSVToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            //MessageBox.Show("This feature is not ready yet, to be implemented!");
-
-            string filePath = "";
-            using (OpenFileDialog openFileDialog = new OpenFileDialog())
-            {
-                //openFileDialog.InitialDirectory = "c:\\";
-                openFileDialog.Filter = "CSV files (*.csv)|*.txt|All files (*.*)|*.*";
-                openFileDialog.FilterIndex = 2;
-                openFileDialog.RestoreDirectory = true;
-
-                if (openFileDialog.ShowDialog() == DialogResult.OK)
-                {
-                    //Get the path of specified file
-                    filePath = openFileDialog.FileName;
-                }
-            }
-
-            ReadCsv(filePath);
-
-        }
-
-        void ReadCsv(string filePath)
-        {
-            // open the file "data.csv" which is a CSV file with headers
-            using (CsvReader csv = new CsvReader(
-                   new StreamReader(filePath), true))
-            {
-                // missing fields will not throw an exception,
-                // but will instead be treated as if there was a null value
-                csv.MissingFieldAction = MissingFieldAction.ReplaceByNull;
-                // to replace by "" instead, then use the following action:
-                //csv.MissingFieldAction = MissingFieldAction.ReplaceByEmpty;
-                int fieldCount = csv.FieldCount;
-                string[] headers = csv.GetFieldHeaders();
-                while (csv.ReadNextRecord())
-                {
-                    for (int i = 0; i < fieldCount; i++)
-                        Console.Write(string.Format("{0} = {1};",
-                                      headers[i],
-                                      csv[i] == null ? "MISSING" : csv[i]));
-                    Console.WriteLine();
-                }
-            }
+            var appImportData = new ImportData(this.connection);
+            appImportData.ShowDialog();
         }
 
 
