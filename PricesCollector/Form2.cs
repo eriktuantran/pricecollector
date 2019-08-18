@@ -9,6 +9,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using LumenWorks.Framework.IO.Csv;
+using System.IO;
 
 namespace PricesCollector
 {
@@ -161,13 +163,13 @@ namespace PricesCollector
             }
         }
 
-        private void updateDB(string id, string link)
+        private void updateDB(string id, string fieldName, string value)
         {
             if (this.OpenConnection() == true)
             {
                 MySqlCommand cmd = new MySqlCommand();
                 cmd.Connection = connection;
-                cmd.CommandText = "update product set link='"+link+"' where id='"+id+"';";
+                cmd.CommandText = "update product set "+ fieldName + "='"+ value + "' where id='"+id+"';";
                 cmd.ExecuteNonQuery();
                 CloseConnection();
             }
@@ -175,32 +177,40 @@ namespace PricesCollector
 
         private void dataGridView1_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
-            if(e.RowIndex == -1)
+            if(e.RowIndex < 0)
             {
                 Console.WriteLine("Header Line, ignore");
                 return;
             }
+
+            var productIdCell = dataGridView1.Rows[e.RowIndex].Cells[columnNameToIndex("id")];
+
+            if (productIdCell.Value == null)
+            {
+                Console.WriteLine("New line");
+                return;
+            }
+
+            string productId = productIdCell.Value.ToString();
+
             if (e.ColumnIndex == columnNameToIndex("link"))
             {
-                try
-                {
-                    if (dataGridView1.Rows[e.RowIndex].Cells[columnNameToIndex("id")].Value == null)
-                    {
-                        Console.WriteLine("New line");
-                        return;
-                    }
-                    string id = dataGridView1.Rows[e.RowIndex].Cells[columnNameToIndex("id")].Value.ToString();
-                    Console.WriteLine("ID={0} Row={1} Col={2}", id, e.RowIndex, e.ColumnIndex);
-
-                    updateDB(id, dataGridView1.Rows[e.RowIndex].Cells[columnNameToIndex("link")].Value.ToString());
-                }
-                catch { }
+                Console.WriteLine("ID={0} Row={1} Col={2}", productId, e.RowIndex, e.ColumnIndex);
+                updateDB(productId, "link", dataGridView1.Rows[e.RowIndex].Cells[columnNameToIndex("link")].Value.ToString());
             }
-            else if(e.ColumnIndex == columnNameToIndex("link"))
+            else if(e.ColumnIndex == columnNameToIndex("active"))
             {
+                DataGridViewCheckBoxCell chkchecking = dataGridView1.Rows[e.RowIndex].Cells[columnNameToIndex("active")] as DataGridViewCheckBoxCell;
 
+                if (Convert.ToBoolean(chkchecking.Value) == true)
+                {
+                    updateDB(productId, "active", "1");
+                }
+                else
+                {
+                    updateDB(productId, "active", "0");
+                }
             }
-
         }
 
         private void dataGridView1_RowValidated(object sender, DataGridViewCellEventArgs e)
@@ -284,7 +294,7 @@ namespace PricesCollector
             if (this.OpenConnection() == true)
             {
                 MySqlDataReader reader = null;
-                string selectCmd = "select id,link from product;";
+                string selectCmd = "select id,link,active from product;";
 
                 MySqlCommand command = new MySqlCommand(selectCmd, connection);
                 reader = command.ExecuteReader();
@@ -297,9 +307,12 @@ namespace PricesCollector
                         {
                             string id = reader.GetString(0);
                             string link = reader.GetString(1);
+                            string active = reader.GetString(2).ToLower();
+                            Console.WriteLine(active);
                             ProductData dat = new ProductData();
                             dat.link = link;
                             dat.productId = Int32.Parse(id);
+                            dat.isActive = active=="true"? true:false;
                             myDict[id] = dat;
                         }
                         catch { }
@@ -325,6 +338,13 @@ namespace PricesCollector
             foreach (var item in myDict)
             {
                 ProductData data = item.Value;
+                if(data.isActive == false)
+                {
+                    //This item is not active
+                    Console.WriteLine("Skip this product, it is not active");
+                    continue;
+                }
+
                 startProgressFetchingByMultiThread(data);
             }
             progressBarFetching.Maximum = backgroundWorkerForFetchingList.Count;
@@ -790,7 +810,49 @@ namespace PricesCollector
 
         private void importDataToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("This feature is not ready yet, to be implemented!");
+            //MessageBox.Show("This feature is not ready yet, to be implemented!");
+
+            string filePath = "";
+            using (OpenFileDialog openFileDialog = new OpenFileDialog())
+            {
+                //openFileDialog.InitialDirectory = "c:\\";
+                openFileDialog.Filter = "CSV files (*.csv)|*.txt|All files (*.*)|*.*";
+                openFileDialog.FilterIndex = 2;
+                openFileDialog.RestoreDirectory = true;
+
+                if (openFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    //Get the path of specified file
+                    filePath = openFileDialog.FileName;
+                }
+            }
+
+            ReadCsv(filePath);
+
+        }
+
+        void ReadCsv(string filePath)
+        {
+            // open the file "data.csv" which is a CSV file with headers
+            using (CsvReader csv = new CsvReader(
+                   new StreamReader(filePath), true))
+            {
+                // missing fields will not throw an exception,
+                // but will instead be treated as if there was a null value
+                csv.MissingFieldAction = MissingFieldAction.ReplaceByNull;
+                // to replace by "" instead, then use the following action:
+                //csv.MissingFieldAction = MissingFieldAction.ReplaceByEmpty;
+                int fieldCount = csv.FieldCount;
+                string[] headers = csv.GetFieldHeaders();
+                while (csv.ReadNextRecord())
+                {
+                    for (int i = 0; i < fieldCount; i++)
+                        Console.Write(string.Format("{0} = {1};",
+                                      headers[i],
+                                      csv[i] == null ? "MISSING" : csv[i]));
+                    Console.WriteLine();
+                }
+            }
         }
 
 
