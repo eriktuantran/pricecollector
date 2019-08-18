@@ -40,11 +40,13 @@
             this.progressBarUpdateDb = new System.Windows.Forms.ProgressBar();
             this.progressBarFetching = new System.Windows.Forms.ProgressBar();
             this.btnStop = new System.Windows.Forms.Button();
+            this.importDataToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.id = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.seller_name = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.group = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.product_name = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.sku = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.msku = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.current_price = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.lowest_price = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.discount_price = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -68,6 +70,7 @@
             this.group,
             this.product_name,
             this.sku,
+            this.msku,
             this.current_price,
             this.lowest_price,
             this.discount_price,
@@ -82,6 +85,7 @@
             this.dataGridView1.TabIndex = 0;
             this.dataGridView1.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellClick);
             this.dataGridView1.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellContentClick);
+            this.dataGridView1.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellValueChanged);
             this.dataGridView1.RowValidated += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_RowValidated);
             // 
             // menuStrip1
@@ -90,7 +94,8 @@
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fetchDataToolStripMenuItem,
             this.exportToolStripMenuItem,
-            this.settingToolStripMenuItem});
+            this.settingToolStripMenuItem,
+            this.importDataToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Size = new System.Drawing.Size(1836, 40);
@@ -149,6 +154,13 @@
             this.btnStop.UseVisualStyleBackColor = true;
             this.btnStop.Click += new System.EventHandler(this.btnStop_Click);
             // 
+            // importDataToolStripMenuItem
+            // 
+            this.importDataToolStripMenuItem.Name = "importDataToolStripMenuItem";
+            this.importDataToolStripMenuItem.Size = new System.Drawing.Size(151, 36);
+            this.importDataToolStripMenuItem.Text = "Import data";
+            this.importDataToolStripMenuItem.Click += new System.EventHandler(this.importDataToolStripMenuItem_Click);
+            // 
             // id
             // 
             this.id.HeaderText = "ID";
@@ -174,6 +186,11 @@
             // 
             this.sku.HeaderText = "SKU";
             this.sku.Name = "sku";
+            // 
+            // msku
+            // 
+            this.msku.HeaderText = "MSKU";
+            this.msku.Name = "msku";
             // 
             // current_price
             // 
@@ -231,7 +248,6 @@
             this.Name = "Form2";
             this.Text = "Price collector";
             this.Load += new System.EventHandler(this.Form2_Load);
-            this.SizeChanged += new System.EventHandler(this.Form2_SizeChanged);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
@@ -251,11 +267,13 @@
         private System.Windows.Forms.ToolStripMenuItem exportToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem settingToolStripMenuItem;
         private System.Windows.Forms.Button btnStop;
+        private System.Windows.Forms.ToolStripMenuItem importDataToolStripMenuItem;
         private System.Windows.Forms.DataGridViewTextBoxColumn id;
         private System.Windows.Forms.DataGridViewTextBoxColumn seller_name;
         private System.Windows.Forms.DataGridViewTextBoxColumn group;
         private System.Windows.Forms.DataGridViewTextBoxColumn product_name;
         private System.Windows.Forms.DataGridViewTextBoxColumn sku;
+        private System.Windows.Forms.DataGridViewTextBoxColumn msku;
         private System.Windows.Forms.DataGridViewTextBoxColumn current_price;
         private System.Windows.Forms.DataGridViewTextBoxColumn lowest_price;
         private System.Windows.Forms.DataGridViewTextBoxColumn discount_price;

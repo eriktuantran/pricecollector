@@ -161,6 +161,48 @@ namespace PricesCollector
             }
         }
 
+        private void updateDB(string id, string link)
+        {
+            if (this.OpenConnection() == true)
+            {
+                MySqlCommand cmd = new MySqlCommand();
+                cmd.Connection = connection;
+                cmd.CommandText = "update product set link='"+link+"' where id='"+id+"';";
+                cmd.ExecuteNonQuery();
+                CloseConnection();
+            }
+        }
+
+        private void dataGridView1_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+        {
+            if(e.RowIndex == -1)
+            {
+                Console.WriteLine("Header Line, ignore");
+                return;
+            }
+            if (e.ColumnIndex == columnNameToIndex("link"))
+            {
+                try
+                {
+                    if (dataGridView1.Rows[e.RowIndex].Cells[columnNameToIndex("id")].Value == null)
+                    {
+                        Console.WriteLine("New line");
+                        return;
+                    }
+                    string id = dataGridView1.Rows[e.RowIndex].Cells[columnNameToIndex("id")].Value.ToString();
+                    Console.WriteLine("ID={0} Row={1} Col={2}", id, e.RowIndex, e.ColumnIndex);
+
+                    updateDB(id, dataGridView1.Rows[e.RowIndex].Cells[columnNameToIndex("link")].Value.ToString());
+                }
+                catch { }
+            }
+            else if(e.ColumnIndex == columnNameToIndex("link"))
+            {
+
+            }
+
+        }
+
         private void dataGridView1_RowValidated(object sender, DataGridViewCellEventArgs e)
         {
             syncDatagridviewToDataSource(sender, e);
@@ -396,7 +438,7 @@ namespace PricesCollector
             dataGridView1.Rows.Clear();
             if (this.OpenConnection() == true)
             {
-                string columnsToDisplay = "id,seller_name,product_group,product_name,sku,current_price,lowest_price,discount_price,other_seller,active,link";
+                string columnsToDisplay = "id,seller_name,product_group,product_name,sku,msku,current_price,lowest_price,discount_price,other_seller,active,link";
                 mySqlDataAdapter = new MySqlDataAdapter("select "+ columnsToDisplay + " from product", connection);
                 DataSet DS = new DataSet();
                 mySqlDataAdapter.Fill(DS);
@@ -718,9 +760,11 @@ namespace PricesCollector
 
         }
 
-        private void Form2_SizeChanged(object sender, EventArgs e)
+        private void importDataToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Console.Write("Form2_SizeChanged Event");
+            MessageBox.Show("This feature is not ready yet, to be implemented!");
         }
+
+
     }
 }
