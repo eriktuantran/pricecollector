@@ -1,13 +1,10 @@
-﻿using HtmlAgilityPack;
-using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Net.Http;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace PricesCollector
@@ -25,7 +22,7 @@ namespace PricesCollector
         public int productId = 0;
         public string productName = "";
         public int currentPrice = 0;
-        public int discountPrice = 0;
+        public int listPrice = 0;
         public string sellerName = "";
         public string sku = "";
 
@@ -58,138 +55,7 @@ namespace PricesCollector
             
         }
 
-        public void populateDataFromTikiLinkVersion2()
-        {
-
-            ////the url of the page we want to test
-            //var url = "https://tiki.vn/totolink-n150usm-usb-wifi-chuan-n-toc-do-150mbps-p481696.html?spid=9799612";
-            //var httpClient = new HttpClient();
-            //var html = httpClient.GetStringAsync(url);
-
-
-            string urlAddress = this.link;
-            string html="";
-
-            try
-            {
-                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(urlAddress);
-                HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-
-                if (response.StatusCode == HttpStatusCode.OK)
-                {
-                    Stream receiveStream = response.GetResponseStream();
-                    StreamReader readStream = null;
-
-                    if (response.CharacterSet == null)
-                    {
-                        readStream = new StreamReader(receiveStream);
-                    }
-                    else
-                    {
-                        readStream = new StreamReader(receiveStream, Encoding.GetEncoding(response.CharacterSet));
-                    }
-
-                    html = readStream.ReadToEnd();
-
-                    response.Close();
-                    readStream.Close();
-                }
-                else
-                {
-                    Console.WriteLine("LINK ERROR: " + response.StatusCode.ToString() + " : " + this.link);
-                    this.sellerName = "### LINK ERROR, Code: " + response.StatusCode.ToString();
-                    return;
-                }
-            }
-            catch
-            {
-                    Console.WriteLine("LINK ERROR: Code: 404 - "  + this.link);
-                    this.sellerName = "### LINK ERROR, Code: 404 Not Found";
-                    return;
-            }
-            
-
-            var htmlDocument = new HtmlDocument();
-            htmlDocument.LoadHtml(html);
-
-            //Parse the discount-container
-            try
-            {
-                var discountHtmlNode = htmlDocument.DocumentNode.SelectSingleNode("//div[@id='discount-container']");
-                var subNode = discountHtmlNode.SelectSingleNode("//span[@class='price']");
-                if (subNode != null)
-                {
-                    string discountValue = subNode.InnerHtml;
-                    Regex digitsOnly = new Regex(@"[^\d]");
-                    discountValue = digitsOnly.Replace(discountValue, "");
-                    this.discountPrice = Int32.Parse(discountValue);
-                }
-            }
-            catch { }
-
-            //Parse the Javascript values
-            var javascriptGroups = htmlDocument.DocumentNode.Descendants().Where(n => n.Name == "script");
-
-            string lines = "";
-            foreach (var group in javascriptGroups)
-            {
-                if (group.InnerText.Contains("currentSeller"))
-                {
-                    lines = group.InnerText;
-                    Regex rx = new Regex(@"var (\w+)\s*=\s*(.*);", RegexOptions.Compiled | RegexOptions.IgnoreCase);
-
-                    // Find matches.
-                    MatchCollection matches = rx.Matches(lines);
-
-                    // Report on each match.
-                    foreach (Match match in matches)
-                    {
-                        GroupCollection groups = match.Groups;
-                        try
-                        {
-                            JObject json = JObject.Parse("{value :" + groups[2].Value + "}");
-
-                            string jsVarName = groups[1].Value;
-                            JToken jsVarValue = json["value"];
-                            switch (jsVarName)
-                            {
-                                case "currentSeller":
-                                    this.sku = jsVarValue["sku"].ToString();
-                                    this.sellerName = jsVarValue["name"].ToString();
-                                    break;
-                                case "otherSeller":
-                                    this.otherSeller.Clear();
-                                    foreach (var obj in jsVarValue)
-                                    {
-                                        Product p = new Product();
-                                        p.name = (string)obj["name"];
-                                        p.price = Int32.Parse((string)obj["price"]);
-                                        this.otherSeller.Add(p);
-                                    }
-                                    break;
-                                case "price":
-                                    this.currentPrice = Int32.Parse(jsVarValue.ToString());
-                                    break;
-                                case "name":
-                                    this.productName = jsVarValue.ToString();
-                                    break;
-                                case "listPrice":
-                                    break;
-                                case "defaultProduct":
-                                    break;
-                                case "stockItem":
-                                    break;
-                                default: break;
-                            }
-                        }
-                        catch {}
-                    }
-                    break; // Found "currentSeller"
-                }
-            }
-        }
-
-        public void populateDataFromTikiLinkVersion1()
+        public void populateDataFromTikiLink()
         {
             string currentSellerLine = "";
             string productName = "";
@@ -202,6 +68,7 @@ namespace PricesCollector
             {
                 var client = new WebClient();
                 var stream = client.OpenRead(this.link);
+
                 using (var reader = new StreamReader(stream))
                 {
                     string line;
@@ -274,7 +141,7 @@ namespace PricesCollector
                 {
                     this.currentPrice = Int32.Parse(tempPrice);
                 }
-                this.discountPrice = Int32.Parse(listPrice);
+                this.listPrice = Int32.Parse(listPrice);
                 this.sku = (string)currentSellerJson["currentSeller"]["sku"];
                 this.otherSeller.Clear();
 

@@ -13,12 +13,10 @@ using System.Windows.Forms;
 namespace PricesCollector
 {
     using MyDictionary = System.Collections.Generic.Dictionary<string, ProductData>;
-    using ConfigDictionary = System.Collections.Generic.Dictionary<string, string>;
 
     public partial class Form2 : Form
     {
-        private string connectionString = "";//"server=127.0.0.1;user id=root;password=3V5wn0Kv9RRc8gQA;persistsecurityinfo=True;database=pricecollector";
-        private int timeoutUpdateDB = 0;
+        private string connectionString = "server=127.0.0.1;user id=root;password=3V5wn0Kv9RRc8gQA;persistsecurityinfo=True;database=pricecollector";
         private MySqlConnection connection;
         private MySqlDataAdapter mySqlDataAdapter;
 
@@ -35,64 +33,44 @@ namespace PricesCollector
         public Form2()
         {
             InitializeComponent();
-        }
 
-        private void Form2_Load(object sender, EventArgs e)
-        {
-            // Read config from file
-            Configuration config = new Configuration();
-            ConfigDictionary dictRead = config.loadDictionaryFromFile();
-
-            // Update camera URL, SQL connection string,...
-            populateFormIntialValue(dictRead);
-
-            // Config file not exist
-            if (connectionString == "" || timeoutUpdateDB == 0)
-            {
-                getValueFromSettingForm();
-            }
 
             connection = new MySqlConnection(connectionString);
 
             refreshDatagridviewValue();
             timerUpdateDb.Enabled = true;
-            timerUpdateDb.Interval = 3 * 1000;
-            progressBarUpdateDb.Value = 0;
+            timerUpdateDb.Interval = 3*1000;
             startProgressBar(3);
         }
 
-        void populateFormIntialValue(ConfigDictionary dict)
+        private int column(string columnName)
         {
-            if (dict.ContainsKey("timeout") && dict["timeout"] != "")
+            var dataGridViewColumn = dataGridView1.Columns[columnName];
+            if (dataGridViewColumn != null)
             {
-                timeoutUpdateDB = Int32.Parse(dict["timeout"]);
-            }
-
-            if (dict.ContainsKey("connectstring") && dict["connectstring"] != "")
-            {
-                connectionString = dict["connectstring"];
-            }
-        }
-        void getValueFromSettingForm()
-        {
-            var appSetting = new AppSetting();
-            appSetting.ShowDialog();
-
-            //Collect Data
-            if (appSetting.isOKButtonClicked)
-            {
-                this.connectionString = appSetting.connectionString;
-                this.timeoutUpdateDB = appSetting.timeout;
-                connection = new MySqlConnection(connectionString);
-                Console.WriteLine("Setting done");
+                return dataGridView1.Columns.IndexOf(dataGridViewColumn);
             }
             else
             {
-                Console.WriteLine("Setting Terminated");
+                Console.WriteLine("### Column: {0} does not exist", columnName);
+                return -1;
             }
         }
 
-        private int columnNameToIndex(string columnName)
+
+        class customObj
+        {
+            public string Value { get; set; }
+            public string Display { get; set; }
+            public customObj(string value, string display)
+            {
+                this.Value = value;
+                this.Display = display;
+            }
+
+        }
+
+        private int column2(string columnName)
         {
             var dataGridViewColumn = dataGridView1.Columns[columnName];
             if (dataGridViewColumn != null)
@@ -172,16 +150,17 @@ namespace PricesCollector
         {
             //MessageBox.Show((e.RowIndex + 1) + "  Row  " + (e.ColumnIndex + 1) + "  Column button clicked ");
 
+            
         }
 
         private void dataGridView1_CellClick(object sender, DataGridViewCellEventArgs e)
         {
-            if (e.ColumnIndex == columnNameToIndex("link"))
+            if (e.ColumnIndex == column2("link"))
             {
                 try
                 {
                     string url = (string)dataGridView1.Rows[e.RowIndex].Cells[e.ColumnIndex].Value;
-                    if (url.Trim() != "" && Form.ModifierKeys == Keys.Control)
+                    if (url.Trim() != "")
                     {
                         Process.Start(url);
                     }
@@ -200,25 +179,19 @@ namespace PricesCollector
                 MessageBox.Show("It is busy, please wait!");
                 return;
             }
-
-            //Stop the timer update DB
-            timerUpdateDb.Enabled = false;
-            stopProgressBarUpdateDb();
-
             polulateLinkToDictionary();
             refreshDBPricesMultiThreadAsync();
-            //refreshDatagridviewValue(); // No need to update right now, it will be updated later when multi thread done
+            refreshDatagridviewValue();
         }
 
         private void timerUpdateDB_Tick(object sender, EventArgs e)
         {
             //Stop the timer update DB
             timerUpdateDb.Enabled = false;
-            stopProgressBarUpdateDb();
 
             polulateLinkToDictionary();
             refreshDBPricesMultiThreadAsync();
-            //refreshDatagridviewValue(); // No need to update right now, it will be updated later when multi thread done
+            //refreshDatagridviewValue(); //No need to update right now, it will be updated later when multi thread done
         }
 
         private void polulateLinkToDictionary()
@@ -299,13 +272,14 @@ namespace PricesCollector
             //BackgroundWorker worker = sender as BackgroundWorker;
             ProductData data = (ProductData)e.Argument;
 
-            data.populateDataFromTikiLinkVersion2();
+            data.populateDataFromTikiLink();
 
             //Do your work
             e.Result = data;
         }
         private void bgWorkerForFetching_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
+
             if(progressBarFetching.Value < progressBarFetching.Maximum)
             {
                 progressBarFetching.Value++;
@@ -314,22 +288,27 @@ namespace PricesCollector
             BackgroundWorker bgw = (BackgroundWorker)sender;
             backgroundWorkerForFetchingList.Remove(bgw);
             bgw.Dispose();
-            if (backgroundWorkerForFetchingList.Count == 0) //All threads have finished the job
+            if (backgroundWorkerForFetchingList.Count == 0)
             {
-                updateDbWhenFetchingDone(); //Store to DB
-                refreshDatagridviewValue(); //Fetch from DB
+                updateDbWhenFetchingDone();
+                refreshDatagridviewValue();
                 progressBarFetching.Value = 0;
 
                 //Restart the timer update DB
-                timerUpdateDb.Interval = timeoutUpdateDB * 1000;
+                timerUpdateDb.Interval = (int)timerValue.Value * 1000;
                 timerUpdateDb.Enabled = true;
-                startProgressBar(timeoutUpdateDB);
+                startProgressBar((int)timerValue.Value);
             }
 
-            if (e.Error != null)
-            {
-                Console.WriteLine("ERROR: " + e.Error.ToString());
-            }
+            //if (e.Error != null)
+            //{
+            //    Console.WriteLine("ERROR: " + e.Error.ToString());
+            //}
+            //else
+            //{
+            //    ProductData data = (ProductData)e.Result;
+            //    Console.WriteLine("Job Done: {0} {1} {2}",  data.productId , data.sku, myDict[data.productId.ToString()].sku);
+            //}
         }
 
         private void updateDbWhenFetchingDone()
@@ -345,7 +324,6 @@ namespace PricesCollector
                     {
                         otherSellerStringToDB += product.price + "_" + product.name + "\n";
                     }
-                    otherSellerStringToDB = otherSellerStringToDB.Trim();
 
                     Console.WriteLine("{0} _ {1} _ {2} _ {3} _ {4}", item.Key, data.link, data.sellerName, data.currentPrice.ToString(), data.lowestPrice.ToString());
 
@@ -353,10 +331,9 @@ namespace PricesCollector
                     cmd.Connection = connection;
                     cmd.CommandText = "update product set ";
                     cmd.CommandText += "seller_name ='" + data.sellerName + "',";
-                    cmd.CommandText += "product_name ='" + data.productName + "',";
                     cmd.CommandText += "sku ='" + data.sku + "',";
                     cmd.CommandText += "current_price ='" + data.currentPrice.ToString() + "',";
-                    cmd.CommandText += "discount_price ='" + data.discountPrice.ToString() + "',";
+                    cmd.CommandText += "common_price ='" + data.listPrice.ToString() + "',";
                     cmd.CommandText += "lowest_price ='" + data.lowestPrice.ToString() + "',";
                     cmd.CommandText += "other_seller ='" + otherSellerStringToDB + "' ";
                     cmd.CommandText += "where id='" + item.Key + "';";
@@ -366,29 +343,29 @@ namespace PricesCollector
             }
         }
 
+
+
         private void refreshDatagridviewValue()
         {
             dataGridView1.Rows.Clear();
             if (this.OpenConnection() == true)
             {
-                string columnsToDisplay = "id,seller_name,product_group,product_name,sku,active,current_price,lowest_price,discount_price,other_seller,link";
-                mySqlDataAdapter = new MySqlDataAdapter("select "+ columnsToDisplay + " from product", connection);
+                mySqlDataAdapter = new MySqlDataAdapter("select id,seller_name,product_group,sku,active,current_price,lowest_price,common_price,other_seller,link from product", connection);
                 DataSet DS = new DataSet();
                 mySqlDataAdapter.Fill(DS);
-
-                //close connection
-                this.CloseConnection();
 
                 int rowIndex = 0;
                 foreach (DataRow _row in DS.Tables[0].Rows)
                 {
                     dataGridView1.Rows.Add(_row.ItemArray);
 
-                    //DataGridViewComboBoxCell cellCombo = new DataGridViewComboBoxCell();
-                    //string str = _row["other_seller"].ToString();
-                    //List<string> s = str.Split('\n').ToList();
-                    //cellCombo.DataSource = s;
-                    //dataGridView1.Rows[rowIndex].Cells["other_seller"].Value = str;
+                    DataGridViewComboBoxCell cellCombo = new DataGridViewComboBoxCell();
+                    string str = _row["other_seller"].ToString();
+                    List<string> s = str.Split('\n').ToList();
+                    cellCombo.DataSource = s;
+                    dataGridView1.Rows[rowIndex].Cells["other_seller"] = cellCombo;
+                    //cellCombo.DisplayMember = "";
+                    
 
                     //Color
                     int currentPrice = Int32.Parse( dataGridView1.Rows[rowIndex].Cells["current_price"].Value.ToString());
@@ -405,14 +382,29 @@ namespace PricesCollector
 
                     rowIndex++;
                 }
+
+
+                //close connection
+                this.CloseConnection();
             }
         }
 
-        /// <summary>
-        /// Timeout value changed
-        /// </summary>
-        /// 
-        private void timeoutUpdateDBChangedFromSettingFormEvent()
+
+
+
+        BackgroundWorker _backgroundWorkerForProgressBar;
+
+        private BackgroundWorker CreateBackgroundWorker()
+        {
+            var bw = new BackgroundWorker();
+            bw.WorkerSupportsCancellation = true;
+            bw.WorkerReportsProgress = true;
+            bw.DoWork += bgWorkerProgressBarUpdateDb_DoWork;
+            bw.ProgressChanged += bgWorkerProgressBarUpdateDb_ProgressChanged;
+            return bw;
+        }
+
+        private void timerValue_ValueChanged(object sender, EventArgs e)
         {
             if(isFetching)
             {
@@ -421,35 +413,18 @@ namespace PricesCollector
             }
 
             timerUpdateDb.Enabled = false;
-            timerUpdateDb.Interval = timeoutUpdateDB * 1000;
+            int timerInSecond = (int)timerValue.Value;
+            timerUpdateDb.Interval = timerInSecond * 1000;
             timerUpdateDb.Enabled = true;
 
-            startProgressBar(timeoutUpdateDB);
-        }
-
-
-        /// <summary>
-        /// Progress bar update DB
-        /// </summary>
-        
-        BackgroundWorker _backgroundWorkerForProgressBar;
-
-        private BackgroundWorker CreateBackgroundWorker()
-        {
-            Console.WriteLine("### CreateBackgroundWorker");
-            var bw = new BackgroundWorker();
-            bw.WorkerSupportsCancellation = true;
-            bw.WorkerReportsProgress = true;
-            bw.DoWork += bgWorkerProgressBarUpdateDb_DoWork;
-            bw.ProgressChanged += bgWorkerProgressBarUpdateDb_ProgressChanged;
-            bw.RunWorkerCompleted += bgWorkerProgressBarUpdateDb_RunWorkerCompleted;
-            return bw;
+            startProgressBar(timerInSecond);
         }
 
         private void startProgressBar(int timerInSecond)
         {
             try
             {
+
                 //Cancel whatever it is you're doing!
                 if (_backgroundWorkerForProgressBar != null)
                 {
@@ -460,21 +435,6 @@ namespace PricesCollector
 
                 //And start doing this immediately!
                 _backgroundWorkerForProgressBar.RunWorkerAsync(timerInSecond);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.ToString());
-            }
-        }
-
-        private void stopProgressBarUpdateDb()
-        {
-            try
-            {
-                if (_backgroundWorkerForProgressBar != null)
-                {
-                    _backgroundWorkerForProgressBar.CancelAsync();
-                }
             }
             catch (Exception ex)
             {
@@ -507,150 +467,10 @@ namespace PricesCollector
             progressBarUpdateDb.Value = Int32.Parse(e.ProgressPercentage.ToString());
         }
 
-        private void bgWorkerProgressBarUpdateDb_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        private void bgWorkerUpdateDb_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             BackgroundWorker bgw = (BackgroundWorker)sender;
             bgw.Dispose();
-        }
-
-
-
-        /// <summary>
-        /// Export EXCEL
-        /// </summary>
-        /// <param name="columns"></param>
-        /// <returns></returns>
-        /// 
-
-        private DataTable getDataToExport(string columns)
-        {
-            if (this.OpenConnection() == true)
-            {
-                mySqlDataAdapter = new MySqlDataAdapter("select " + columns + " from product", connection);
-                DataSet DS = new DataSet();
-                mySqlDataAdapter.Fill(DS);
-
-                //close connection
-                this.CloseConnection();
-
-                return DS.Tables[0];
-            }
-            MessageBox.Show("Pleasy try to export again!");
-            return new DataTable();
-        }
-
-        void bgWorkerExportExcelFile_DoWork(string excelFileName)
-        {
-            string columnsToExport = "id, seller_name, product_group, product_name, sku, msku, active, current_price, lowest_price, discount_price, other_seller, link";
-            DataTable data;
-
-            if (this.OpenConnection() == true)
-            {
-                mySqlDataAdapter = new MySqlDataAdapter("select " + columnsToExport + " from product", connection);
-                DataSet DS = new DataSet();
-                mySqlDataAdapter.Fill(DS);
-
-                //close connection
-                this.CloseConnection();
-
-                data = DS.Tables[0];
-            }
-            else
-            {
-                MessageBox.Show("Connection to DB failed");
-                return;
-            }
-
-            // creating Excel Application  
-            Microsoft.Office.Interop.Excel._Application app = new Microsoft.Office.Interop.Excel.Application();
-            // creating new WorkBook within Excel application  
-            Microsoft.Office.Interop.Excel._Workbook workbook = app.Workbooks.Add(Type.Missing);
-            // creating new Excelsheet in workbook  
-            Microsoft.Office.Interop.Excel._Worksheet worksheet = null;
-            // see the excel sheet behind the program  
-            //app.Visible = true;
-            // get the reference of first sheet. By default its name is Sheet1.  
-            // store its reference to worksheet  
-            worksheet = workbook.Sheets["Sheet1"];
-            worksheet = workbook.ActiveSheet;
-            // changing the name of active sheet  
-            worksheet.Name = "Exported from gridview";
-            // storing header part in Excel  
-            for (int i = 1; i < data.Columns.Count + 1; i++)
-            {
-                string columnId = data.Columns[i - 1].ColumnName;
-                worksheet.Cells[1, i] = Utilities.getColName(columnId); // dataGridView1.Columns[i - 1].HeaderText;  
-            }
-            // storing Each row and column value to excel sheet  
-            for (int i = 0; i < data.Rows.Count; i++) // dataGridView1.Rows.Count - 1
-            {
-                for (int j = 0; j < data.Columns.Count; j++) //dataGridView1.Columns.Count
-                {
-                    try
-                    {
-                        worksheet.Cells[i + 2, j + 1] = data.Rows[i].ItemArray[j].ToString(); //dataGridView1.Rows[i].Cells[j].Value.ToString();  
-                    }
-                    catch { }
-                }
-            }
-
-            try
-            {
-                // save the application  
-                workbook.SaveAs(excelFileName, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Microsoft.Office.Interop.Excel.XlSaveAsAccessMode.xlExclusive, Type.Missing, Type.Missing, Type.Missing, Type.Missing);
-                MessageBox.Show("Export successfully!");
-            }
-            catch
-            {
-                MessageBox.Show("Failed to save!");
-            }
-
-            // Exit from the application  
-            app.Quit();
-        }
-
-        private void exportToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            DateTime now = DateTime.Now;
-            string timeStamp = now.ToString("yyyy-MM-dd-HH-mm-ss");
-            string excelFileName = "Tiki-Export-" + timeStamp + ".xls";
-
-            SaveFileDialog saveFileDlg = new SaveFileDialog();
-            saveFileDlg.Title = "Save Excel File";
-            //saveFileDialog1.CheckFileExists = true;
-            saveFileDlg.FileName = excelFileName;
-            saveFileDlg.OverwritePrompt = false;
-            saveFileDlg.CheckPathExists = true;
-            saveFileDlg.DefaultExt = "xls";
-            saveFileDlg.Filter = "Excel files (*.xls)|*.xls|All files (*.*)|*.*";
-            saveFileDlg.FilterIndex = 2;
-            saveFileDlg.RestoreDirectory = true;
-            if (saveFileDlg.ShowDialog() == DialogResult.OK)
-            {
-                excelFileName = saveFileDlg.FileName;
-            }
-            else
-            {
-                MessageBox.Show("Pleasy try to export again!");
-                return;
-            }
-            if (this.connection.State == ConnectionState.Open)
-            {
-                MessageBox.Show("Pleasy try to export again!");
-                return;
-            }
-
-            bgWorkerExportExcelFile_DoWork(excelFileName);
-        }
-
-        private void settingToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            int prevtimeoutUpdateDB = this.timeoutUpdateDB;
-            getValueFromSettingForm();
-            if (this.timeoutUpdateDB != prevtimeoutUpdateDB)
-            {
-                timeoutUpdateDBChangedFromSettingFormEvent();
-            }
         }
     }
 }
