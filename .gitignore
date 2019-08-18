@@ -3,4 +3,7 @@
 *exe.config
 PricesCollector/obj
 PricesCollector/bin/x86/Debug/Newtonsoft.Json.xml
+PricesCollector/bin/x86/Debug/*.xml
+PricesCollector/bin/x86/Debug/*.dll
+PricesCollector/bin/x86/Debug/*.xls
 .vs
