@@ -37,10 +37,16 @@ namespace PricesCollector
         public Form2()
         {
             InitializeComponent();
+
+            //Datagridview Width/Height not overflow
+            dataGridView1.Width = this.Width - dataGridView1.Location.X - 30;
+            dataGridView1.Height = this.Height - dataGridView1.Location.Y - 50;
         }
 
         private void Form2_Load(object sender, EventArgs e)
         {
+            Console.WriteLine("Form2_Load");
+
             // Read config from file
             Configuration config = new Configuration();
             ConfigDictionary dictRead = config.loadDictionaryFromFile();
@@ -157,11 +163,14 @@ namespace PricesCollector
 
         private void dataGridView1_RowValidated(object sender, DataGridViewCellEventArgs e)
         {
-            syncDatagridviewToDataSource();
+            syncDatagridviewToDataSource(sender, e);
         }
 
-        private void syncDatagridviewToDataSource()
+        private void syncDatagridviewToDataSource(object sender, DataGridViewCellEventArgs e)
         {
+            //MessageBox.Show((e.RowIndex + 1) + "  Row  " + (e.ColumnIndex + 1) + "  Column button clicked ");
+
+
             //DataTable changes = ((DataTable)dataGridView1.DataSource).GetChanges();
 
             //if (changes != null)
@@ -707,6 +716,11 @@ namespace PricesCollector
                 startProgressBarUpdateDb(timeoutUpdateDB);
             }
 
+        }
+
+        private void Form2_SizeChanged(object sender, EventArgs e)
+        {
+            Console.Write("Form2_SizeChanged Event");
         }
     }
 }

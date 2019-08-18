@@ -50,7 +50,7 @@
             this.discount_price = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.other_seller = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.active = new System.Windows.Forms.DataGridViewCheckBoxColumn();
-            this.link = new System.Windows.Forms.DataGridViewLinkColumn();
+            this.link = new System.Windows.Forms.DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -75,10 +75,10 @@
             this.active,
             this.link});
             this.dataGridView1.Location = new System.Drawing.Point(12, 137);
-            this.dataGridView1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.dataGridView1.Margin = new System.Windows.Forms.Padding(4);
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.RowTemplate.Height = 33;
-            this.dataGridView1.Size = new System.Drawing.Size(1776, 683);
+            this.dataGridView1.Size = new System.Drawing.Size(1811, 683);
             this.dataGridView1.TabIndex = 0;
             this.dataGridView1.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellClick);
             this.dataGridView1.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellContentClick);
@@ -126,7 +126,7 @@
             // progressBarUpdateDb
             // 
             this.progressBarUpdateDb.Location = new System.Drawing.Point(13, 62);
-            this.progressBarUpdateDb.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.progressBarUpdateDb.Margin = new System.Windows.Forms.Padding(4);
             this.progressBarUpdateDb.Name = "progressBarUpdateDb";
             this.progressBarUpdateDb.Size = new System.Drawing.Size(324, 42);
             this.progressBarUpdateDb.TabIndex = 10;
@@ -134,7 +134,7 @@
             // progressBarFetching
             // 
             this.progressBarFetching.Location = new System.Drawing.Point(362, 62);
-            this.progressBarFetching.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.progressBarFetching.Margin = new System.Windows.Forms.Padding(4);
             this.progressBarFetching.Name = "progressBarFetching";
             this.progressBarFetching.Size = new System.Drawing.Size(236, 42);
             this.progressBarFetching.TabIndex = 11;
@@ -199,7 +199,7 @@
             this.other_seller.HeaderText = "Other seller";
             this.other_seller.Name = "other_seller";
             this.other_seller.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
-            this.other_seller.Width = 66;
+            this.other_seller.Width = 155;
             // 
             // active
             // 
@@ -211,6 +211,8 @@
             // 
             this.link.HeaderText = "Link";
             this.link.Name = "link";
+            this.link.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.link.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
             this.link.Width = 863;
             // 
             // Form2
@@ -225,10 +227,11 @@
             this.Controls.Add(this.menuStrip1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "Form2";
             this.Text = "Price collector";
             this.Load += new System.EventHandler(this.Form2_Load);
+            this.SizeChanged += new System.EventHandler(this.Form2_SizeChanged);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
@@ -258,6 +261,6 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn discount_price;
         private System.Windows.Forms.DataGridViewTextBoxColumn other_seller;
         private System.Windows.Forms.DataGridViewCheckBoxColumn active;
-        private System.Windows.Forms.DataGridViewLinkColumn link;
+        private System.Windows.Forms.DataGridViewTextBoxColumn link;
     }
 }
