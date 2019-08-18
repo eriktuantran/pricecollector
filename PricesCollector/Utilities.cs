@@ -1,11 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace PricesCollector
 {
+    class MyRow
+    {
+        public bool isLowest = false;
+        public DataRow row;
+    };
+
     class Utilities
     {
         static public string getColName(string key)

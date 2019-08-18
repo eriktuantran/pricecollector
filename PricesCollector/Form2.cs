@@ -445,10 +445,38 @@ namespace PricesCollector
 
                 //close connection
                 this.CloseConnection();
+                
+                DataTable tableFromDb = DS.Tables[0];
+                List<MyRow> rowList = new List<MyRow>();
+
+                foreach (DataRow _row in tableFromDb.Rows)
+                {
+                    int currentPrice = Int32.Parse(_row.ItemArray[6].ToString());
+                    int lowestPrice = Int32.Parse(_row.ItemArray[7].ToString());
+                    //Console.WriteLine("{0}==={1}",currentPrice, lowestPrice);
+
+                    MyRow myRow = new MyRow();
+                    myRow.row = _row;
+                    if ((lowestPrice < currentPrice && lowestPrice != 0) || currentPrice == 0)
+                    {
+                        myRow.isLowest = false;
+                    }
+                    else
+                    {
+                        myRow.isLowest = true;
+                    }
+                    rowList.Add(myRow);
+                }
+
+                List<MyRow> sortedRowList = rowList.OrderBy(o => o.isLowest).ToList();
+
 
                 int rowIndex = 0;
-                foreach (DataRow _row in DS.Tables[0].Rows)
+                foreach(MyRow row in sortedRowList)
+                //foreach (DataRow _row in tableFromDb.Rows)
                 {
+                    var _row = row.row;
+
                     dataGridView1.Rows.Add(_row.ItemArray);
 
                     //DataGridViewComboBoxCell cellCombo = new DataGridViewComboBoxCell();
