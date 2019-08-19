@@ -35,24 +35,26 @@
             this.btnOpenCsv = new System.Windows.Forms.Button();
             this.btnOK = new System.Windows.Forms.Button();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.txtLink = new System.Windows.Forms.RichTextBox();
-            this.label2 = new System.Windows.Forms.Label();
-            this.label3 = new System.Windows.Forms.Label();
-            this.label4 = new System.Windows.Forms.Label();
-            this.cmbGroup = new System.Windows.Forms.ComboBox();
-            this.label5 = new System.Windows.Forms.Label();
-            this.label6 = new System.Windows.Forms.Label();
-            this.chkActive = new System.Windows.Forms.CheckBox();
-            this.label7 = new System.Windows.Forms.Label();
-            this.label8 = new System.Windows.Forms.Label();
-            this.txtCode = new System.Windows.Forms.TextBox();
-            this.txtId = new System.Windows.Forms.TextBox();
-            this.txtSyncCode = new System.Windows.Forms.TextBox();
-            this.txtSku = new System.Windows.Forms.TextBox();
-            this.txtMsku = new System.Windows.Forms.TextBox();
-            this.btnAddProduct = new System.Windows.Forms.Button();
-            this.btnNewId = new System.Windows.Forms.Button();
             this.btnDelete = new System.Windows.Forms.Button();
+            this.btnNewId = new System.Windows.Forms.Button();
+            this.btnAddProduct = new System.Windows.Forms.Button();
+            this.txtMsku = new System.Windows.Forms.TextBox();
+            this.txtSku = new System.Windows.Forms.TextBox();
+            this.txtSyncCode = new System.Windows.Forms.TextBox();
+            this.txtId = new System.Windows.Forms.TextBox();
+            this.txtCode = new System.Windows.Forms.TextBox();
+            this.chkActive = new System.Windows.Forms.CheckBox();
+            this.label8 = new System.Windows.Forms.Label();
+            this.label6 = new System.Windows.Forms.Label();
+            this.label7 = new System.Windows.Forms.Label();
+            this.label5 = new System.Windows.Forms.Label();
+            this.cmbGroup = new System.Windows.Forms.ComboBox();
+            this.label4 = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
+            this.txtLink = new System.Windows.Forms.RichTextBox();
+            this.txtMinimumPrice = new System.Windows.Forms.TextBox();
+            this.label9 = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.SuspendLayout();
@@ -101,7 +103,7 @@
             // 
             // btnOK
             // 
-            this.btnOK.Location = new System.Drawing.Point(390, 602);
+            this.btnOK.Location = new System.Drawing.Point(389, 598);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(162, 53);
             this.btnOK.TabIndex = 1;
@@ -111,6 +113,8 @@
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.label9);
+            this.groupBox2.Controls.Add(this.txtMinimumPrice);
             this.groupBox2.Controls.Add(this.btnDelete);
             this.groupBox2.Controls.Add(this.btnNewId);
             this.groupBox2.Controls.Add(this.btnAddProduct);
@@ -134,143 +138,17 @@
             this.groupBox2.Size = new System.Drawing.Size(895, 344);
             this.groupBox2.TabIndex = 2;
             this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "Add new product:";
+            this.groupBox2.Text = "Add / Update product:";
             // 
-            // txtLink
+            // btnDelete
             // 
-            this.txtLink.Location = new System.Drawing.Point(106, 188);
-            this.txtLink.Name = "txtLink";
-            this.txtLink.Size = new System.Drawing.Size(776, 67);
-            this.txtLink.TabIndex = 0;
-            this.txtLink.Text = "";
-            // 
-            // label2
-            // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(28, 197);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(52, 25);
-            this.label2.TabIndex = 1;
-            this.label2.Text = "Link";
-            // 
-            // label3
-            // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(25, 40);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(32, 25);
-            this.label3.TabIndex = 1;
-            this.label3.Text = "ID";
-            // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(429, 40);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(71, 25);
-            this.label4.TabIndex = 1;
-            this.label4.Text = "Group";
-            // 
-            // cmbGroup
-            // 
-            this.cmbGroup.FormattingEnabled = true;
-            this.cmbGroup.Location = new System.Drawing.Point(548, 36);
-            this.cmbGroup.Name = "cmbGroup";
-            this.cmbGroup.Size = new System.Drawing.Size(334, 33);
-            this.cmbGroup.TabIndex = 2;
-            // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(429, 90);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(113, 25);
-            this.label5.TabIndex = 3;
-            this.label5.Text = "Sync code";
-            // 
-            // label6
-            // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(25, 90);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(63, 25);
-            this.label6.TabIndex = 3;
-            this.label6.Text = "Code";
-            // 
-            // chkActive
-            // 
-            this.chkActive.AutoSize = true;
-            this.chkActive.Location = new System.Drawing.Point(28, 273);
-            this.chkActive.Name = "chkActive";
-            this.chkActive.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
-            this.chkActive.Size = new System.Drawing.Size(103, 29);
-            this.chkActive.TabIndex = 4;
-            this.chkActive.Text = "Active";
-            this.chkActive.UseVisualStyleBackColor = true;
-            // 
-            // label7
-            // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(429, 140);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(73, 25);
-            this.label7.TabIndex = 3;
-            this.label7.Text = "MSKU";
-            // 
-            // label8
-            // 
-            this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(25, 140);
-            this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(55, 25);
-            this.label8.TabIndex = 3;
-            this.label8.Text = "SKU";
-            // 
-            // txtCode
-            // 
-            this.txtCode.Location = new System.Drawing.Point(106, 87);
-            this.txtCode.Name = "txtCode";
-            this.txtCode.Size = new System.Drawing.Size(305, 31);
-            this.txtCode.TabIndex = 5;
-            // 
-            // txtId
-            // 
-            this.txtId.Location = new System.Drawing.Point(106, 37);
-            this.txtId.Name = "txtId";
-            this.txtId.Size = new System.Drawing.Size(112, 31);
-            this.txtId.TabIndex = 6;
-            this.txtId.TextChanged += new System.EventHandler(this.txtId_TextChanged);
-            // 
-            // txtSyncCode
-            // 
-            this.txtSyncCode.Location = new System.Drawing.Point(548, 87);
-            this.txtSyncCode.Name = "txtSyncCode";
-            this.txtSyncCode.Size = new System.Drawing.Size(334, 31);
-            this.txtSyncCode.TabIndex = 7;
-            // 
-            // txtSku
-            // 
-            this.txtSku.Location = new System.Drawing.Point(106, 137);
-            this.txtSku.Name = "txtSku";
-            this.txtSku.Size = new System.Drawing.Size(305, 31);
-            this.txtSku.TabIndex = 8;
-            // 
-            // txtMsku
-            // 
-            this.txtMsku.Location = new System.Drawing.Point(548, 137);
-            this.txtMsku.Name = "txtMsku";
-            this.txtMsku.Size = new System.Drawing.Size(334, 31);
-            this.txtMsku.TabIndex = 9;
-            // 
-            // btnAddProduct
-            // 
-            this.btnAddProduct.Location = new System.Drawing.Point(163, 272);
-            this.btnAddProduct.Name = "btnAddProduct";
-            this.btnAddProduct.Size = new System.Drawing.Size(125, 53);
-            this.btnAddProduct.TabIndex = 10;
-            this.btnAddProduct.Text = "Add";
-            this.btnAddProduct.UseVisualStyleBackColor = true;
-            this.btnAddProduct.Click += new System.EventHandler(this.btnAddProduct_Click);
+            this.btnDelete.Location = new System.Drawing.Point(757, 273);
+            this.btnDelete.Name = "btnDelete";
+            this.btnDelete.Size = new System.Drawing.Size(125, 53);
+            this.btnDelete.TabIndex = 12;
+            this.btnDelete.Text = "Delete";
+            this.btnDelete.UseVisualStyleBackColor = true;
+            this.btnDelete.Click += new System.EventHandler(this.btnDelete_Click);
             // 
             // btnNewId
             // 
@@ -283,21 +161,163 @@
             this.btnNewId.UseVisualStyleBackColor = true;
             this.btnNewId.Click += new System.EventHandler(this.btnNewId_Click);
             // 
-            // btnDelete
+            // btnAddProduct
             // 
-            this.btnDelete.Location = new System.Drawing.Point(314, 273);
-            this.btnDelete.Name = "btnDelete";
-            this.btnDelete.Size = new System.Drawing.Size(125, 53);
-            this.btnDelete.TabIndex = 12;
-            this.btnDelete.Text = "Delete";
-            this.btnDelete.UseVisualStyleBackColor = true;
-            this.btnDelete.Click += new System.EventHandler(this.btnDelete_Click);
+            this.btnAddProduct.Location = new System.Drawing.Point(606, 272);
+            this.btnAddProduct.Name = "btnAddProduct";
+            this.btnAddProduct.Size = new System.Drawing.Size(125, 53);
+            this.btnAddProduct.TabIndex = 10;
+            this.btnAddProduct.Text = "Add";
+            this.btnAddProduct.UseVisualStyleBackColor = true;
+            this.btnAddProduct.Click += new System.EventHandler(this.btnAddProduct_Click);
+            // 
+            // txtMsku
+            // 
+            this.txtMsku.Location = new System.Drawing.Point(573, 137);
+            this.txtMsku.Name = "txtMsku";
+            this.txtMsku.Size = new System.Drawing.Size(309, 31);
+            this.txtMsku.TabIndex = 9;
+            // 
+            // txtSku
+            // 
+            this.txtSku.Location = new System.Drawing.Point(106, 137);
+            this.txtSku.Name = "txtSku";
+            this.txtSku.Size = new System.Drawing.Size(305, 31);
+            this.txtSku.TabIndex = 8;
+            // 
+            // txtSyncCode
+            // 
+            this.txtSyncCode.Location = new System.Drawing.Point(573, 87);
+            this.txtSyncCode.Name = "txtSyncCode";
+            this.txtSyncCode.Size = new System.Drawing.Size(309, 31);
+            this.txtSyncCode.TabIndex = 7;
+            // 
+            // txtId
+            // 
+            this.txtId.Location = new System.Drawing.Point(106, 37);
+            this.txtId.Name = "txtId";
+            this.txtId.Size = new System.Drawing.Size(112, 31);
+            this.txtId.TabIndex = 6;
+            this.txtId.TextChanged += new System.EventHandler(this.txtId_TextChanged);
+            // 
+            // txtCode
+            // 
+            this.txtCode.Location = new System.Drawing.Point(106, 87);
+            this.txtCode.Name = "txtCode";
+            this.txtCode.Size = new System.Drawing.Size(305, 31);
+            this.txtCode.TabIndex = 5;
+            // 
+            // chkActive
+            // 
+            this.chkActive.AutoSize = true;
+            this.chkActive.Location = new System.Drawing.Point(463, 285);
+            this.chkActive.Name = "chkActive";
+            this.chkActive.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+            this.chkActive.Size = new System.Drawing.Size(103, 29);
+            this.chkActive.TabIndex = 4;
+            this.chkActive.Text = "Active";
+            this.chkActive.UseVisualStyleBackColor = true;
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(38, 140);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(55, 25);
+            this.label8.TabIndex = 3;
+            this.label8.Text = "SKU";
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(30, 90);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(63, 25);
+            this.label6.TabIndex = 3;
+            this.label6.Text = "Code";
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(493, 140);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(73, 25);
+            this.label7.TabIndex = 3;
+            this.label7.Text = "MSKU";
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(453, 90);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(113, 25);
+            this.label5.TabIndex = 3;
+            this.label5.Text = "Sync code";
+            // 
+            // cmbGroup
+            // 
+            this.cmbGroup.FormattingEnabled = true;
+            this.cmbGroup.Location = new System.Drawing.Point(106, 273);
+            this.cmbGroup.Name = "cmbGroup";
+            this.cmbGroup.Size = new System.Drawing.Size(305, 33);
+            this.cmbGroup.TabIndex = 2;
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(22, 277);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(71, 25);
+            this.label4.TabIndex = 1;
+            this.label4.Text = "Group";
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(61, 40);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(32, 25);
+            this.label3.TabIndex = 1;
+            this.label3.Text = "ID";
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(41, 197);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(52, 25);
+            this.label2.TabIndex = 1;
+            this.label2.Text = "Link";
+            // 
+            // txtLink
+            // 
+            this.txtLink.Location = new System.Drawing.Point(106, 188);
+            this.txtLink.Name = "txtLink";
+            this.txtLink.Size = new System.Drawing.Size(776, 67);
+            this.txtLink.TabIndex = 0;
+            this.txtLink.Text = "";
+            // 
+            // txtMinimumPrice
+            // 
+            this.txtMinimumPrice.Location = new System.Drawing.Point(573, 37);
+            this.txtMinimumPrice.Name = "txtMinimumPrice";
+            this.txtMinimumPrice.Size = new System.Drawing.Size(309, 31);
+            this.txtMinimumPrice.TabIndex = 14;
+            // 
+            // label9
+            // 
+            this.label9.AutoSize = true;
+            this.label9.Location = new System.Drawing.Point(415, 40);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(151, 25);
+            this.label9.TabIndex = 13;
+            this.label9.Text = "Minimum price";
             // 
             // ImportData
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(945, 673);
+            this.ClientSize = new System.Drawing.Size(945, 663);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.btnOK);
             this.Controls.Add(this.groupBox1);
@@ -339,5 +359,7 @@
         private System.Windows.Forms.Button btnAddProduct;
         private System.Windows.Forms.Button btnNewId;
         private System.Windows.Forms.Button btnDelete;
+        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.TextBox txtMinimumPrice;
     }
 }

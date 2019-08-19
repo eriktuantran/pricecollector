@@ -66,9 +66,9 @@ namespace PricesCollector
 
             refreshDatagridviewValue();
             timerUpdateDb.Enabled = true;
-            timerUpdateDb.Interval = 3 * 1000;
+            timerUpdateDb.Interval = 10 * 1000;
             progressBarUpdateDb.Value = 0;
-            startProgressBarUpdateDb(3);
+            startProgressBarUpdateDb(10);
 
             //Enable the global flag
             globalRunningState = true;
@@ -136,13 +136,13 @@ namespace PricesCollector
                 switch (ex.Number)
                 {
                     case 0:
-                        MessageBox.Show("Cannot connect to server. Contact administrator");
+                        MessageBox.Show("Cannot connect to database. Contact administrator", "DB Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         break;
                     case 1045:
-                        MessageBox.Show("Invalid username/password, please try again");
+                        MessageBox.Show("Invalid username/password, please try again", "DB Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         break;
                     default:
-                        MessageBox.Show(ex.Message);
+                        MessageBox.Show(ex.Message, "DB Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         break;
                 }
                 return false;
@@ -158,7 +158,7 @@ namespace PricesCollector
             }
             catch (MySqlException ex)
             {
-                MessageBox.Show(ex.Message);
+                MessageBox.Show(ex.Message, "DB Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
             }
         }
@@ -211,6 +211,68 @@ namespace PricesCollector
                     updateDB(productId, "active", "0");
                 }
             }
+            else if(e.ColumnIndex == columnNameToIndex("minimum_price"))
+            {
+                var cell = dataGridView1.Rows[e.RowIndex].Cells[columnNameToIndex("minimum_price")];
+
+                if (cell.Value == null)
+                {
+                    cell.Value = "0";
+                    return;
+                }
+
+                string newMinimumPrice = dataGridView1.Rows[e.RowIndex].Cells[columnNameToIndex("minimum_price")].Value.ToString();
+                Console.WriteLine("minimum_price changed: {0} _ {1}", lastMinimumPrice, newMinimumPrice);
+
+                int newMinimumPriceInt = Int32.Parse(newMinimumPrice);
+                int lastMinimumPriceInt = Int32.Parse(lastMinimumPrice);
+
+                int limited = lastMinimumPriceInt - lastMinimumPriceInt * 20 / 100;
+
+                if (newMinimumPriceInt < limited)
+                {
+                    DialogResult res = MessageBox.Show("Are you sure\n\nLast: "+ lastMinimumPrice+"\nNew:  "+ newMinimumPrice + "\nDifference > 20 %", "Confirmation", MessageBoxButtons.OKCancel, MessageBoxIcon.Information);
+                    if (res == DialogResult.OK)
+                    {
+                        updateDB(productId, "minimum_price", newMinimumPrice);
+                    }
+                    if (res == DialogResult.Cancel)
+                    {
+                        dataGridView1.Rows[e.RowIndex].Cells[columnNameToIndex("minimum_price")].Value = lastMinimumPrice;
+                    }
+                }
+                else
+                {
+                    updateDB(productId, "minimum_price", newMinimumPrice);
+                }
+            }
+        }
+
+        private string lastMinimumPrice = "";
+        private void dataGridView1_CellBeginEdit(object sender, DataGridViewCellCancelEventArgs e)
+        {
+            if (e.ColumnIndex == columnNameToIndex("minimum_price"))
+            {
+                var minimumPriceCell = dataGridView1.Rows[e.RowIndex].Cells[columnNameToIndex("minimum_price")];
+
+                if (minimumPriceCell.Value == null)
+                {
+                    Console.WriteLine("New line");
+                    return;
+                }
+
+                lastMinimumPrice = minimumPriceCell.Value.ToString();
+                Console.WriteLine("Begin {0}", lastMinimumPrice);
+            }
+            else
+            {
+                lastMinimumPrice = "";
+            }
+        }
+
+        private void dataGridView1_CellEndEdit(object sender, DataGridViewCellEventArgs e)
+        {
+            Console.WriteLine("End");
         }
 
         private void dataGridView1_RowValidated(object sender, DataGridViewCellEventArgs e)
@@ -263,7 +325,7 @@ namespace PricesCollector
             if(isFetching)
             {
                 Console.WriteLine("Fetching threads are already running");
-                MessageBox.Show("It is busy, please wait!");
+                MessageBox.Show("It is busy, please wait!", "Busy...", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -457,7 +519,7 @@ namespace PricesCollector
             dataGridView1.Rows.Clear();
             if (this.OpenConnection() == true)
             {
-                string columnsToDisplay = "id,seller_name,product_group,product_name,sku,msku,current_price,lowest_price,discount_price,other_seller,active,link";
+                string columnsToDisplay = "id,seller_name,product_group,product_name,sku,msku,current_price,minimum_price,lowest_price,discount_price,other_seller,active,link";
                 mySqlDataAdapter = new MySqlDataAdapter("select "+ columnsToDisplay + " from product", connection);
                 DataSet DS = new DataSet();
                 mySqlDataAdapter.Fill(DS);
@@ -470,8 +532,8 @@ namespace PricesCollector
 
                 foreach (DataRow _row in tableFromDb.Rows)
                 {
-                    int currentPrice = Int32.Parse(_row.ItemArray[6].ToString());
-                    int lowestPrice = Int32.Parse(_row.ItemArray[7].ToString());
+                    int currentPrice = Int32.Parse(_row.ItemArray[columnNameToIndex("current_price")].ToString());
+                    int lowestPrice = Int32.Parse(_row.ItemArray[columnNameToIndex("lowest_price")].ToString());
                     //Console.WriteLine("{0}==={1}",currentPrice, lowestPrice);
 
                     MyRow myRow = new MyRow();
@@ -660,13 +722,13 @@ namespace PricesCollector
 
                 return DS.Tables[0];
             }
-            MessageBox.Show("Pleasy try to export again!");
+            MessageBox.Show("Pleasy try to export again!", "Resource busy", MessageBoxButtons.OK, MessageBoxIcon.Information);
             return new DataTable();
         }
 
         void bgWorkerExportExcelFile_DoWork(string excelFileName)
         {
-            string columnsToExport = "id, seller_name, product_group, product_name, sku, msku, active, current_price, lowest_price, discount_price, other_seller, link";
+            string columnsToExport = "id, seller_name, product_group, product_name, sku, msku, active, current_price, minimum_price, lowest_price, discount_price, other_seller, link";
             DataTable data;
 
             if (this.OpenConnection() == true)
@@ -682,7 +744,7 @@ namespace PricesCollector
             }
             else
             {
-                MessageBox.Show("Connection to DB failed");
+                MessageBox.Show("Connection to DB failed", "DB Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
@@ -723,11 +785,11 @@ namespace PricesCollector
             {
                 // save the application  
                 workbook.SaveAs(excelFileName, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Type.Missing, Microsoft.Office.Interop.Excel.XlSaveAsAccessMode.xlExclusive, Type.Missing, Type.Missing, Type.Missing, Type.Missing);
-                MessageBox.Show("Export successfully!");
+                MessageBox.Show("Export successfully!", "Success!", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             catch
             {
-                MessageBox.Show("Failed to save!");
+                MessageBox.Show("Failed to save!", "Failed to export!", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
 
             // Exit from the application  
@@ -756,12 +818,12 @@ namespace PricesCollector
             }
             else
             {
-                MessageBox.Show("Pleasy try to export again!");
+                MessageBox.Show("Pleasy try to export again!", "Resource busy", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
             if (this.connection.State == ConnectionState.Open)
             {
-                MessageBox.Show("Pleasy try to export again!");
+                MessageBox.Show("Pleasy try to export again!", "Resource busy", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -789,7 +851,7 @@ namespace PricesCollector
         {
             if(isFetching)
             {
-                MessageBox.Show("It is fetching, please wait!");
+                MessageBox.Show("It is fetching, please wait!", "Resource busy", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 

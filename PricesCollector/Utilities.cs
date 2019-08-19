@@ -38,10 +38,12 @@ namespace PricesCollector
                     return "Trạng thái";
                 case "current_price":
                     return "Giá bán";
-                case "lowest_price":
+                case "minimum_price":
                     return "Giá bán thấp nhất";
-                case "market_price":
-                    return "Discount";
+                case "lowest_price":
+                    return "Giá bán thấp nhất (từ nhà cung cấp khác)";
+                case "discount_price":
+                    return "Giảm giá";
                 case "other_seller":
                     return "Nhà cung cấp khác";
                 case "link":

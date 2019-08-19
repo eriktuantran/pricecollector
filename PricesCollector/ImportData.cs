@@ -8,6 +8,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -100,7 +101,7 @@ namespace PricesCollector
 
             public string buildInsertString()
             {
-                string output = "insert into `product` (id,product_sync_code,product_group,product_code,sku,msku,active,other_seller,link) values (";
+                string output = "insert into `product` (id,product_sync_code,product_group,product_code,sku,msku,active,minimum_price,other_seller,link) values (";
                 output += "'" + this.rowData["id"] + "', ";
                 output += "'" + this.rowData["product_sync_code"] + "', ";
                 output += "'" + this.rowData["product_group"] + "', ";
@@ -108,6 +109,7 @@ namespace PricesCollector
                 output += "'" + this.rowData["sku"] + "', ";
                 output += "'" + this.rowData["msku"] + "', ";
                 output += "'" + this.rowData["active"] + "', ";
+                output += "'" + this.rowData["minimum_price"] + "', ";
                 output += "'" + "empty" + "', ";
                 output += "'" + this.rowData["link"] + "'";
                 output += ");";
@@ -124,6 +126,7 @@ namespace PricesCollector
                 output += "sku='" + this.rowData["sku"] + "', ";
                 output += "msku='" + this.rowData["msku"] + "', ";
                 output += "active='" + this.rowData["active"] + "', ";
+                output += "minimum_price='" + this.rowData["minimum_price"] + "', ";
                 output += "link='" + this.rowData["link"] + "' ";
                 output += "where id='" + this.rowData["id"] + "';";
 
@@ -138,40 +141,71 @@ namespace PricesCollector
             // Empty the list to be get new value;
             listRowToImport.Clear();
 
-            // open the file "data.csv" which is a CSV file with headers
-            using (CsvReader csv = new CsvReader(
-                    new StreamReader(filePath), true))
+            try
             {
-                // missing fields will not throw an exception,
-                // but will instead be treated as if there was a null value
-                //csv.MissingFieldAction = MissingFieldAction.ReplaceByNull;
-                // to replace by "" instead, then use the following action:
-                csv.MissingFieldAction = MissingFieldAction.ReplaceByEmpty;
-                int fieldCount = 0;
-                try
+                // open the file "data.csv" which is a CSV file with headers
+                using (CsvReader csv = new CsvReader(
+                        new StreamReader(filePath), true))
                 {
-                    fieldCount = csv.FieldCount;
-                }
-                catch
-                {
-                    MessageBox.Show("The format of CSV file is not correct!\nSeems the column name is not presence!");
-                    return;
-                }
-                    
-                string[] headers = csv.GetFieldHeaders();
-                while (csv.ReadNextRecord())
-                {
-                    RowDataToImport row = new RowDataToImport();
-
-                    for (int i = 0; i < fieldCount; i++)
+                    // missing fields will not throw an exception,
+                    // but will instead be treated as if there was a null value
+                    //csv.MissingFieldAction = MissingFieldAction.ReplaceByNull;
+                    // to replace by "" instead, then use the following action:
+                    csv.MissingFieldAction = MissingFieldAction.ReplaceByEmpty;
+                    int fieldCount = 0;
+                    try
                     {
-                        //Console.Write(string.Format("{0} = {1};", headers[i], csv[i] == null ? "MISSING" : csv[i]));
-
-                        row.rowData[headers[i]] = csv[i] == null ? "MISSING" : csv[i];
+                        fieldCount = csv.FieldCount;
+                    }
+                    catch
+                    {
+                        MessageBox.Show("The format of CSV file is not correct!\nSeems the column name is not presence!");
+                        return;
                     }
 
-                    listRowToImport.Add(row);
+                    string[] headers = csv.GetFieldHeaders();
+                    while (csv.ReadNextRecord())
+                    {
+                        RowDataToImport row = new RowDataToImport();
+
+                        for (int i = 0; i < fieldCount; i++)
+                        {
+                            //Console.Write(string.Format("{0} = {1};", headers[i], csv[i] == null ? "MISSING" : csv[i]));
+
+                            string cellValue = "";
+                            if(csv[i] != null)
+                            {
+                                cellValue = csv[i].ToString();
+                            }
+
+                            // Parse the price to integer, it could be: 100,000,000
+                            if(headers[i] == "minimum_price")
+                            {
+                                Regex digitsOnly = new Regex(@"[^\d]");
+                                cellValue = digitsOnly.Replace(cellValue, "");
+                                Console.WriteLine("Cell {0}", cellValue);
+                                try
+                                {
+                                    Int32.Parse(cellValue);
+                                }
+                                catch
+                                {
+                                    cellValue = "0";
+                                }
+                            }
+                            
+                            row.rowData[headers[i]] = cellValue;
+                            
+                        }
+
+                        listRowToImport.Add(row);
+                    }
                 }
+            }
+            catch
+            {
+                MessageBox.Show("CSV file is being opened by another appication!\nPlease close it and import again!", "CSV file busy...", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
             }
             Console.WriteLine("CSV DONE");
 
@@ -218,7 +252,7 @@ namespace PricesCollector
                 this.CloseConnection();
 
                 Console.WriteLine("SQL DONE");
-                MessageBox.Show("Import Done!");
+                MessageBox.Show("Import Done!", "Success!", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             
 
@@ -284,6 +318,7 @@ namespace PricesCollector
             row.rowData["sku"] = txtSku.Text.Trim();
             row.rowData["msku"] = txtMsku.Text.Trim();
             row.rowData["active"] = chkActive.Checked?"1":"0";
+            row.rowData["minimum_price"] = txtMinimumPrice.Text.Trim();
             row.rowData["link"] = txtLink.Text.Trim();
 
             foreach(var item in row.rowData)
@@ -325,7 +360,7 @@ namespace PricesCollector
             if (this.OpenConnection())
             {
                 MySqlDataReader reader = null;
-                string selectCmd = "select product_sync_code,product_group,product_code,sku,msku,active,link from product where id='"+txtId.Text.Trim()+"';";
+                string selectCmd = "select product_sync_code,product_group,product_code,sku,msku,active,minimum_price,link from product where id='" + txtId.Text.Trim()+"';";
 
                 MySqlCommand command = new MySqlCommand(selectCmd, connection);
                 reader = command.ExecuteReader();
@@ -343,7 +378,8 @@ namespace PricesCollector
                             txtSku.Text = reader.GetString(3).ToString();
                             txtMsku.Text = reader.GetString(4).ToString();
                             chkActive.Checked = reader.GetString(5).ToString().ToLower()=="true"?true:false;
-                            txtLink.Text = reader.GetString(6).ToString();
+                            txtMinimumPrice.Text = reader.GetString(6).ToString();
+                            txtLink.Text = reader.GetString(7).ToString();
                             btnAddProduct.Text = "Update";
                             btnDelete.Enabled = true;
                         }
@@ -352,7 +388,7 @@ namespace PricesCollector
                 }
                 else
                 {
-                    txtSyncCode.Text = cmbGroup.Text = txtCode.Text = txtSku.Text = txtMsku.Text = txtLink.Text = "";
+                    txtSyncCode.Text = cmbGroup.Text = txtCode.Text = txtSku.Text = txtMsku.Text = txtMinimumPrice.Text = txtLink.Text = "";
                     chkActive.Checked = true;
                     btnAddProduct.Text = "Add";
                     btnDelete.Enabled = false;
@@ -385,7 +421,7 @@ namespace PricesCollector
                     cmd.ExecuteNonQuery();
                     this.CloseConnection();
 
-                    txtId.Text = txtSyncCode.Text = cmbGroup.Text = txtCode.Text = txtSku.Text = txtMsku.Text = txtLink.Text = "";
+                    txtId.Text = txtSyncCode.Text = cmbGroup.Text = txtCode.Text = txtSku.Text = txtMsku.Text = txtMinimumPrice.Text = txtLink.Text = "";
                     chkActive.Checked = true;
                     MessageBox.Show("Deleted!");
                 }
