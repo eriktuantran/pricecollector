@@ -35,7 +35,6 @@ namespace PricesCollector
         public AppSetting()
         {
             InitializeComponent();
-            intialValue();
 
             config = new Configuration();
 
@@ -89,13 +88,6 @@ namespace PricesCollector
             globalDictionary["timeout"] = timerValue.Value.ToString();
         }
 
-        void intialValue()
-        {
-
-        }
-
-
-
         string updateConnectionString()
         {
             server = txtDbIP.Text.Trim();
@@ -143,7 +135,7 @@ namespace PricesCollector
         {
             if(txtDbName.Text == "" )
             {
-                MessageBox.Show("Please fill in the empty fields!");
+                MessageBox.Show("Please fill in the empty fields!", "Some fields are missing!", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 

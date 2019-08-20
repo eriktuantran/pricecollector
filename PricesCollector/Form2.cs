@@ -136,13 +136,13 @@ namespace PricesCollector
                 switch (ex.Number)
                 {
                     case 0:
-                        MessageBox.Show("Cannot connect to database. Contact administrator", "DB Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        MessageBox.Show("Cannot connect to database. Contact administrator", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         break;
                     case 1045:
-                        MessageBox.Show("Invalid username/password, please try again", "DB Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        MessageBox.Show("Invalid username/password, please try again", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         break;
                     default:
-                        MessageBox.Show(ex.Message, "DB Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        MessageBox.Show(ex.Message, "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         break;
                 }
                 return false;
@@ -158,7 +158,7 @@ namespace PricesCollector
             }
             catch (MySqlException ex)
             {
-                MessageBox.Show(ex.Message, "DB Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(ex.Message, "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
             }
         }
@@ -228,10 +228,12 @@ namespace PricesCollector
                 int lastMinimumPriceInt = Int32.Parse(lastMinimumPrice);
 
                 int limited = lastMinimumPriceInt - lastMinimumPriceInt * 20 / 100;
+                int percent = 100 - (newMinimumPriceInt*100 / lastMinimumPriceInt);
 
                 if (newMinimumPriceInt < limited)
                 {
-                    DialogResult res = MessageBox.Show("Are you sure\n\nLast: "+ lastMinimumPrice+"\nNew:  "+ newMinimumPrice + "\nDifference > 20 %", "Confirmation", MessageBoxButtons.OKCancel, MessageBoxIcon.Information);
+                    DialogResult res = MessageBox.Show("Are you sure?\n\nLast: "+ lastMinimumPrice+"\nNew:  "+ newMinimumPrice + "\nDifference: " + percent.ToString(),
+                        "Confirmation", MessageBoxButtons.OKCancel, MessageBoxIcon.Information);
                     if (res == DialogResult.OK)
                     {
                         updateDB(productId, "minimum_price", newMinimumPrice);
@@ -818,12 +820,12 @@ namespace PricesCollector
             }
             else
             {
-                MessageBox.Show("Pleasy try to export again!", "Resource busy", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
+
             if (this.connection.State == ConnectionState.Open)
             {
-                MessageBox.Show("Pleasy try to export again!", "Resource busy", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("Pleasy try to export again!", "Resource busy", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 

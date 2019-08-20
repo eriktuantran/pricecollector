@@ -42,13 +42,13 @@ namespace PricesCollector
                 switch (ex.Number)
                 {
                     case 0:
-                        MessageBox.Show("Cannot connect to server. Contact administrator");
+                        MessageBox.Show("Cannot connect to database. Contact administrator", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         break;
                     case 1045:
-                        MessageBox.Show("Invalid username/password, please try again");
+                        MessageBox.Show("Invalid username/password, please try again", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         break;
                     default:
-                        MessageBox.Show(ex.Message);
+                        MessageBox.Show(ex.Message, "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         break;
                 }
                 return false;
@@ -64,7 +64,7 @@ namespace PricesCollector
             }
             catch (MySqlException ex)
             {
-                MessageBox.Show(ex.Message);
+                MessageBox.Show(ex.Message, "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
             }
         }
@@ -159,7 +159,7 @@ namespace PricesCollector
                     }
                     catch
                     {
-                        MessageBox.Show("The format of CSV file is not correct!\nSeems the column name is not presence!");
+                        MessageBox.Show("The format of CSV file is not correct!\nSeems the column name is not presence!", "File has wrong format", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         return;
                     }
 
@@ -325,7 +325,7 @@ namespace PricesCollector
             {
                 if (item.Value == "")
                 {
-                    MessageBox.Show("Please fill in the: "+item.Key);
+                    MessageBox.Show("Please fill in the: "+item.Key, "Some fields are missing...", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
             }
@@ -349,7 +349,7 @@ namespace PricesCollector
                 }
 
                 cmd.ExecuteNonQuery();
-                MessageBox.Show("Finished!");
+                MessageBox.Show("Finished!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 btnDelete.Enabled = true;
                 this.CloseConnection();
             }
@@ -413,7 +413,7 @@ namespace PricesCollector
                 if (count == 0) // not exist
                 {
                     this.CloseConnection();
-                    MessageBox.Show("Product id not exist in database: "+ productId);
+                    MessageBox.Show("Product id not exist in database: "+ productId, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
                 else
                 {
@@ -423,7 +423,7 @@ namespace PricesCollector
 
                     txtId.Text = txtSyncCode.Text = cmbGroup.Text = txtCode.Text = txtSku.Text = txtMsku.Text = txtMinimumPrice.Text = txtLink.Text = "";
                     chkActive.Checked = true;
-                    MessageBox.Show("Deleted!");
+                    MessageBox.Show("Deleted!", "Successful", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
             }
         }
