@@ -55,6 +55,7 @@
             this.other_seller = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.active = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.link = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.toolStripMenuRefreshView = new System.Windows.Forms.ToolStripMenuItem();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -98,25 +99,26 @@
             this.menuStrip1.ImageScalingSize = new System.Drawing.Size(32, 32);
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.fetchDataToolStripMenuItem,
+            this.toolStripMenuRefreshView,
             this.settingToolStripMenuItem,
             this.importDataToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(1836, 40);
+            this.menuStrip1.Size = new System.Drawing.Size(1836, 42);
             this.menuStrip1.TabIndex = 1;
             this.menuStrip1.Text = "menuStrip1";
             // 
             // fetchDataToolStripMenuItem
             // 
             this.fetchDataToolStripMenuItem.Name = "fetchDataToolStripMenuItem";
-            this.fetchDataToolStripMenuItem.Size = new System.Drawing.Size(129, 36);
+            this.fetchDataToolStripMenuItem.Size = new System.Drawing.Size(129, 38);
             this.fetchDataToolStripMenuItem.Text = "Fetch Tiki";
             this.fetchDataToolStripMenuItem.Click += new System.EventHandler(this.fetchDataToolStripMenuItem_Click);
             // 
             // settingToolStripMenuItem
             // 
             this.settingToolStripMenuItem.Name = "settingToolStripMenuItem";
-            this.settingToolStripMenuItem.Size = new System.Drawing.Size(103, 36);
+            this.settingToolStripMenuItem.Size = new System.Drawing.Size(103, 38);
             this.settingToolStripMenuItem.Text = "Setting";
             this.settingToolStripMenuItem.Click += new System.EventHandler(this.settingToolStripMenuItem_Click);
             // 
@@ -126,7 +128,7 @@
             this.importCSVToolStripMenuItem,
             this.exportExcelToolStripMenuItem});
             this.importDataToolStripMenuItem.Name = "importDataToolStripMenuItem";
-            this.importDataToolStripMenuItem.Size = new System.Drawing.Size(76, 36);
+            this.importDataToolStripMenuItem.Size = new System.Drawing.Size(76, 38);
             this.importDataToolStripMenuItem.Text = "Data";
             // 
             // importCSVToolStripMenuItem
@@ -250,6 +252,13 @@
             this.link.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
             this.link.Width = 863;
             // 
+            // toolStripMenuRefreshView
+            // 
+            this.toolStripMenuRefreshView.Name = "toolStripMenuRefreshView";
+            this.toolStripMenuRefreshView.Size = new System.Drawing.Size(161, 38);
+            this.toolStripMenuRefreshView.Text = "Refresh view";
+            this.toolStripMenuRefreshView.Click += new System.EventHandler(this.toolStripMenuRefreshView_Click);
+            // 
             // Form2
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
@@ -300,5 +309,6 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn other_seller;
         private System.Windows.Forms.DataGridViewCheckBoxColumn active;
         private System.Windows.Forms.DataGridViewTextBoxColumn link;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuRefreshView;
     }
 }

@@ -22,6 +22,7 @@ namespace PricesCollector
         private string connectionString = "";//"server=127.0.0.1;user id=root;password=3V5wn0Kv9RRc8gQA;persistsecurityinfo=True;database=pricecollector";
         private int timeoutUpdateDB = 0;
         private bool globalRunningState = false;
+        private bool isManualFetching = false;
 
         private MySqlConnection connection;
         private MySqlDataAdapter mySqlDataAdapter;
@@ -331,6 +332,9 @@ namespace PricesCollector
                 return;
             }
 
+            //Manual fetching 
+            isManualFetching = true;
+
             //Stop the timer update DB
             timerUpdateDb.Enabled = false;
             stopProgressBarUpdateDb();
@@ -454,7 +458,7 @@ namespace PricesCollector
             backgroundWorkerForFetchingList.Remove(bgw);
             bgw.Dispose();
 
-            if (globalRunningState == false)
+            if (globalRunningState == false && isManualFetching == false)
             {
                 return; //button stop clicked
             }
@@ -473,6 +477,18 @@ namespace PricesCollector
                 //Restart the timer update DB
                 timerUpdateDb.Interval = timeoutUpdateDB * 1000;
                 timerUpdateDb.Enabled = true;
+
+                //Reset the manual fetching, it is done
+                if (isManualFetching == true)
+                {
+                    isManualFetching = false;
+                    if(globalRunningState == false)
+                    {
+                        return;
+                    }
+                }
+
+                //Start timer update DB
                 startProgressBarUpdateDb(timeoutUpdateDB);
             }
 
@@ -514,6 +530,11 @@ namespace PricesCollector
                 }
                 this.CloseConnection();
             }
+        }
+
+        private void toolStripMenuRefreshView_Click(object sender, EventArgs e)
+        {
+            refreshDatagridviewValue();
         }
 
         private void refreshDatagridviewValue()
