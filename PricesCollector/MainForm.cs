@@ -11,13 +11,14 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using LumenWorks.Framework.IO.Csv;
 using System.IO;
+using System.Net;
 
 namespace PricesCollector
 {
     using MyDictionary = System.Collections.Generic.Dictionary<string, ProductData>;
     using ConfigDictionary = System.Collections.Generic.Dictionary<string, string>;
 
-    public partial class Form2 : Form
+    public partial class MainForm : Form
     {
         private string connectionString = "";//"server=127.0.0.1;user id=root;password=3V5wn0Kv9RRc8gQA;persistsecurityinfo=True;database=pricecollector";
         private int timeoutUpdateDB = 0;
@@ -37,18 +38,20 @@ namespace PricesCollector
             }
         }
 
-        public Form2()
+        public MainForm()
         {
             InitializeComponent();
 
             //Datagridview Width/Height not overflow
+            dataGridView1.Columns[columnNameToIndex("link")].Width = 500;
+            dataGridView1.Columns[columnNameToIndex("other_website")].Width = 500;
             dataGridView1.Width = this.Width - dataGridView1.Location.X - 30;
             dataGridView1.Height = this.Height - dataGridView1.Location.Y - 50;
         }
 
-        private void Form2_Load(object sender, EventArgs e)
+        private void MainForm_Load(object sender, EventArgs e)
         {
-            Console.WriteLine("Form2_Load");
+            Console.WriteLine("MainForm_Load");
 
             // Read config from file
             Configuration config = new Configuration();
@@ -87,6 +90,7 @@ namespace PricesCollector
                 connectionString = dict["connectstring"];
             }
         }
+
         void getValueFromSettingForm()
         {
             var appSetting = new AppSetting();
@@ -332,6 +336,8 @@ namespace PricesCollector
                 return;
             }
 
+            Console.WriteLine("Manual fetching triggered");
+
             //Manual fetching 
             isManualFetching = true;
 
@@ -346,6 +352,8 @@ namespace PricesCollector
 
         private void timerUpdateDB_Tick(object sender, EventArgs e)
         {
+            Console.WriteLine("Timer update DB ticked");
+
             //Stop the timer update DB
             timerUpdateDb.Enabled = false;
             stopProgressBarUpdateDb();
@@ -362,7 +370,7 @@ namespace PricesCollector
             if (this.OpenConnection() == true)
             {
                 MySqlDataReader reader = null;
-                string selectCmd = "select id,link,active from product;";
+                string selectCmd = "select id,link,active,other_website from product;";
 
                 MySqlCommand command = new MySqlCommand(selectCmd, connection);
                 reader = command.ExecuteReader();
@@ -376,6 +384,12 @@ namespace PricesCollector
                             string id = reader.GetString(0);
                             string link = reader.GetString(1);
                             string active = reader.GetString(2).ToLower();
+                            string otherWebsite = reader.GetString(3);
+                            if(otherWebsite != "")
+                            {
+                                Console.WriteLine(otherWebsite.Split('\n'));
+                            }
+
                             ProductData dat = new ProductData();
                             dat.link = link;
                             dat.productId = Int32.Parse(id);
@@ -408,7 +422,7 @@ namespace PricesCollector
                 if(data.isActive == false)
                 {
                     //This item is not active
-                    Console.WriteLine("Skip this product, it is not active");
+                    //Console.WriteLine("Skip this product, it is not active");
                     continue;
                 }
 
@@ -470,6 +484,8 @@ namespace PricesCollector
 
             if (backgroundWorkerForFetchingList.Count == 0) //All threads have finished the job
             {
+                Console.WriteLine("All threads have finished the job");
+
                 updateDbWhenFetchingDone(); //Store to DB
                 refreshDatagridviewValue(); //Fetch from DB
                 progressBarFetching.Value = 0;
@@ -502,6 +518,7 @@ namespace PricesCollector
         {
             if (this.OpenConnection() == true)
             {
+                Console.WriteLine("updating Db When Fetching Done");
                 foreach (var item in myDict)
                 {
                     ProductData data = item.Value;
@@ -513,7 +530,7 @@ namespace PricesCollector
                     }
                     otherSellerStringToDB = otherSellerStringToDB.Trim();
 
-                    Console.WriteLine("{0} _ {1} _ {2} _ {3} _ {4}", item.Key, data.link, data.sellerName, data.currentPrice.ToString(), data.lowestPrice.ToString());
+                    //Console.WriteLine("{0} _ {1} _ {2} _ {3} _ {4}", item.Key, data.link, data.sellerName, data.currentPrice.ToString(), data.lowestPrice.ToString());
 
                     MySqlCommand cmd = new MySqlCommand();
                     cmd.Connection = connection;
@@ -539,10 +556,12 @@ namespace PricesCollector
 
         private void refreshDatagridviewValue()
         {
+            Console.WriteLine("Refresh view");
             dataGridView1.Rows.Clear();
+
             if (this.OpenConnection() == true)
             {
-                string columnsToDisplay = "id,seller_name,product_group,product_name,sku,msku,current_price,minimum_price,lowest_price,discount_price,other_seller,active,link";
+                string columnsToDisplay = "id,seller_name,product_group,product_name,sku,msku,current_price,minimum_price,lowest_price,discount_price,other_seller,active,link,other_website";
                 mySqlDataAdapter = new MySqlDataAdapter("select "+ columnsToDisplay + " from product", connection);
                 DataSet DS = new DataSet();
                 mySqlDataAdapter.Fill(DS);

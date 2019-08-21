@@ -29,6 +29,9 @@ namespace PricesCollector
         public string sellerName = "";
         public string sku = "";
 
+        List<string> otherWebsiste = new List<string>();
+
+
         public List<Product> otherSeller = new List<Product>();
 
         public List<Product> SortedList()
@@ -37,7 +40,7 @@ namespace PricesCollector
             return SortedList;
         }
 
-        public int lowestPrice
+        public int lowestPrice // get the first price of the sorted list
         {
             get
             {
@@ -60,13 +63,6 @@ namespace PricesCollector
 
         public void populateDataFromTikiLinkVersion2()
         {
-
-            ////the url of the page we want to test
-            //var url = "https://tiki.vn/totolink-n150usm-usb-wifi-chuan-n-toc-do-150mbps-p481696.html?spid=9799612";
-            //var httpClient = new HttpClient();
-            //var html = httpClient.GetStringAsync(url);
-
-
             string urlAddress = this.link;
             string html="";
 
@@ -96,14 +92,14 @@ namespace PricesCollector
                 }
                 else
                 {
-                    Console.WriteLine("LINK ERROR: " + response.StatusCode.ToString() + " : " + this.link);
+                    //Console.WriteLine("LINK ERROR: " + response.StatusCode.ToString() + " : " + this.link);
                     this.sellerName = "### LINK ERROR, Code: " + response.StatusCode.ToString();
                     return;
                 }
             }
             catch
             {
-                    Console.WriteLine("LINK ERROR: Code: 404 - "  + this.link);
+                    //Console.WriteLine("LINK ERROR: Code: 404 - "  + this.link);
                     this.sellerName = "### LINK ERROR, Code: 404 Not Found";
                     return;
             }

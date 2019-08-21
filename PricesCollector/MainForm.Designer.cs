@@ -1,6 +1,6 @@
 ﻿namespace PricesCollector
 {
-    partial class Form2
+    partial class MainForm
     {
         /// <summary>
         /// Required designer variable.
@@ -30,10 +30,11 @@
         {
             this.components = new System.ComponentModel.Container();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form2));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fetchDataToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuRefreshView = new System.Windows.Forms.ToolStripMenuItem();
             this.settingToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.importDataToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.importCSVToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -55,7 +56,7 @@
             this.other_seller = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.active = new System.Windows.Forms.DataGridViewCheckBoxColumn();
             this.link = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.toolStripMenuRefreshView = new System.Windows.Forms.ToolStripMenuItem();
+            this.other_website = new System.Windows.Forms.DataGridViewTextBoxColumn();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -80,7 +81,8 @@
             this.discount_price,
             this.other_seller,
             this.active,
-            this.link});
+            this.link,
+            this.other_website});
             this.dataGridView1.Location = new System.Drawing.Point(12, 137);
             this.dataGridView1.Margin = new System.Windows.Forms.Padding(4);
             this.dataGridView1.Name = "dataGridView1";
@@ -104,21 +106,28 @@
             this.importDataToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(1836, 42);
+            this.menuStrip1.Size = new System.Drawing.Size(1836, 40);
             this.menuStrip1.TabIndex = 1;
             this.menuStrip1.Text = "menuStrip1";
             // 
             // fetchDataToolStripMenuItem
             // 
             this.fetchDataToolStripMenuItem.Name = "fetchDataToolStripMenuItem";
-            this.fetchDataToolStripMenuItem.Size = new System.Drawing.Size(129, 38);
+            this.fetchDataToolStripMenuItem.Size = new System.Drawing.Size(129, 36);
             this.fetchDataToolStripMenuItem.Text = "Fetch Tiki";
             this.fetchDataToolStripMenuItem.Click += new System.EventHandler(this.fetchDataToolStripMenuItem_Click);
+            // 
+            // toolStripMenuRefreshView
+            // 
+            this.toolStripMenuRefreshView.Name = "toolStripMenuRefreshView";
+            this.toolStripMenuRefreshView.Size = new System.Drawing.Size(161, 36);
+            this.toolStripMenuRefreshView.Text = "Refresh view";
+            this.toolStripMenuRefreshView.Click += new System.EventHandler(this.toolStripMenuRefreshView_Click);
             // 
             // settingToolStripMenuItem
             // 
             this.settingToolStripMenuItem.Name = "settingToolStripMenuItem";
-            this.settingToolStripMenuItem.Size = new System.Drawing.Size(103, 38);
+            this.settingToolStripMenuItem.Size = new System.Drawing.Size(103, 36);
             this.settingToolStripMenuItem.Text = "Setting";
             this.settingToolStripMenuItem.Click += new System.EventHandler(this.settingToolStripMenuItem_Click);
             // 
@@ -128,20 +137,20 @@
             this.importCSVToolStripMenuItem,
             this.exportExcelToolStripMenuItem});
             this.importDataToolStripMenuItem.Name = "importDataToolStripMenuItem";
-            this.importDataToolStripMenuItem.Size = new System.Drawing.Size(76, 38);
+            this.importDataToolStripMenuItem.Size = new System.Drawing.Size(76, 36);
             this.importDataToolStripMenuItem.Text = "Data";
             // 
             // importCSVToolStripMenuItem
             // 
             this.importCSVToolStripMenuItem.Name = "importCSVToolStripMenuItem";
-            this.importCSVToolStripMenuItem.Size = new System.Drawing.Size(324, 38);
+            this.importCSVToolStripMenuItem.Size = new System.Drawing.Size(241, 38);
             this.importCSVToolStripMenuItem.Text = "Import data";
             this.importCSVToolStripMenuItem.Click += new System.EventHandler(this.importCSVToolStripMenuItem_Click);
             // 
             // exportExcelToolStripMenuItem
             // 
             this.exportExcelToolStripMenuItem.Name = "exportExcelToolStripMenuItem";
-            this.exportExcelToolStripMenuItem.Size = new System.Drawing.Size(324, 38);
+            this.exportExcelToolStripMenuItem.Size = new System.Drawing.Size(241, 38);
             this.exportExcelToolStripMenuItem.Text = "Export Excel";
             this.exportExcelToolStripMenuItem.Click += new System.EventHandler(this.exportExcelToolStripMenuItem_Click);
             // 
@@ -250,14 +259,14 @@
             this.link.Name = "link";
             this.link.Resizable = System.Windows.Forms.DataGridViewTriState.True;
             this.link.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            this.link.Width = 863;
             // 
-            // toolStripMenuRefreshView
+            // other_website
             // 
-            this.toolStripMenuRefreshView.Name = "toolStripMenuRefreshView";
-            this.toolStripMenuRefreshView.Size = new System.Drawing.Size(161, 38);
-            this.toolStripMenuRefreshView.Text = "Refresh view";
-            this.toolStripMenuRefreshView.Click += new System.EventHandler(this.toolStripMenuRefreshView_Click);
+            this.other_website.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
+            this.other_website.HeaderText = "Other Website";
+            this.other_website.Name = "other_website";
+            this.other_website.Resizable = System.Windows.Forms.DataGridViewTriState.False;
+            this.other_website.Width = 179;
             // 
             // Form2
             // 
@@ -274,7 +283,7 @@
             this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "Form2";
             this.Text = "Price collector";
-            this.Load += new System.EventHandler(this.Form2_Load);
+            this.Load += new System.EventHandler(this.MainForm_Load);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
@@ -296,6 +305,7 @@
         private System.Windows.Forms.ToolStripMenuItem importDataToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem importCSVToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem exportExcelToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuRefreshView;
         private System.Windows.Forms.DataGridViewTextBoxColumn id;
         private System.Windows.Forms.DataGridViewTextBoxColumn seller_name;
         private System.Windows.Forms.DataGridViewTextBoxColumn group;
@@ -309,6 +319,6 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn other_seller;
         private System.Windows.Forms.DataGridViewCheckBoxColumn active;
         private System.Windows.Forms.DataGridViewTextBoxColumn link;
-        private System.Windows.Forms.ToolStripMenuItem toolStripMenuRefreshView;
+        private System.Windows.Forms.DataGridViewTextBoxColumn other_website;
     }
 }
