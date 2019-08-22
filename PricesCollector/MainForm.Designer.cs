@@ -29,10 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MainForm));
-            this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fetchDataToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripMenuRefreshView = new System.Windows.Forms.ToolStripMenuItem();
@@ -44,58 +41,18 @@
             this.progressBarUpdateDb = new System.Windows.Forms.ProgressBar();
             this.progressBarFetching = new System.Windows.Forms.ProgressBar();
             this.btnStop = new System.Windows.Forms.Button();
-            this.id = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.seller_name = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.group = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.product_name = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.sku = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.msku = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.current_price = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.minimum_price = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.lowest_price = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.discount_price = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.other_seller = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.active = new System.Windows.Forms.DataGridViewCheckBoxColumn();
-            this.link = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.other_website = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
+            this.tabControl1 = new System.Windows.Forms.TabControl();
+            this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.dataGridView1 = new System.Windows.Forms.DataGridView();
+            this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.dataGridView2 = new System.Windows.Forms.DataGridView();
             this.menuStrip1.SuspendLayout();
+            this.tabControl1.SuspendLayout();
+            this.tabPage1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
+            this.tabPage2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView2)).BeginInit();
             this.SuspendLayout();
-            // 
-            // dataGridView1
-            // 
-            this.dataGridView1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.dataGridView1.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.AllCells;
-            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView1.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
-            this.id,
-            this.seller_name,
-            this.group,
-            this.product_name,
-            this.sku,
-            this.msku,
-            this.current_price,
-            this.minimum_price,
-            this.lowest_price,
-            this.discount_price,
-            this.other_seller,
-            this.active,
-            this.link,
-            this.other_website});
-            this.dataGridView1.Location = new System.Drawing.Point(12, 137);
-            this.dataGridView1.Margin = new System.Windows.Forms.Padding(4);
-            this.dataGridView1.Name = "dataGridView1";
-            this.dataGridView1.RowTemplate.Height = 33;
-            this.dataGridView1.Size = new System.Drawing.Size(1811, 683);
-            this.dataGridView1.TabIndex = 0;
-            this.dataGridView1.CellBeginEdit += new System.Windows.Forms.DataGridViewCellCancelEventHandler(this.dataGridView1_CellBeginEdit);
-            this.dataGridView1.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellClick);
-            this.dataGridView1.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellContentClick);
-            this.dataGridView1.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellEndEdit);
-            this.dataGridView1.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellValueChanged);
-            this.dataGridView1.RowValidated += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_RowValidated);
             // 
             // menuStrip1
             // 
@@ -162,7 +119,8 @@
             // 
             // progressBarUpdateDb
             // 
-            this.progressBarUpdateDb.Location = new System.Drawing.Point(13, 62);
+            this.progressBarUpdateDb.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.progressBarUpdateDb.Location = new System.Drawing.Point(1087, 53);
             this.progressBarUpdateDb.Margin = new System.Windows.Forms.Padding(4);
             this.progressBarUpdateDb.Name = "progressBarUpdateDb";
             this.progressBarUpdateDb.Size = new System.Drawing.Size(324, 42);
@@ -170,7 +128,8 @@
             // 
             // progressBarFetching
             // 
-            this.progressBarFetching.Location = new System.Drawing.Point(362, 62);
+            this.progressBarFetching.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.progressBarFetching.Location = new System.Drawing.Point(1436, 53);
             this.progressBarFetching.Margin = new System.Windows.Forms.Padding(4);
             this.progressBarFetching.Name = "progressBarFetching";
             this.progressBarFetching.Size = new System.Drawing.Size(236, 42);
@@ -178,7 +137,8 @@
             // 
             // btnStop
             // 
-            this.btnStop.Location = new System.Drawing.Point(628, 62);
+            this.btnStop.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnStop.Location = new System.Drawing.Point(1702, 53);
             this.btnStop.Name = "btnStop";
             this.btnStop.Size = new System.Drawing.Size(108, 47);
             this.btnStop.TabIndex = 12;
@@ -186,90 +146,72 @@
             this.btnStop.UseVisualStyleBackColor = true;
             this.btnStop.Click += new System.EventHandler(this.btnStop_Click);
             // 
-            // id
+            // tabControl1
             // 
-            this.id.HeaderText = "ID";
-            this.id.Name = "id";
-            this.id.Width = 77;
+            this.tabControl1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tabControl1.Controls.Add(this.tabPage1);
+            this.tabControl1.Controls.Add(this.tabPage2);
+            this.tabControl1.Location = new System.Drawing.Point(13, 78);
+            this.tabControl1.Name = "tabControl1";
+            this.tabControl1.SelectedIndex = 0;
+            this.tabControl1.Size = new System.Drawing.Size(1811, 741);
+            this.tabControl1.TabIndex = 13;
             // 
-            // seller_name
+            // tabPage1
             // 
-            this.seller_name.HeaderText = "Seller name";
-            this.seller_name.Name = "seller_name";
+            this.tabPage1.Controls.Add(this.dataGridView1);
+            this.tabPage1.Location = new System.Drawing.Point(8, 39);
+            this.tabPage1.Name = "tabPage1";
+            this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage1.Size = new System.Drawing.Size(1795, 694);
+            this.tabPage1.TabIndex = 0;
+            this.tabPage1.Text = "Tiki";
+            this.tabPage1.UseVisualStyleBackColor = true;
             // 
-            // group
+            // dataGridView1
             // 
-            this.group.HeaderText = "Group";
-            this.group.Name = "group";
+            this.dataGridView1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.dataGridView1.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.AllCells;
+            this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridView1.Location = new System.Drawing.Point(14, 10);
+            this.dataGridView1.Margin = new System.Windows.Forms.Padding(4);
+            this.dataGridView1.Name = "dataGridView1";
+            this.dataGridView1.RowTemplate.Height = 33;
+            this.dataGridView1.Size = new System.Drawing.Size(1781, 680);
+            this.dataGridView1.TabIndex = 1;
+            this.dataGridView1.CellBeginEdit += new System.Windows.Forms.DataGridViewCellCancelEventHandler(this.dataGridView1_CellBeginEdit);
+            this.dataGridView1.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellClick);
+            this.dataGridView1.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellContentClick);
+            this.dataGridView1.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellEndEdit);
+            this.dataGridView1.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellValueChanged);
+            this.dataGridView1.RowValidated += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_RowValidated);
             // 
-            // product_name
+            // tabPage2
             // 
-            this.product_name.HeaderText = "Product name";
-            this.product_name.Name = "product_name";
+            this.tabPage2.Controls.Add(this.dataGridView2);
+            this.tabPage2.Location = new System.Drawing.Point(8, 39);
+            this.tabPage2.Name = "tabPage2";
+            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage2.Size = new System.Drawing.Size(1795, 694);
+            this.tabPage2.TabIndex = 1;
+            this.tabPage2.Text = "Other Website";
+            this.tabPage2.UseVisualStyleBackColor = true;
             // 
-            // sku
+            // dataGridView2
             // 
-            this.sku.HeaderText = "SKU";
-            this.sku.Name = "sku";
-            // 
-            // msku
-            // 
-            this.msku.HeaderText = "MSKU";
-            this.msku.Name = "msku";
-            // 
-            // current_price
-            // 
-            this.current_price.HeaderText = "Current price";
-            this.current_price.Name = "current_price";
-            this.current_price.Width = 92;
-            // 
-            // minimum_price
-            // 
-            this.minimum_price.HeaderText = "Minimum price";
-            this.minimum_price.Name = "minimum_price";
-            // 
-            // lowest_price
-            // 
-            this.lowest_price.HeaderText = "Lowest price";
-            this.lowest_price.Name = "lowest_price";
-            this.lowest_price.Width = 92;
-            // 
-            // discount_price
-            // 
-            this.discount_price.HeaderText = "Discount price";
-            this.discount_price.Name = "discount_price";
-            // 
-            // other_seller
-            // 
-            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.other_seller.DefaultCellStyle = dataGridViewCellStyle1;
-            this.other_seller.HeaderText = "Other seller";
-            this.other_seller.Name = "other_seller";
-            this.other_seller.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Programmatic;
-            this.other_seller.Width = 155;
-            // 
-            // active
-            // 
-            this.active.HeaderText = "Active";
-            this.active.Name = "active";
-            this.active.Width = 43;
-            // 
-            // link
-            // 
-            this.link.HeaderText = "Link";
-            this.link.Name = "link";
-            this.link.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.link.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.NotSortable;
-            // 
-            // other_website
-            // 
-            this.other_website.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
-            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.other_website.DefaultCellStyle = dataGridViewCellStyle2;
-            this.other_website.HeaderText = "Other Website";
-            this.other_website.Name = "other_website";
-            this.other_website.Resizable = System.Windows.Forms.DataGridViewTriState.False;
-            this.other_website.Width = 179;
+            this.dataGridView2.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.dataGridView2.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridView2.Location = new System.Drawing.Point(6, 6);
+            this.dataGridView2.Name = "dataGridView2";
+            this.dataGridView2.RowTemplate.Height = 33;
+            this.dataGridView2.Size = new System.Drawing.Size(1783, 682);
+            this.dataGridView2.TabIndex = 0;
             // 
             // MainForm
             // 
@@ -279,25 +221,29 @@
             this.Controls.Add(this.btnStop);
             this.Controls.Add(this.progressBarFetching);
             this.Controls.Add(this.progressBarUpdateDb);
-            this.Controls.Add(this.dataGridView1);
+            this.Controls.Add(this.tabControl1);
             this.Controls.Add(this.menuStrip1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
             this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "MainForm";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Price collector";
+            this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.Load += new System.EventHandler(this.MainForm_Load);
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
+            this.tabControl1.ResumeLayout(false);
+            this.tabPage1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
+            this.tabPage2.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView2)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
         }
 
         #endregion
-
-        private System.Windows.Forms.DataGridView dataGridView1;
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem fetchDataToolStripMenuItem;
         private System.Windows.Forms.Timer timerUpdateDb;
@@ -309,19 +255,10 @@
         private System.Windows.Forms.ToolStripMenuItem importCSVToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem exportExcelToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuRefreshView;
-        private System.Windows.Forms.DataGridViewTextBoxColumn id;
-        private System.Windows.Forms.DataGridViewTextBoxColumn seller_name;
-        private System.Windows.Forms.DataGridViewTextBoxColumn group;
-        private System.Windows.Forms.DataGridViewTextBoxColumn product_name;
-        private System.Windows.Forms.DataGridViewTextBoxColumn sku;
-        private System.Windows.Forms.DataGridViewTextBoxColumn msku;
-        private System.Windows.Forms.DataGridViewTextBoxColumn current_price;
-        private System.Windows.Forms.DataGridViewTextBoxColumn minimum_price;
-        private System.Windows.Forms.DataGridViewTextBoxColumn lowest_price;
-        private System.Windows.Forms.DataGridViewTextBoxColumn discount_price;
-        private System.Windows.Forms.DataGridViewTextBoxColumn other_seller;
-        private System.Windows.Forms.DataGridViewCheckBoxColumn active;
-        private System.Windows.Forms.DataGridViewTextBoxColumn link;
-        private System.Windows.Forms.DataGridViewTextBoxColumn other_website;
+        private System.Windows.Forms.TabControl tabControl1;
+        private System.Windows.Forms.TabPage tabPage1;
+        private System.Windows.Forms.DataGridView dataGridView1;
+        private System.Windows.Forms.TabPage tabPage2;
+        private System.Windows.Forms.DataGridView dataGridView2;
     }
 }

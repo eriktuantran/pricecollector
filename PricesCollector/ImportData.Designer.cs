@@ -53,7 +53,7 @@
             this.label4 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
-            this.txtLink = new System.Windows.Forms.RichTextBox();
+            this.txtLinkTiki = new System.Windows.Forms.RichTextBox();
             this.label10 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.txtOtherWebsite = new System.Windows.Forms.RichTextBox();
@@ -128,7 +128,7 @@
             this.groupBox2.Controls.Add(this.label4);
             this.groupBox2.Controls.Add(this.label3);
             this.groupBox2.Controls.Add(this.label2);
-            this.groupBox2.Controls.Add(this.txtLink);
+            this.groupBox2.Controls.Add(this.txtLinkTiki);
             this.groupBox2.Location = new System.Drawing.Point(12, 185);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(1261, 429);
@@ -305,11 +305,11 @@
             // 
             // txtLink
             // 
-            this.txtLink.Location = new System.Drawing.Point(106, 188);
-            this.txtLink.Name = "txtLink";
-            this.txtLink.Size = new System.Drawing.Size(1138, 67);
-            this.txtLink.TabIndex = 0;
-            this.txtLink.Text = "";
+            this.txtLinkTiki.Location = new System.Drawing.Point(106, 188);
+            this.txtLinkTiki.Name = "txtLink";
+            this.txtLinkTiki.Size = new System.Drawing.Size(1138, 67);
+            this.txtLinkTiki.TabIndex = 0;
+            this.txtLinkTiki.Text = "";
             // 
             // label10
             // 
@@ -368,7 +368,7 @@
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.RichTextBox txtLink;
+        private System.Windows.Forms.RichTextBox txtLinkTiki;
         private System.Windows.Forms.CheckBox chkActive;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Label label5;

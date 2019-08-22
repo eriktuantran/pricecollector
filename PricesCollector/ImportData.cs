@@ -24,7 +24,7 @@ namespace PricesCollector
             InitializeComponent();
             this.connection = connection;
             btnDelete.Enabled = false;
-            txtLink.DetectUrls = false;
+            txtLinkTiki.DetectUrls = false;
             txtOtherWebsite.DetectUrls = false;
         }
         //open connection to database
@@ -77,7 +77,7 @@ namespace PricesCollector
             {
                 txtId.Text = "";
             }
-            txtSyncCode.Text = cmbGroup.Text = txtCode.Text = txtSku.Text = txtMsku.Text = txtMinimumPrice.Text = txtLink.Text = txtOtherWebsite.Text = "";
+            txtSyncCode.Text = cmbGroup.Text = txtCode.Text = txtSku.Text = txtMsku.Text = txtMinimumPrice.Text = txtLinkTiki.Text = txtOtherWebsite.Text = "";
         }
 
         private void btnOpenCsv_Click(object sender, EventArgs e)
@@ -111,7 +111,7 @@ namespace PricesCollector
 
             public string buildInsertString()
             {
-                string output = "insert into `product` (id,product_sync_code,product_group,product_code,sku,msku,active,minimum_price,other_seller,other_website,link) values (";
+                string output = "insert into `product` (id,product_sync_code,product_group,product_code,sku,msku,active,minimum_price,other_seller,link_lazada,link_tiki) values (";
                 output += "'" + this.rowData["id"] + "', ";
                 output += "'" + this.rowData["product_sync_code"] + "', ";
                 output += "'" + this.rowData["product_group"] + "', ";
@@ -121,8 +121,8 @@ namespace PricesCollector
                 output += "'" + this.rowData["active"] + "', ";
                 output += "'" + this.rowData["minimum_price"] + "', ";
                 output += "'" + "empty" + "', ";
-                output += "'" + this.rowData["other_website"] + "', ";
-                output += "'" + this.rowData["link"] + "'";
+                output += "'" + this.rowData["link_lazada"] + "', ";
+                output += "'" + this.rowData["link_tiki"] + "'";
                 output += ");";
 
                 return output;
@@ -138,8 +138,8 @@ namespace PricesCollector
                 output += "msku='" + this.rowData["msku"] + "', ";
                 output += "active='" + this.rowData["active"] + "', ";
                 output += "minimum_price='" + this.rowData["minimum_price"] + "', ";
-                output += "other_website='" + this.rowData["other_website"] + "', ";
-                output += "link='" + this.rowData["link"] + "' ";
+                output += "link_lazada='" + this.rowData["link_lazada"] + "', ";
+                output += "link_tiki='" + this.rowData["link_tiki"] + "' ";
                 output += "where id='" + this.rowData["id"] + "';";
 
                 return output;
@@ -331,12 +331,12 @@ namespace PricesCollector
             row.rowData["msku"] = txtMsku.Text.Trim();
             row.rowData["active"] = chkActive.Checked?"1":"0";
             row.rowData["minimum_price"] = txtMinimumPrice.Text.Trim();
-            row.rowData["link"] = txtLink.Text.Trim();
-            row.rowData["other_website"] = txtOtherWebsite.Text.Trim();
+            row.rowData["link_tiki"] = txtLinkTiki.Text.Trim();
+            row.rowData["link_lazada"] = txtOtherWebsite.Text.Trim();
 
             foreach (var item in row.rowData)
             {
-                if(item.Key == "sku" || item.Key == "other_website")
+                if(item.Key == "sku" || item.Key == "link_lazada")
                 {
                     continue; //Allow empty
                 }
@@ -378,7 +378,7 @@ namespace PricesCollector
             if (this.OpenConnection())
             {
                 MySqlDataReader reader = null;
-                string selectCmd = "select product_sync_code,product_group,product_code,sku,msku,active,minimum_price,link,other_website from product where id='" + txtId.Text.Trim()+"';";
+                string selectCmd = "select product_sync_code,product_group,product_code,sku,msku,active,minimum_price,link_tiki,link_lazada from product where id='" + txtId.Text.Trim()+"';";
                 MySqlCommand command = new MySqlCommand(selectCmd, connection);
                 reader = command.ExecuteReader();
 
@@ -395,7 +395,7 @@ namespace PricesCollector
                             txtMsku.Text = reader.GetString(4).ToString();
                             chkActive.Checked = reader.GetString(5).ToString().ToLower()=="true"?true:false;
                             txtMinimumPrice.Text = reader.GetString(6).ToString();
-                            txtLink.Text = reader.GetString(7).ToString();
+                            txtLinkTiki.Text = reader.GetString(7).ToString();
                             txtOtherWebsite.Text = reader.GetString(8).ToString();
                             btnAddProduct.Text = "Update";
                             btnDelete.Enabled = true;

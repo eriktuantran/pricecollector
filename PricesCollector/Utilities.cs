@@ -46,8 +46,10 @@ namespace PricesCollector
                     return "Giảm giá";
                 case "other_seller":
                     return "Nhà cung cấp khác";
-                case "link":
-                    return "Link";
+                case "link_tiki":
+                    return "Link Tiki";
+                case "link_lazada":
+                    return "Link Lazada";
 
                 default: return key;
             }

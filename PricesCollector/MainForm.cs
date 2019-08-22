@@ -41,13 +41,100 @@ namespace PricesCollector
         public MainForm()
         {
             InitializeComponent();
+            createDatagridview1();
+            createDatagridview2();
+
+
+        }
+
+
+        private void createDatagridview1()
+        {
+            DataGridViewTextBoxColumn idColumn = new DataGridViewTextBoxColumn();
+            idColumn.Name = "id";
+            idColumn.HeaderText = "ID";
+            idColumn.DefaultCellStyle.WrapMode = DataGridViewTriState.True;
+            idColumn.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+            dataGridView1.Columns.Add(idColumn);
+
+            dataGridView1.Columns.Add("seller_name", "Seller name");
+            dataGridView1.Columns.Add("product_group", "Group");
+            dataGridView1.Columns.Add("product_name", "Product name");
+            dataGridView1.Columns.Add("sku", "SKU");
+            dataGridView1.Columns.Add("msku", "MSKU");
+            dataGridView1.Columns.Add("current_price", "Tiki price");
+            dataGridView1.Columns.Add("minimum_price", "Minimum price");
+            dataGridView1.Columns.Add("lowest_price", "Lowest price");
+            dataGridView1.Columns.Add("discount_price", "Discount price");
+
+            DataGridViewTextBoxColumn otherSellerColumn = new DataGridViewTextBoxColumn();
+            otherSellerColumn.Name = "other_seller";
+            otherSellerColumn.HeaderText = "Other Seller";
+            otherSellerColumn.DefaultCellStyle.WrapMode = DataGridViewTriState.True;
+            otherSellerColumn.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+            dataGridView1.Columns.Add(otherSellerColumn);
+
+            DataGridViewCheckBoxColumn checkColumn = new DataGridViewCheckBoxColumn();
+            checkColumn.Name = "active";
+            checkColumn.HeaderText = "Active";
+            checkColumn.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+            dataGridView1.Columns.Add(checkColumn);
+
+            dataGridView1.Columns.Add("link_tiki", "Tiki link");
+
 
             //Datagridview Width/Height not overflow
-            dataGridView1.Columns[columnNameToIndex("link")].Width = 500;
-            dataGridView1.Columns[columnNameToIndex("other_website")].Width = 500;
-            dataGridView1.Width = this.Width - dataGridView1.Location.X - 30;
-            dataGridView1.Height = this.Height - dataGridView1.Location.Y - 50;
+            dataGridView1.Columns[columnNameToIndex("link_tiki", dataGridView1)].Width = 500;
+            dataGridView1.Width = this.tabControl1.Width - 10;
+            dataGridView1.Height = this.tabControl1.Height - 30;
+            dataGridView1.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
         }
+
+        private void createDatagridview2()
+        {
+
+
+            DataGridViewTextBoxColumn idColumn = new DataGridViewTextBoxColumn();
+            idColumn.Name = "id";
+            idColumn.HeaderText = "ID";
+            idColumn.DefaultCellStyle.WrapMode = DataGridViewTriState.True;
+            idColumn.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+            dataGridView2.Columns.Add(idColumn);
+
+            dataGridView2.Columns.Add("seller_name", "Seller name");
+            dataGridView2.Columns.Add("product_group", "Group");
+            dataGridView2.Columns.Add("product_name", "Product name");
+            dataGridView2.Columns.Add("sku", "SKU");
+            dataGridView2.Columns.Add("msku", "MSKU");
+            dataGridView2.Columns.Add("current_price", "Tiki price");
+            dataGridView2.Columns.Add("minimum_price", "Minimum price");
+            dataGridView2.Columns.Add("lowest_price", "Lowest price");
+            dataGridView2.Columns.Add("discount_price", "Discount price");
+
+            DataGridViewTextBoxColumn otherSellerColumn = new DataGridViewTextBoxColumn();
+            otherSellerColumn.Name = "other_seller";
+            otherSellerColumn.HeaderText = "Other seller";
+            otherSellerColumn.DefaultCellStyle.WrapMode = DataGridViewTriState.True;
+            otherSellerColumn.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+            dataGridView2.Columns.Add(otherSellerColumn);
+
+            DataGridViewCheckBoxColumn checkColumn = new DataGridViewCheckBoxColumn();
+            checkColumn.Name = "active";
+            checkColumn.HeaderText = "Active";
+            checkColumn.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+            dataGridView2.Columns.Add(checkColumn);
+
+            dataGridView2.Columns.Add("link_tiki", "Tiki link");
+
+            dataGridView2.Columns.Add("link_lazada", "Lazada links");
+
+            //Datagridview Width/Height not overflow
+            dataGridView2.Columns[columnNameToIndex("link_tiki", dataGridView2)].Width = 500;
+            dataGridView2.Width = this.tabControl1.Width - 10;
+            dataGridView2.Height = this.tabControl1.Height - 30;
+            dataGridView2.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
+        }
+
 
         private void MainForm_Load(object sender, EventArgs e)
         {
@@ -69,6 +156,7 @@ namespace PricesCollector
             connection = new MySqlConnection(connectionString);
 
             refreshDatagridviewValue();
+            refreshDatagridviewValueDatagridview2();
             timerUpdateDb.Enabled = true;
             timerUpdateDb.Interval = 10 * 1000;
             progressBarUpdateDb.Value = 0;
@@ -110,12 +198,12 @@ namespace PricesCollector
             }
         }
 
-        private int columnNameToIndex(string columnName)
+        private int columnNameToIndex(string columnName, DataGridView dataGridView)
         {
-            var dataGridViewColumn = dataGridView1.Columns[columnName];
+            var dataGridViewColumn = dataGridView.Columns[columnName];
             if (dataGridViewColumn != null)
             {
-                return dataGridView1.Columns.IndexOf(dataGridViewColumn);
+                return dataGridView.Columns.IndexOf(dataGridViewColumn);
             }
             else
             {
@@ -188,7 +276,7 @@ namespace PricesCollector
                 return;
             }
 
-            var productIdCell = dataGridView1.Rows[e.RowIndex].Cells[columnNameToIndex("id")];
+            var productIdCell = dataGridView1.Rows[e.RowIndex].Cells[columnNameToIndex("id", dataGridView1)];
 
             if (productIdCell.Value == null)
             {
@@ -198,14 +286,14 @@ namespace PricesCollector
 
             string productId = productIdCell.Value.ToString();
 
-            if (e.ColumnIndex == columnNameToIndex("link"))
+            if (e.ColumnIndex == columnNameToIndex("link_tiki", dataGridView1))
             {
                 Console.WriteLine("ID={0} Row={1} Col={2}", productId, e.RowIndex, e.ColumnIndex);
-                updateDB(productId, "link", dataGridView1.Rows[e.RowIndex].Cells[columnNameToIndex("link")].Value.ToString());
+                updateDB(productId, "link_tiki", dataGridView1.Rows[e.RowIndex].Cells[columnNameToIndex("link_tiki", dataGridView1)].Value.ToString());
             }
-            else if(e.ColumnIndex == columnNameToIndex("active"))
+            else if(e.ColumnIndex == columnNameToIndex("active", dataGridView1))
             {
-                DataGridViewCheckBoxCell chkchecking = dataGridView1.Rows[e.RowIndex].Cells[columnNameToIndex("active")] as DataGridViewCheckBoxCell;
+                DataGridViewCheckBoxCell chkchecking = dataGridView1.Rows[e.RowIndex].Cells[columnNameToIndex("active", dataGridView1)] as DataGridViewCheckBoxCell;
 
                 if (Convert.ToBoolean(chkchecking.Value) == true)
                 {
@@ -216,9 +304,9 @@ namespace PricesCollector
                     updateDB(productId, "active", "0");
                 }
             }
-            else if(e.ColumnIndex == columnNameToIndex("minimum_price"))
+            else if(e.ColumnIndex == columnNameToIndex("minimum_price", dataGridView1))
             {
-                var cell = dataGridView1.Rows[e.RowIndex].Cells[columnNameToIndex("minimum_price")];
+                var cell = dataGridView1.Rows[e.RowIndex].Cells[columnNameToIndex("minimum_price", dataGridView1)];
 
                 if (cell.Value == null)
                 {
@@ -226,7 +314,7 @@ namespace PricesCollector
                     return;
                 }
 
-                string newMinimumPrice = dataGridView1.Rows[e.RowIndex].Cells[columnNameToIndex("minimum_price")].Value.ToString();
+                string newMinimumPrice = dataGridView1.Rows[e.RowIndex].Cells[columnNameToIndex("minimum_price", dataGridView1)].Value.ToString();
                 Console.WriteLine("minimum_price changed: {0} _ {1}", lastMinimumPrice, newMinimumPrice);
 
                 int newMinimumPriceInt = Int32.Parse(newMinimumPrice);
@@ -245,7 +333,7 @@ namespace PricesCollector
                     }
                     if (res == DialogResult.Cancel)
                     {
-                        dataGridView1.Rows[e.RowIndex].Cells[columnNameToIndex("minimum_price")].Value = lastMinimumPrice;
+                        dataGridView1.Rows[e.RowIndex].Cells[columnNameToIndex("minimum_price", dataGridView1)].Value = lastMinimumPrice;
                     }
                 }
                 else
@@ -258,9 +346,9 @@ namespace PricesCollector
         private string lastMinimumPrice = "";
         private void dataGridView1_CellBeginEdit(object sender, DataGridViewCellCancelEventArgs e)
         {
-            if (e.ColumnIndex == columnNameToIndex("minimum_price"))
+            if (e.ColumnIndex == columnNameToIndex("minimum_price", dataGridView1))
             {
-                var minimumPriceCell = dataGridView1.Rows[e.RowIndex].Cells[columnNameToIndex("minimum_price")];
+                var minimumPriceCell = dataGridView1.Rows[e.RowIndex].Cells[columnNameToIndex("minimum_price", dataGridView1)];
 
                 if (minimumPriceCell.Value == null)
                 {
@@ -311,7 +399,7 @@ namespace PricesCollector
 
         private void dataGridView1_CellClick(object sender, DataGridViewCellEventArgs e)
         {
-            if (e.ColumnIndex == columnNameToIndex("link"))
+            if (e.ColumnIndex == columnNameToIndex("link_tiki", dataGridView1))
             {
                 try
                 {
@@ -370,7 +458,7 @@ namespace PricesCollector
             if (this.OpenConnection() == true)
             {
                 MySqlDataReader reader = null;
-                string selectCmd = "select id,link,active,other_website from product;";
+                string selectCmd = "select id,link_tiki,active,link_lazada from product;";
 
                 MySqlCommand command = new MySqlCommand(selectCmd, connection);
                 reader = command.ExecuteReader();
@@ -382,15 +470,15 @@ namespace PricesCollector
                         try
                         {
                             string id = reader.GetString(0);
-                            string link = reader.GetString(1);
+                            string link_tiki = reader.GetString(1);
                             string active = reader.GetString(2).ToLower();
-                            string otherWebsite = reader.GetString(3);
+                            string linkLazada = reader.GetString(3);
 
                             ProductData dat = new ProductData();
-                            dat.link = link;
+                            dat.linkTiki = link_tiki;
                             dat.productId = Int32.Parse(id);
                             dat.isActive = active=="true"? true:false;
-                            dat.otherWebsisteRaw = otherWebsite;
+                            dat.linkLazada = linkLazada;
                             myDict[id] = dat;
                         }
                         catch { }
@@ -527,7 +615,7 @@ namespace PricesCollector
                     }
                     otherSellerStringToDB = otherSellerStringToDB.Trim();
 
-                    //Console.WriteLine("{0} _ {1} _ {2} _ {3} _ {4}", item.Key, data.link, data.sellerName, data.currentPrice.ToString(), data.lowestPrice.ToString());
+                    //Console.WriteLine("{0} _ {1} _ {2} _ {3} _ {4}", item.Key, data.link_tiki, data.sellerName, data.currentPrice.ToString(), data.lowestPrice.ToString());
 
                     MySqlCommand cmd = new MySqlCommand();
                     cmd.Connection = connection;
@@ -551,14 +639,14 @@ namespace PricesCollector
             refreshDatagridviewValue();
         }
 
-        private void refreshDatagridviewValue()
+        private void refreshDatagridviewValueDatagridview2()
         {
-            Console.WriteLine("Refresh view");
-            dataGridView1.Rows.Clear();
+            Console.WriteLine("Refresh view datagridview2");
+            dataGridView2.Rows.Clear();
 
             if (this.OpenConnection() == true)
             {
-                string columnsToDisplay = "id,seller_name,product_group,product_name,sku,msku,current_price,minimum_price,lowest_price,discount_price,other_seller,active,link,other_website";
+                string columnsToDisplay = "id,seller_name,product_group,product_name,sku,msku,current_price,minimum_price,lowest_price,discount_price,other_seller,active,link_tiki,link_lazada";
                 mySqlDataAdapter = new MySqlDataAdapter("select "+ columnsToDisplay + " from product", connection);
                 DataSet DS = new DataSet();
                 mySqlDataAdapter.Fill(DS);
@@ -571,8 +659,8 @@ namespace PricesCollector
 
                 foreach (DataRow _row in tableFromDb.Rows)
                 {
-                    int currentPrice = Int32.Parse(_row.ItemArray[columnNameToIndex("current_price")].ToString());
-                    int lowestPrice = Int32.Parse(_row.ItemArray[columnNameToIndex("lowest_price")].ToString());
+                    int currentPrice = Int32.Parse(_row.ItemArray[columnNameToIndex("current_price", dataGridView1)].ToString());
+                    int lowestPrice = Int32.Parse(_row.ItemArray[columnNameToIndex("lowest_price", dataGridView1)].ToString());
                     //Console.WriteLine("{0}==={1}",currentPrice, lowestPrice);
 
                     MyRow myRow = new MyRow();
@@ -597,6 +685,85 @@ namespace PricesCollector
                 {
                     var _row = row.row;
 
+                    dataGridView2.Rows.Add(_row.ItemArray);
+
+                    //DataGridViewComboBoxCell cellCombo = new DataGridViewComboBoxCell();
+                    //string str = _row["other_seller"].ToString();
+                    //List<string> s = str.Split('\n').ToList();
+                    //cellCombo.DataSource = s;
+                    //dataGridView1.Rows[rowIndex].Cells["other_seller"].Value = str;
+
+                    //Color
+                    int currentPrice = Int32.Parse( dataGridView2.Rows[rowIndex].Cells["current_price"].Value.ToString());
+                    int lowestPrice = Int32.Parse(dataGridView2.Rows[rowIndex].Cells["lowest_price"].Value.ToString());
+
+                    if ((lowestPrice < currentPrice && lowestPrice != 0) || currentPrice == 0 )
+                    {
+                        dataGridView2.Rows[rowIndex].Cells["current_price"].Style.BackColor = Color.Red;
+                    }
+                    else
+                    {
+                        dataGridView2.Rows[rowIndex].Cells["current_price"].Style.BackColor = Color.Green;
+                    }
+
+                    //Link color
+                    var obj = (DataGridViewTextBoxCell)dataGridView2.Rows[rowIndex].Cells["link_tiki"];
+                    obj.Style.ForeColor = Color.Blue;
+
+                    rowIndex++;
+                }
+                
+
+            }
+        }
+
+
+        private void refreshDatagridviewValue()
+        {
+            Console.WriteLine("Refresh view");
+            dataGridView1.Rows.Clear();
+
+            if (this.OpenConnection() == true)
+            {
+                string columnsToDisplay = "id,seller_name,product_group,product_name,sku,msku,current_price,minimum_price,lowest_price,discount_price,other_seller,active,link_tiki,link_lazada";
+                mySqlDataAdapter = new MySqlDataAdapter("select " + columnsToDisplay + " from product", connection);
+                DataSet DS = new DataSet();
+                mySqlDataAdapter.Fill(DS);
+
+                //close connection
+                this.CloseConnection();
+
+                DataTable tableFromDb = DS.Tables[0];
+                List<MyRow> rowList = new List<MyRow>();
+
+                foreach (DataRow _row in tableFromDb.Rows)
+                {
+                    int currentPrice = Int32.Parse(_row.ItemArray[columnNameToIndex("current_price", dataGridView1)].ToString());
+                    int lowestPrice = Int32.Parse(_row.ItemArray[columnNameToIndex("lowest_price", dataGridView1)].ToString());
+                    //Console.WriteLine("{0}==={1}",currentPrice, lowestPrice);
+
+                    MyRow myRow = new MyRow();
+                    myRow.row = _row;
+                    if ((lowestPrice < currentPrice && lowestPrice != 0) || currentPrice == 0)
+                    {
+                        myRow.isLowest = false;
+                    }
+                    else
+                    {
+                        myRow.isLowest = true;
+                    }
+                    rowList.Add(myRow);
+                }
+
+                List<MyRow> sortedRowList = rowList.OrderBy(o => o.isLowest).ToList();
+
+
+                int rowIndex = 0;
+                foreach (MyRow row in sortedRowList)
+                //foreach (DataRow _row in tableFromDb.Rows)
+                {
+                    var _row = row.row;
+
                     dataGridView1.Rows.Add(_row.ItemArray);
 
                     //DataGridViewComboBoxCell cellCombo = new DataGridViewComboBoxCell();
@@ -606,10 +773,10 @@ namespace PricesCollector
                     //dataGridView1.Rows[rowIndex].Cells["other_seller"].Value = str;
 
                     //Color
-                    int currentPrice = Int32.Parse( dataGridView1.Rows[rowIndex].Cells["current_price"].Value.ToString());
+                    int currentPrice = Int32.Parse(dataGridView1.Rows[rowIndex].Cells["current_price"].Value.ToString());
                     int lowestPrice = Int32.Parse(dataGridView1.Rows[rowIndex].Cells["lowest_price"].Value.ToString());
 
-                    if ((lowestPrice < currentPrice && lowestPrice != 0) || currentPrice == 0 )
+                    if ((lowestPrice < currentPrice && lowestPrice != 0) || currentPrice == 0)
                     {
                         dataGridView1.Rows[rowIndex].Cells["current_price"].Style.BackColor = Color.Red;
                     }
@@ -619,15 +786,20 @@ namespace PricesCollector
                     }
 
                     //Link color
-                    var obj = (DataGridViewTextBoxCell)dataGridView1.Rows[rowIndex].Cells["link"];
+                    var obj = (DataGridViewTextBoxCell)dataGridView1.Rows[rowIndex].Cells["link_tiki"];
                     obj.Style.ForeColor = Color.Blue;
 
                     rowIndex++;
                 }
-                
-
             }
+
+
+
+
+            //Datagridview 2
+            refreshDatagridviewValueDatagridview2();
         }
+
 
         /// <summary>
         /// Timeout value changed
@@ -767,7 +939,7 @@ namespace PricesCollector
 
         void bgWorkerExportExcelFile_DoWork(string excelFileName)
         {
-            string columnsToExport = "id, seller_name, product_group, product_name, sku, msku, active, current_price, minimum_price, lowest_price, discount_price, other_seller, link";
+            string columnsToExport = "id, seller_name, product_group, product_name, sku, msku, active, current_price, minimum_price, lowest_price, discount_price, other_seller, link_tiki";
             DataTable data;
 
             if (this.OpenConnection() == true)

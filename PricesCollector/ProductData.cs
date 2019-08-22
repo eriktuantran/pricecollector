@@ -19,7 +19,7 @@ namespace PricesCollector
     }
     class ProductData
     {
-        public string link = "";
+        public string linkTiki = "";
         public bool isActive = true;
 
         public int productId = 0;
@@ -29,7 +29,7 @@ namespace PricesCollector
         public string sellerName = "";
         public string sku = "";
 
-        public string otherWebsisteRaw = "";
+        public string linkLazada = "";
         public List<string> otherWebsiste = new List<string>();
 
 
@@ -135,7 +135,7 @@ namespace PricesCollector
 
         private void populateOtherWebsite()
         {
-            foreach (var link in this.otherWebsisteRaw.Split('\n'))
+            foreach (var link in this.linkLazada.Split('\n'))
             {
                 if (link.Trim() == "") continue;
                 Console.WriteLine("{0}--{1}",this.productId, link);
@@ -203,7 +203,7 @@ namespace PricesCollector
 
         public void populateDataFromTikiLinkVersion2()
         {
-            string urlAddress = this.link;
+            string urlAddress = this.linkTiki;
             string html = getHtmlFromWebsite(urlAddress);
 
             //try
@@ -340,7 +340,7 @@ namespace PricesCollector
             try
             {
                 var client = new WebClient();
-                var stream = client.OpenRead(this.link);
+                var stream = client.OpenRead(this.linkTiki);
                 using (var reader = new StreamReader(stream))
                 {
                     string line;
@@ -384,7 +384,7 @@ namespace PricesCollector
             }
             catch(Exception e)
             {
-                Console.WriteLine("LINK ERROR: " + this.link);
+                Console.WriteLine("LINK ERROR: " + this.linkTiki);
 
                 this.sellerName = "### LINK ERROR";
                 return;
