@@ -29,7 +29,8 @@ namespace PricesCollector
         public string sellerName = "";
         public string sku = "";
 
-        List<string> otherWebsiste = new List<string>();
+        public string otherWebsisteRaw = "";
+        public List<string> otherWebsiste = new List<string>();
 
 
         public List<Product> otherSeller = new List<Product>();
@@ -58,13 +59,108 @@ namespace PricesCollector
                     return 0;
                 }
             }
-            
         }
 
-        public void populateDataFromTikiLinkVersion2()
+        private Product geProductDataFromLazada(string link)
         {
-            string urlAddress = this.link;
-            string html="";
+            Product product = new Product();
+
+            string html = getHtmlFromWebsite(link);
+            var htmlDocument = new HtmlDocument();
+            htmlDocument.LoadHtml(html);
+
+            //Parse the Javascript values
+            var javascriptGroups = htmlDocument.DocumentNode.Descendants().Where(n => n.Name == "script");
+
+            foreach (var group in javascriptGroups)
+            {
+                if (group.InnerText.Contains("priceCurrency"))
+                {
+                    JObject json = JObject.Parse(group.InnerText);
+                    JToken productPrice = json["offers"]["price"];
+                    JToken sellerName = json["offers"]["seller"]["name"];
+
+                    product.price = Int32.Parse(productPrice.ToString());
+                    product.name = "LAZADA_" + sellerName.ToString();
+
+                    break;
+                }
+                else
+                {
+                    continue;
+                }
+            }
+
+            return product;
+        }
+
+        private Product geProductDataFromShopee(string link)
+        {
+            Product product = new Product();
+
+            product.name = "SHOPEE";
+
+
+            string html = getHtmlFromWebsite(link);
+            var htmlDocument = new HtmlDocument();
+            htmlDocument.LoadHtml(html);
+
+            foreach(var line in html.Split('\n'))
+            {
+                if(line.Contains("class='price'"))
+                {
+                    Regex rx = new Regex(@"<div class=.price.*emprop=.offers.*itemscope.[\s\S]+content=.(\d+)\.\d+.\/><link",
+                        RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
+                    // Find matches.
+                    MatchCollection matches = rx.Matches(line);
+
+                    foreach (Match match in matches)
+                    {
+                        try
+                        {
+
+                            GroupCollection groups = match.Groups;
+                            string productPrice = groups[1].Value;
+                            product.price = Int32.Parse(productPrice);
+                        }
+                        catch
+                        { }
+                    }
+                }
+            }
+
+            return product;
+        }
+
+        private void populateOtherWebsite()
+        {
+            foreach (var link in this.otherWebsisteRaw.Split('\n'))
+            {
+                if (link.Trim() == "") continue;
+                Console.WriteLine("{0}--{1}",this.productId, link);
+
+                if (link.Contains("lazada.vn"))
+                {
+                    Product p = geProductDataFromLazada(link);
+                    this.otherSeller.Add(p);
+                }
+                else
+                if (link.Contains("shopee.vn"))
+                {
+                    Product p = geProductDataFromShopee(link);
+                    this.otherSeller.Add(p);
+                }
+                else
+                {
+                    Console.WriteLine("Website is not support: {0}", link);
+                } 
+            }
+        }
+
+        private string getHtmlFromWebsite(string urlAddress)
+        {
+            string html = "";
 
             try
             {
@@ -94,15 +190,59 @@ namespace PricesCollector
                 {
                     //Console.WriteLine("LINK ERROR: " + response.StatusCode.ToString() + " : " + this.link);
                     this.sellerName = "### LINK ERROR, Code: " + response.StatusCode.ToString();
-                    return;
                 }
             }
             catch
             {
-                    //Console.WriteLine("LINK ERROR: Code: 404 - "  + this.link);
-                    this.sellerName = "### LINK ERROR, Code: 404 Not Found";
-                    return;
+                //Console.WriteLine("LINK ERROR: Code: 404 - "  + this.link);
+                this.sellerName = "### LINK ERROR, Code: 404 Not Found";
             }
+
+            return html;
+        }
+
+        public void populateDataFromTikiLinkVersion2()
+        {
+            string urlAddress = this.link;
+            string html = getHtmlFromWebsite(urlAddress);
+
+            //try
+            //{
+            //    HttpWebRequest request = (HttpWebRequest)WebRequest.Create(urlAddress);
+            //    HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+
+            //    if (response.StatusCode == HttpStatusCode.OK)
+            //    {
+            //        Stream receiveStream = response.GetResponseStream();
+            //        StreamReader readStream = null;
+
+            //        if (response.CharacterSet == null)
+            //        {
+            //            readStream = new StreamReader(receiveStream);
+            //        }
+            //        else
+            //        {
+            //            readStream = new StreamReader(receiveStream, Encoding.GetEncoding(response.CharacterSet));
+            //        }
+
+            //        html = readStream.ReadToEnd();
+
+            //        response.Close();
+            //        readStream.Close();
+            //    }
+            //    else
+            //    {
+            //        //Console.WriteLine("LINK ERROR: " + response.StatusCode.ToString() + " : " + this.link);
+            //        this.sellerName = "### LINK ERROR, Code: " + response.StatusCode.ToString();
+            //        return;
+            //    }
+            //}
+            //catch
+            //{
+            //        //Console.WriteLine("LINK ERROR: Code: 404 - "  + this.link);
+            //        this.sellerName = "### LINK ERROR, Code: 404 Not Found";
+            //        return;
+            //}
             
 
             var htmlDocument = new HtmlDocument();
@@ -183,6 +323,9 @@ namespace PricesCollector
                     break; // Found "currentSeller"
                 }
             }
+
+            // Fetch other websites
+            populateOtherWebsite();
         }
 
         public void populateDataFromTikiLinkVersion1()

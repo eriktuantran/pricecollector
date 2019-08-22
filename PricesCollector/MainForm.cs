@@ -385,15 +385,12 @@ namespace PricesCollector
                             string link = reader.GetString(1);
                             string active = reader.GetString(2).ToLower();
                             string otherWebsite = reader.GetString(3);
-                            if(otherWebsite != "")
-                            {
-                                Console.WriteLine(otherWebsite.Split('\n'));
-                            }
 
                             ProductData dat = new ProductData();
                             dat.link = link;
                             dat.productId = Int32.Parse(id);
                             dat.isActive = active=="true"? true:false;
+                            dat.otherWebsisteRaw = otherWebsite;
                             myDict[id] = dat;
                         }
                         catch { }

@@ -24,6 +24,8 @@ namespace PricesCollector
             InitializeComponent();
             this.connection = connection;
             btnDelete.Enabled = false;
+            txtLink.DetectUrls = false;
+            txtOtherWebsite.DetectUrls = false;
         }
         //open connection to database
         private bool OpenConnection()
@@ -69,6 +71,14 @@ namespace PricesCollector
             }
         }
 
+        private void clearTheFields(bool isEmptyId = false)
+        {
+            if(isEmptyId)
+            {
+                txtId.Text = "";
+            }
+            txtSyncCode.Text = cmbGroup.Text = txtCode.Text = txtSku.Text = txtMsku.Text = txtMinimumPrice.Text = txtLink.Text = txtOtherWebsite.Text = "";
+        }
 
         private void btnOpenCsv_Click(object sender, EventArgs e)
         {
@@ -101,7 +111,7 @@ namespace PricesCollector
 
             public string buildInsertString()
             {
-                string output = "insert into `product` (id,product_sync_code,product_group,product_code,sku,msku,active,minimum_price,other_seller,link) values (";
+                string output = "insert into `product` (id,product_sync_code,product_group,product_code,sku,msku,active,minimum_price,other_seller,other_website,link) values (";
                 output += "'" + this.rowData["id"] + "', ";
                 output += "'" + this.rowData["product_sync_code"] + "', ";
                 output += "'" + this.rowData["product_group"] + "', ";
@@ -111,6 +121,7 @@ namespace PricesCollector
                 output += "'" + this.rowData["active"] + "', ";
                 output += "'" + this.rowData["minimum_price"] + "', ";
                 output += "'" + "empty" + "', ";
+                output += "'" + this.rowData["other_website"] + "', ";
                 output += "'" + this.rowData["link"] + "'";
                 output += ");";
 
@@ -127,6 +138,7 @@ namespace PricesCollector
                 output += "msku='" + this.rowData["msku"] + "', ";
                 output += "active='" + this.rowData["active"] + "', ";
                 output += "minimum_price='" + this.rowData["minimum_price"] + "', ";
+                output += "other_website='" + this.rowData["other_website"] + "', ";
                 output += "link='" + this.rowData["link"] + "' ";
                 output += "where id='" + this.rowData["id"] + "';";
 
@@ -320,9 +332,15 @@ namespace PricesCollector
             row.rowData["active"] = chkActive.Checked?"1":"0";
             row.rowData["minimum_price"] = txtMinimumPrice.Text.Trim();
             row.rowData["link"] = txtLink.Text.Trim();
+            row.rowData["other_website"] = txtOtherWebsite.Text.Trim();
 
-            foreach(var item in row.rowData)
+            foreach (var item in row.rowData)
             {
+                if(item.Key == "sku" || item.Key == "other_website")
+                {
+                    continue; //Allow empty
+                }
+
                 if (item.Value == "")
                 {
                     MessageBox.Show("Please fill in the: "+item.Key, "Some fields are missing...", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -360,11 +378,9 @@ namespace PricesCollector
             if (this.OpenConnection())
             {
                 MySqlDataReader reader = null;
-                string selectCmd = "select product_sync_code,product_group,product_code,sku,msku,active,minimum_price,link from product where id='" + txtId.Text.Trim()+"';";
-
+                string selectCmd = "select product_sync_code,product_group,product_code,sku,msku,active,minimum_price,link,other_website from product where id='" + txtId.Text.Trim()+"';";
                 MySqlCommand command = new MySqlCommand(selectCmd, connection);
                 reader = command.ExecuteReader();
-                
 
                 if (reader.HasRows)
                 {
@@ -380,21 +396,30 @@ namespace PricesCollector
                             chkActive.Checked = reader.GetString(5).ToString().ToLower()=="true"?true:false;
                             txtMinimumPrice.Text = reader.GetString(6).ToString();
                             txtLink.Text = reader.GetString(7).ToString();
+                            txtOtherWebsite.Text = reader.GetString(8).ToString();
                             btnAddProduct.Text = "Update";
                             btnDelete.Enabled = true;
                         }
-                        catch { }
+                        catch
+                        {
+                            clearTheFields();
+                        }
                     }
                 }
                 else
                 {
-                    txtSyncCode.Text = cmbGroup.Text = txtCode.Text = txtSku.Text = txtMsku.Text = txtMinimumPrice.Text = txtLink.Text = "";
+                    clearTheFields();
                     chkActive.Checked = true;
                     btnAddProduct.Text = "Add";
                     btnDelete.Enabled = false;
                 }
 
                 this.CloseConnection();
+            }
+            else
+            {
+                clearTheFields();
+                Console.WriteLine("error");
             }
         }
 
@@ -421,7 +446,7 @@ namespace PricesCollector
                     cmd.ExecuteNonQuery();
                     this.CloseConnection();
 
-                    txtId.Text = txtSyncCode.Text = cmbGroup.Text = txtCode.Text = txtSku.Text = txtMsku.Text = txtMinimumPrice.Text = txtLink.Text = "";
+                    clearTheFields(true);
                     chkActive.Checked = true;
                     MessageBox.Show("Deleted!", "Successful", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
