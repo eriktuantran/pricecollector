@@ -57,12 +57,12 @@ namespace PricesCollector
                     return "Giá bán";
                 case "minimum_price":
                     return "Giá bán thấp nhất";
-                case "lowest_price":
+                case "lowest_price_tiki":
                     return "Giá bán thấp nhất (từ nhà cung cấp khác)";
                 case "discount_price":
                     return "Giảm giá";
-                case "other_seller":
-                    return "Nhà cung cấp khác";
+                case "other_seller_tiki":
+                    return "Nhà cung cấp khác TIKI";
                 case "link_tiki":
                     return "Link Tiki";
                 case "link_lazada":
@@ -162,27 +162,77 @@ namespace PricesCollector
 
         static public void updateLinkTikiCellValue(DataGridView mydataGridView, int rowIndex, string productId, MySqlConnection connection)
         {
-            Console.WriteLine("ID={0} Row={1}", productId, rowIndex);
-            updateDB(productId, "link_tiki", mydataGridView.Rows[rowIndex].Cells[Utilities.colNameToIndex("link_tiki", mydataGridView)].Value.ToString(), connection);
+            string colName = "link_tiki";
+            Console.WriteLine("ID={0} Row={1} Col={2}", productId, rowIndex, colName);
+            string valueToSet = "";
+            var cellValue = mydataGridView.Rows[rowIndex].Cells[Utilities.colNameToIndex(colName, mydataGridView)].Value;
+            if (cellValue != null)
+            {
+                valueToSet = cellValue.ToString();
+            }
+            updateDB(productId, colName, valueToSet, connection);
+        }
+
+        static public void updateLinkLazadaCellValue(DataGridView mydataGridView, int rowIndex, string productId, MySqlConnection connection)
+        {
+            string colName = "link_lazada";
+            Console.WriteLine("ID={0} Row={1} Col={2}", productId, rowIndex, colName);
+            string valueToSet = "";
+            var cellValue = mydataGridView.Rows[rowIndex].Cells[Utilities.colNameToIndex(colName, mydataGridView)].Value;
+            if (cellValue != null)
+            {
+                valueToSet = cellValue.ToString();
+            }
+            updateDB(productId, colName, valueToSet, connection);
+        }
+
+        static public void updateLinkShopeeCellValue(DataGridView mydataGridView, int rowIndex, string productId, MySqlConnection connection)
+        {
+            string colName = "link_shopee";
+            Console.WriteLine("ID={0} Row={1} Col={2}", productId, rowIndex, colName);
+            string valueToSet = "";
+            var cellValue = mydataGridView.Rows[rowIndex].Cells[Utilities.colNameToIndex(colName, mydataGridView)].Value;
+            if (cellValue != null)
+            {
+                valueToSet = cellValue.ToString();
+            }
+            updateDB(productId, colName, valueToSet, connection);
+        }
+
+        static public void updateLinkSendoCellValue(DataGridView mydataGridView, int rowIndex, string productId, MySqlConnection connection)
+        {
+            string colName = "link_sendo";
+            Console.WriteLine("ID={0} Row={1} Col={2}", productId, rowIndex, colName);
+            string valueToSet = "";
+            var cellValue = mydataGridView.Rows[rowIndex].Cells[Utilities.colNameToIndex(colName, mydataGridView)].Value;
+            if (cellValue != null)
+            {
+                valueToSet = cellValue.ToString();
+            }
+            updateDB(productId, colName, valueToSet, connection);
         }
 
         static public void updateActiveCheckboxCellValue(DataGridView mydataGridView, int rowIndex, string productId, MySqlConnection connection)
         {
-            DataGridViewCheckBoxCell chkchecking = mydataGridView.Rows[rowIndex].Cells[Utilities.colNameToIndex("active", mydataGridView)] as DataGridViewCheckBoxCell;
+            string colName = "active";
+            Console.WriteLine("ID={0} Row={1} Col={2}", productId, rowIndex, colName);
+            DataGridViewCheckBoxCell chkchecking = mydataGridView.Rows[rowIndex].Cells[Utilities.colNameToIndex(colName, mydataGridView)] as DataGridViewCheckBoxCell;
 
             if (Convert.ToBoolean(chkchecking.Value) == true)
             {
-                updateDB(productId, "active", "1", connection);
+                updateDB(productId, colName, "1", connection);
             }
             else
             {
-                updateDB(productId, "active", "0", connection);
+                updateDB(productId, colName, "0", connection);
             }
         }
 
         static public void updateMinimumPriceCellValue(DataGridView mydataGridView, int rowIndex, string productId ,string lastMinimumPrice, MySqlConnection connection)
         {
-            var cell = mydataGridView.Rows[rowIndex].Cells[Utilities.colNameToIndex("minimum_price", mydataGridView)];
+            string colName = "minimum_price";
+
+            var cell = mydataGridView.Rows[rowIndex].Cells[Utilities.colNameToIndex(colName, mydataGridView)];
 
             if (cell.Value == null)
             {
@@ -190,8 +240,8 @@ namespace PricesCollector
                 return;
             }
 
-            string newMinimumPrice = mydataGridView.Rows[rowIndex].Cells[Utilities.colNameToIndex("minimum_price", mydataGridView)].Value.ToString();
-            Console.WriteLine("minimum_price changed: {0} _ {1}", lastMinimumPrice, newMinimumPrice);
+            string newMinimumPrice = mydataGridView.Rows[rowIndex].Cells[Utilities.colNameToIndex(colName, mydataGridView)].Value.ToString();
+            Console.WriteLine("{0} changed: {1} _ {2}", colName, lastMinimumPrice, newMinimumPrice);
             try
             {
                 int newMinimumPriceInt = Int32.Parse(newMinimumPrice);
@@ -206,16 +256,16 @@ namespace PricesCollector
                         "Confirmation", MessageBoxButtons.OKCancel, MessageBoxIcon.Information);
                     if (res == DialogResult.OK)
                     {
-                        updateDB(productId, "minimum_price", newMinimumPrice, connection);
+                        updateDB(productId, colName, newMinimumPrice, connection);
                     }
                     if (res == DialogResult.Cancel)
                     {
-                        mydataGridView.Rows[rowIndex].Cells[Utilities.colNameToIndex("minimum_price", mydataGridView)].Value = lastMinimumPrice;
+                        mydataGridView.Rows[rowIndex].Cells[Utilities.colNameToIndex(colName, mydataGridView)].Value = lastMinimumPrice;
                     }
                 }
                 else
                 {
-                    updateDB(productId, "minimum_price", newMinimumPrice, connection);
+                    updateDB(productId, colName, newMinimumPrice, connection);
                 }
             }
             catch
@@ -257,7 +307,7 @@ namespace PricesCollector
 
             
             // Fetch data from database to export
-            string columnsToExport = "id, seller_name, product_group, product_name, sku, msku, active, current_price, minimum_price, lowest_price, discount_price, other_seller, link_tiki";
+            string columnsToExport = "id, seller_name, product_group, product_name, sku, msku, active, current_price, minimum_price, lowest_price_tiki, discount_price, other_seller_tiki, link_tiki";
             DataTable data;
 
             if (OpenConnection(connection) == true)
@@ -325,6 +375,46 @@ namespace PricesCollector
             app.Quit();
         }
 
+        static public string getOtherSellerString(List<Product> otherSellerList)
+        {
+            string otherSellerStringToDB = "";
+            foreach (var product in otherSellerList)
+            {
+                otherSellerStringToDB += product.price + "_" + product.name + "\n";
+            }
+            otherSellerStringToDB = otherSellerStringToDB.Trim();
+
+            return otherSellerStringToDB;
+        }
+
+        public static void getMinMaxAndColumnName(DataGridViewCellCollection cells, out string maxCol, out int max, out string minCol, out int min)
+        {
+            Dictionary<string, int> dict = new Dictionary<string, int>();
+            dict["lowest_price_tiki"] =   Int32.Parse(cells["lowest_price_tiki"].Value.ToString());
+            dict["lowest_price_lazada"] = Int32.Parse(cells["lowest_price_lazada"].Value.ToString());
+            dict["lowest_price_shopee"] = Int32.Parse(cells["lowest_price_shopee"].Value.ToString());
+            dict["lowest_price_sendo"] =  Int32.Parse(cells["lowest_price_sendo"].Value.ToString());
+
+            maxCol = "lowest_price_tiki";
+            max = dict[maxCol];
+            minCol = "lowest_price_tiki";
+            min = 999999999;
+
+            foreach (var item in dict)
+            {
+                if (item.Value > max)
+                {
+                    maxCol = item.Key;
+                    max = item.Value;
+                }
+
+                if (item.Value != 0 && item.Value < min)
+                {
+                    minCol = item.Key;
+                    min = item.Value;
+                }
+            }
+        }
 
     }
 }

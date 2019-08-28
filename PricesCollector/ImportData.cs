@@ -111,7 +111,7 @@ namespace PricesCollector
 
             public string buildInsertString()
             {
-                string output = "insert into `product` (id,product_sync_code,product_group,product_code,sku,msku,active,minimum_price,other_seller,link_lazada,link_tiki) values (";
+                string output = "insert into `product` (id,product_sync_code,product_group,product_code,sku,msku,active,minimum_price,link_tiki,link_lazada,link_shopee,link_sendo,other_seller_tiki, other_seller_lazada, other_seller_shopee, other_seller_sendo) values (";
                 output += "'" + this.rowData["id"] + "', ";
                 output += "'" + this.rowData["product_sync_code"] + "', ";
                 output += "'" + this.rowData["product_group"] + "', ";
@@ -120,9 +120,14 @@ namespace PricesCollector
                 output += "'" + this.rowData["msku"] + "', ";
                 output += "'" + this.rowData["active"] + "', ";
                 output += "'" + this.rowData["minimum_price"] + "', ";
-                output += "'" + "empty" + "', ";
-                output += "'" + this.rowData["link_lazada"] + "', ";
-                output += "'" + this.rowData["link_tiki"] + "'";
+                output += "'" + this.rowData["link_tiki"] + "', ";
+                output += "'" + "" + "', ";
+                output += "'" + "" + "', ";
+                output += "'" + "" + "', ";
+                output += "'" + "Other Tiki" + "', ";
+                output += "'" + "Other Lazada" + "', ";
+                output += "'" + "Other Shopee" + "', ";
+                output += "'" + "Other Sendo" + "' ";
                 output += ");";
 
                 return output;
@@ -138,7 +143,6 @@ namespace PricesCollector
                 output += "msku='" + this.rowData["msku"] + "', ";
                 output += "active='" + this.rowData["active"] + "', ";
                 output += "minimum_price='" + this.rowData["minimum_price"] + "', ";
-                output += "link_lazada='" + this.rowData["link_lazada"] + "', ";
                 output += "link_tiki='" + this.rowData["link_tiki"] + "' ";
                 output += "where id='" + this.rowData["id"] + "';";
 

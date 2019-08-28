@@ -1,4 +1,4 @@
-id,product_sync_code,product_group,product_code,sku,msku,active,minimum_price,link
+id,product_sync_code,product_group,product_code,sku,msku,active,minimum_price,link_tiki
 1,Linksys MR8300,LINKSYS,LINKSYS-MR8300,,,1,"3,515,000",https://tiki.vn/linksys-mr8300-mesh-wifi-router-ac2200-mu-mimo-hang-chinh-hang-p23083200.html
 2,Linksys RE7000,LINKSYS,LINKSYS-RE7000,9788412700640,8867217551686,1,"2,703,000",https://tiki.vn/router-wifi-linksys-re7000w-ac1900-phat-song-bang-tan-kep-p10414694.html
 3,Linksys RE7000,LINKSYS,LINKSYS-RE7000,1117360113512,8867217551686,1,"2,703,000",https://tiki.vn/router-wifi-linksys-re7000w-ac1900-phat-song-bang-tan-kep-p10414694.html

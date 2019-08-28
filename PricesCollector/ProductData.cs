@@ -19,6 +19,8 @@ namespace PricesCollector
     }
     class ProductData
     {
+        public bool isFullFetching = false;
+
         public string linkTiki = "";
         public bool isActive = true;
 
@@ -29,26 +31,109 @@ namespace PricesCollector
         public string sellerName = "";
         public string sku = "";
 
-        public string linkLazada = "";
-        public List<string> otherWebsiste = new List<string>();
+        public string linkLazadaRaw = "";
+        public string linkShopeeRaw = "";
+        public string linkSendoRaw = "";
+        public List<Product> otherSellerLazada = new List<Product>();
+        public List<Product> otherSellerShopee = new List<Product>();
+        public List<Product> otherSellerSendo = new List<Product>();
 
 
-        public List<Product> otherSeller = new List<Product>();
+        public List<Product> otherSellerTiki = new List<Product>();
 
-        public List<Product> SortedList()
+
+        public List<Product> SortedListTiki()
         {
-            List<Product> SortedList = otherSeller.OrderBy(o => o.price).ToList();
+            List<Product> SortedList = otherSellerTiki.OrderBy(o => o.price).ToList();
             return SortedList;
         }
 
-        public int lowestPrice // get the first price of the sorted list
+        public List<Product> SortedListLazada()
+        {
+            List<Product> SortedList = otherSellerLazada.OrderBy(o => o.price).ToList();
+            return SortedList;
+        }
+
+        public List<Product> SortedListShopee()
+        {
+            List<Product> SortedList = otherSellerShopee.OrderBy(o => o.price).ToList();
+            return SortedList;
+        }
+
+        public List<Product> SortedListSendo()
+        {
+            List<Product> SortedList = otherSellerSendo.OrderBy(o => o.price).ToList();
+            return SortedList;
+        }
+
+        public int lowestPriceTiki // get the first price of the sorted list
         {
             get
             {
                 try
                 {
-                    List<Product> otherSellerList = this.SortedList();
+                    List<Product> otherSellerList = this.SortedListTiki();
                     if(otherSellerList.Count==0)
+                    {
+                        return 0;
+                    }
+                    return otherSellerList[0].price;
+                }
+                catch
+                {
+                    return 0;
+                }
+            }
+        }
+
+        public int lowestPriceLazada
+        {
+            get
+            {
+                try
+                {
+                    List<Product> otherSellerList = this.SortedListLazada();
+                    if (otherSellerList.Count == 0)
+                    {
+                        return 0;
+                    }
+                    return otherSellerList[0].price;
+                }
+                catch
+                {
+                    return 0;
+                }
+            }
+        }
+
+        public int lowestPriceShopee
+        {
+            get
+            {
+                try
+                {
+                    List<Product> otherSellerList = this.SortedListShopee();
+                    if (otherSellerList.Count == 0)
+                    {
+                        return 0;
+                    }
+                    return otherSellerList[0].price;
+                }
+                catch
+                {
+                    return 0;
+                }
+            }
+        }
+
+        public int lowestPriceSendo
+        {
+            get
+            {
+                try
+                {
+                    List<Product> otherSellerList = this.SortedListSendo();
+                    if (otherSellerList.Count == 0)
                     {
                         return 0;
                     }
@@ -64,6 +149,8 @@ namespace PricesCollector
         private Product geProductDataFromLazada(string link)
         {
             Product product = new Product();
+            product.price = 0;
+            product.name = "Lazada";
 
             string html = getHtmlFromWebsite(link);
             var htmlDocument = new HtmlDocument();
@@ -81,7 +168,7 @@ namespace PricesCollector
                     JToken sellerName = json["offers"]["seller"]["name"];
 
                     product.price = Int32.Parse(productPrice.ToString());
-                    product.name = "LAZADA_" + sellerName.ToString();
+                    product.name = sellerName.ToString();
 
                     break;
                 }
@@ -98,7 +185,8 @@ namespace PricesCollector
         {
             Product product = new Product();
 
-            product.name = "SHOPEE";
+            product.name = "Shopee";
+            product.price = 0;
 
 
             string html = getHtmlFromWebsite(link);
@@ -133,29 +221,94 @@ namespace PricesCollector
             return product;
         }
 
+        private Product geProductDataFromSendo(string link)
+        {
+            Product product = new Product();
+
+            product.name = "Sendo";
+            product.price = 0;
+
+            
+            string html = getHtmlFromWebsite(link);
+            var htmlDocument = new HtmlDocument();
+            htmlDocument.LoadHtml(html);
+
+            //Parse the Javascript values
+            var javascriptGroups = htmlDocument.DocumentNode.Descendants().Where(n => n.Name == "script");
+
+            foreach (var group in javascriptGroups)
+            {
+                if (group.InnerText.Contains("ProductBasic"))
+                {
+                    string textToFind = "__INITIAL_STATE__=";
+                    int index = group.InnerText.IndexOf(textToFind);
+                    if (index != -1)
+                    {
+
+                        string jsonStr = group.InnerText.Substring(index);
+                        jsonStr = jsonStr.Replace(textToFind, "");
+                        
+                        JObject json = JObject.Parse(jsonStr);
+
+                        JToken token = json["@"]["data"]["ProductBasic"]["_"];
+                        string key = token["__active__"].ToString();
+
+                        try
+                        {
+                            product.price = Int32.Parse(token[key]["data"]["final_price"].ToString());
+                            product.name = token[key]["data"]["shop_info"]["shop_name"].ToString();
+                        }
+                        catch
+                        {
+                        }
+
+                        break;
+                    }
+                }
+                else
+                {
+                    continue;
+                }
+            }
+
+            return product;
+
+            
+        }
+
         private void populateOtherWebsite()
         {
-            foreach (var link in this.linkLazada.Split('\n'))
+            this.otherSellerLazada.Clear();
+            this.otherSellerShopee.Clear();
+            this.otherSellerSendo.Clear();
+
+            foreach (var link in this.linkLazadaRaw.Split('\n'))
             {
                 if (link.Trim() == "") continue;
-                Console.WriteLine("{0}--{1}",this.productId, link);
+                Console.WriteLine("populateOtherWebsite: Lazada {0}--{1}", this.productId, link);
 
-                if (link.Contains("lazada.vn"))
-                {
-                    Product p = geProductDataFromLazada(link);
-                    this.otherSeller.Add(p);
-                }
-                else
-                if (link.Contains("shopee.vn"))
-                {
-                    Product p = geProductDataFromShopee(link);
-                    this.otherSeller.Add(p);
-                }
-                else
-                {
-                    Console.WriteLine("Website is not support: {0}", link);
-                } 
+                Product p = geProductDataFromLazada(link);
+                this.otherSellerLazada.Add(p);
             }
+
+            foreach (var link in this.linkShopeeRaw.Split('\n'))
+            {
+                if (link.Trim() == "") continue;
+                Console.WriteLine("populateOtherWebsite: Shopee {0}--{1}", this.productId, link);
+
+                Product p = geProductDataFromShopee(link);
+                this.otherSellerShopee.Add(p);
+            }
+
+            foreach (var link in this.linkSendoRaw.Split('\n'))
+            {
+                if (link.Trim() == "") continue;
+                Console.WriteLine("populateOtherWebsite: Sendo {0}--{1}", this.productId, link);
+
+                Product p = geProductDataFromSendo(link);
+                this.otherSellerSendo.Add(p);
+            }
+
         }
 
         private string getHtmlFromWebsite(string urlAddress)
@@ -206,45 +359,6 @@ namespace PricesCollector
             string urlAddress = this.linkTiki;
             string html = getHtmlFromWebsite(urlAddress);
 
-            //try
-            //{
-            //    HttpWebRequest request = (HttpWebRequest)WebRequest.Create(urlAddress);
-            //    HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-
-            //    if (response.StatusCode == HttpStatusCode.OK)
-            //    {
-            //        Stream receiveStream = response.GetResponseStream();
-            //        StreamReader readStream = null;
-
-            //        if (response.CharacterSet == null)
-            //        {
-            //            readStream = new StreamReader(receiveStream);
-            //        }
-            //        else
-            //        {
-            //            readStream = new StreamReader(receiveStream, Encoding.GetEncoding(response.CharacterSet));
-            //        }
-
-            //        html = readStream.ReadToEnd();
-
-            //        response.Close();
-            //        readStream.Close();
-            //    }
-            //    else
-            //    {
-            //        //Console.WriteLine("LINK ERROR: " + response.StatusCode.ToString() + " : " + this.link);
-            //        this.sellerName = "### LINK ERROR, Code: " + response.StatusCode.ToString();
-            //        return;
-            //    }
-            //}
-            //catch
-            //{
-            //        //Console.WriteLine("LINK ERROR: Code: 404 - "  + this.link);
-            //        this.sellerName = "### LINK ERROR, Code: 404 Not Found";
-            //        return;
-            //}
-            
-
             var htmlDocument = new HtmlDocument();
             htmlDocument.LoadHtml(html);
 
@@ -294,13 +408,13 @@ namespace PricesCollector
                                     this.sellerName = jsVarValue["name"].ToString();
                                     break;
                                 case "otherSeller":
-                                    this.otherSeller.Clear();
+                                    this.otherSellerTiki.Clear();
                                     foreach (var obj in jsVarValue)
                                     {
                                         Product p = new Product();
                                         p.name = (string)obj["name"];
                                         p.price = Int32.Parse((string)obj["price"]);
-                                        this.otherSeller.Add(p);
+                                        this.otherSellerTiki.Add(p);
                                     }
                                     break;
                                 case "price":
@@ -324,8 +438,11 @@ namespace PricesCollector
                 }
             }
 
-            // Fetch other websites
-            populateOtherWebsite();
+            if (this.isFullFetching)
+            {
+                // Fetch other websites
+                populateOtherWebsite();
+            }
         }
 
         public void populateDataFromTikiLinkVersion1()
@@ -415,14 +532,14 @@ namespace PricesCollector
                 }
                 this.discountPrice = Int32.Parse(listPrice);
                 this.sku = (string)currentSellerJson["currentSeller"]["sku"];
-                this.otherSeller.Clear();
+                this.otherSellerTiki.Clear();
 
                 foreach (var obj in otherSellerJson["otherSeller"])
                 {
                     Product p = new Product();
                     p.name = (string)obj["name"];
                     p.price = Int32.Parse((string)obj["price"]);
-                    this.otherSeller.Add(p);
+                    this.otherSellerTiki.Add(p);
                 }
             }
             catch (Exception ex)
@@ -476,7 +593,7 @@ namespace PricesCollector
         public void dump()
         {
             Console.WriteLine("currentName : {0} : price: {1}", sellerName, currentPrice);
-            foreach (var d in otherSeller)
+            foreach (var d in otherSellerTiki)
             {
                 Console.WriteLine("Product name: {0} : price: {1}", d.name, d.price);
             }

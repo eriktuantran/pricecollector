@@ -71,8 +71,8 @@
             // fetchDataToolStripMenuItem
             // 
             this.fetchDataToolStripMenuItem.Name = "fetchDataToolStripMenuItem";
-            this.fetchDataToolStripMenuItem.Size = new System.Drawing.Size(129, 36);
-            this.fetchDataToolStripMenuItem.Text = "Fetch Tiki";
+            this.fetchDataToolStripMenuItem.Size = new System.Drawing.Size(144, 36);
+            this.fetchDataToolStripMenuItem.Text = "Fetch price";
             this.fetchDataToolStripMenuItem.Click += new System.EventHandler(this.fetchDataToolStripMenuItem_Click);
             // 
             // toolStripMenuRefreshView
@@ -211,6 +211,10 @@
             this.dataGridView2.RowTemplate.Height = 33;
             this.dataGridView2.Size = new System.Drawing.Size(1783, 682);
             this.dataGridView2.TabIndex = 0;
+            this.dataGridView2.CellBeginEdit += new System.Windows.Forms.DataGridViewCellCancelEventHandler(this.dataGridView_CellBeginEdit);
+            this.dataGridView2.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView_CellClick);
+            this.dataGridView2.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView_CellEndEdit);
+            this.dataGridView2.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView_CellValueChanged);
             // 
             // MainForm
             // 

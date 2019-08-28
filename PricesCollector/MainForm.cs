@@ -12,6 +12,7 @@ using System.Windows.Forms;
 using LumenWorks.Framework.IO.Csv;
 using System.IO;
 using System.Net;
+using System.Threading;
 
 namespace PricesCollector
 {
@@ -49,6 +50,7 @@ namespace PricesCollector
             InitializeComponent();
             createDatagridview1();
             createDatagridview2();
+            tabControl1.SelectedIndex = 1;
         }
 
 
@@ -68,11 +70,11 @@ namespace PricesCollector
             dataGridView1.Columns.Add("msku", "MSKU");
             dataGridView1.Columns.Add("current_price", "Tiki price");
             dataGridView1.Columns.Add("minimum_price", "Minimum price");
-            dataGridView1.Columns.Add("lowest_price", "Lowest price");
+            dataGridView1.Columns.Add("lowest_price_tiki", "Lowest price");
             dataGridView1.Columns.Add("discount_price", "Discount price");
 
             DataGridViewTextBoxColumn otherSellerColumn = new DataGridViewTextBoxColumn();
-            otherSellerColumn.Name = "other_seller";
+            otherSellerColumn.Name = "other_seller_tiki";
             otherSellerColumn.HeaderText = "Other Seller";
             otherSellerColumn.DefaultCellStyle.WrapMode = DataGridViewTriState.True;
             //otherSellerColumn.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
@@ -108,17 +110,44 @@ namespace PricesCollector
             dataGridView2.Columns.Add("product_name", "Product name");
             dataGridView2.Columns.Add("sku", "SKU");
             dataGridView2.Columns.Add("msku", "MSKU");
-            dataGridView2.Columns.Add("current_price", "Tiki price");
-            dataGridView2.Columns.Add("minimum_price", "Minimum price");
-            dataGridView2.Columns.Add("lowest_price", "Lowest price");
-            dataGridView2.Columns.Add("discount_price", "Discount price");
 
-            DataGridViewTextBoxColumn otherSellerColumn = new DataGridViewTextBoxColumn();
-            otherSellerColumn.Name = "other_seller";
-            otherSellerColumn.HeaderText = "Other seller";
-            otherSellerColumn.DefaultCellStyle.WrapMode = DataGridViewTriState.True;
-            //otherSellerColumn.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
-            dataGridView2.Columns.Add(otherSellerColumn);
+            dataGridView2.Columns.Add("current_price", "Tiki price");
+            dataGridView2.Columns.Add("discount_price", "Discount price");
+            dataGridView2.Columns.Add("minimum_price", "Minimum price");
+
+            DataGridViewTextBoxColumn otherTiki = new DataGridViewTextBoxColumn();
+            otherTiki.Name = "other_seller_tiki";
+            otherTiki.HeaderText = "Other Tiki";
+            otherTiki.DefaultCellStyle.WrapMode = DataGridViewTriState.True;
+            //otherTiki.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+            dataGridView2.Columns.Add(otherTiki);
+
+            DataGridViewTextBoxColumn otherLazada = new DataGridViewTextBoxColumn();
+            otherLazada.Name = "other_seller_lazada";
+            otherLazada.HeaderText = "Other Lazada";
+            otherLazada.DefaultCellStyle.WrapMode = DataGridViewTriState.True;
+            //otherLazada.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+            dataGridView2.Columns.Add(otherLazada);
+
+            DataGridViewTextBoxColumn otherShopee = new DataGridViewTextBoxColumn();
+            otherShopee.Name = "other_seller_shopee";
+            otherShopee.HeaderText = "Other Shopee";
+            otherShopee.DefaultCellStyle.WrapMode = DataGridViewTriState.True;
+            //otherShopee.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+            dataGridView2.Columns.Add(otherShopee);
+
+            DataGridViewTextBoxColumn otherSendo = new DataGridViewTextBoxColumn();
+            otherSendo.Name = "other_seller_sendo";
+            otherSendo.HeaderText = "Other Sendo";
+            otherSendo.DefaultCellStyle.WrapMode = DataGridViewTriState.True;
+            //otherSendo.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+            dataGridView2.Columns.Add(otherSendo);
+
+            dataGridView2.Columns.Add("lowest_price_tiki", "Lowest Tiki");
+            dataGridView2.Columns.Add("lowest_price_lazada", "Lowest Lazada");
+            dataGridView2.Columns.Add("lowest_price_shopee", "Lowest Shopee");
+            dataGridView2.Columns.Add("lowest_price_sendo", "Lowest Sendo");
+
 
             DataGridViewCheckBoxColumn checkColumn = new DataGridViewCheckBoxColumn();
             checkColumn.Name = "active";
@@ -128,10 +157,31 @@ namespace PricesCollector
 
             dataGridView2.Columns.Add("link_tiki", "Tiki link");
 
-            dataGridView2.Columns.Add("link_lazada", "Lazada links");
+            DataGridViewTextBoxColumn linkLazada = new DataGridViewTextBoxColumn();
+            linkLazada.Name = "link_lazada";
+            linkLazada.HeaderText = "Lazada links";
+            linkLazada.DefaultCellStyle.WrapMode = DataGridViewTriState.True;
+            linkLazada.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+            dataGridView2.Columns.Add(linkLazada);
+
+            DataGridViewTextBoxColumn linkShopee = new DataGridViewTextBoxColumn();
+            linkShopee.Name = "link_shopee";
+            linkShopee.HeaderText = "Shopee links";
+            linkShopee.DefaultCellStyle.WrapMode = DataGridViewTriState.True;
+            linkShopee.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+            dataGridView2.Columns.Add(linkShopee);
+
+            DataGridViewTextBoxColumn linkSendo = new DataGridViewTextBoxColumn();
+            linkSendo.Name = "link_sendo";
+            linkSendo.HeaderText = "Sendo links";
+            linkSendo.DefaultCellStyle.WrapMode = DataGridViewTriState.True;
+            linkSendo.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+            dataGridView2.Columns.Add(linkSendo);
+
+
 
             //Datagridview Width/Height not overflow
-            dataGridView2.Columns[Utilities.colNameToIndex("link_tiki", dataGridView2)].Width = 500;
+            dataGridView2.Columns[Utilities.colNameToIndex("link_tiki", dataGridView2)].Width = 100;// 500;
             dataGridView2.Width = this.tabControl1.Width - 10;
             dataGridView2.Height = this.tabControl1.Height - 30;
             dataGridView2.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
@@ -268,6 +318,18 @@ namespace PricesCollector
             {
                 Utilities.updateLinkTikiCellValue(mydataGridView, e.RowIndex, productId, this.connection);
             }
+            else if (e.ColumnIndex == Utilities.colNameToIndex("link_lazada", mydataGridView))
+            {
+                Utilities.updateLinkLazadaCellValue(mydataGridView, e.RowIndex, productId, this.connection);
+            }
+            else if (e.ColumnIndex == Utilities.colNameToIndex("link_shopee", mydataGridView))
+            {
+                Utilities.updateLinkShopeeCellValue(mydataGridView, e.RowIndex, productId, this.connection);
+            }
+            else if (e.ColumnIndex == Utilities.colNameToIndex("link_sendo", mydataGridView))
+            {
+                Utilities.updateLinkSendoCellValue(mydataGridView, e.RowIndex, productId, this.connection);
+            }
             else if (e.ColumnIndex == Utilities.colNameToIndex("active", mydataGridView))
             {
                 Utilities.updateActiveCheckboxCellValue(mydataGridView, e.RowIndex, productId, this.connection);
@@ -276,6 +338,7 @@ namespace PricesCollector
             {
                 Utilities.updateMinimumPriceCellValue(mydataGridView, e.RowIndex, productId, lastMinimumPrice, this.connection);
             }
+
         }
 
         private string lastMinimumPrice = "";
@@ -343,7 +406,6 @@ namespace PricesCollector
             }
         }
 
-
         private void fetchDataToolStripMenuItem_Click(object sender, EventArgs e)
         {
             if(isFetching)
@@ -387,7 +449,7 @@ namespace PricesCollector
             if (this.OpenConnection() == true)
             {
                 MySqlDataReader reader = null;
-                string selectCmd = "select id,link_tiki,active,link_lazada from product;";
+                string selectCmd = "select id,active,link_tiki,link_lazada,link_shopee,link_sendo from product;";
 
                 MySqlCommand command = new MySqlCommand(selectCmd, connection);
                 reader = command.ExecuteReader();
@@ -399,15 +461,19 @@ namespace PricesCollector
                         try
                         {
                             string id = reader.GetString(0);
-                            string link_tiki = reader.GetString(1);
-                            string active = reader.GetString(2).ToLower();
+                            string active = reader.GetString(1).ToLower();
+                            string link_tiki = reader.GetString(2);
                             string linkLazada = reader.GetString(3);
+                            string linkShopee = reader.GetString(4);
+                            string linkSendo = reader.GetString(5);
 
                             ProductData dat = new ProductData();
-                            dat.linkTiki = link_tiki;
                             dat.productId = Int32.Parse(id);
-                            dat.isActive = active=="true"? true:false;
-                            dat.linkLazada = linkLazada;
+                            dat.isActive = active == "true" ? true : false;
+                            dat.linkTiki = link_tiki;
+                            dat.linkLazadaRaw = linkLazada;
+                            dat.linkShopeeRaw = linkShopee;
+                            dat.linkSendoRaw = linkSendo;
                             myDict[id] = dat;
                         }
                         catch { }
@@ -440,11 +506,17 @@ namespace PricesCollector
                     continue;
                 }
 
+                if (tabControl1.SelectedIndex == 1) // Tab other website is selected
+                {
+                    data.isFullFetching = true;
+                }
+
                 startProgressFetchingByMultiThread(data);
             }
             progressBarFetching.Maximum = backgroundWorkerForFetchingList.Count;
         }
 
+        private AutoResetEvent _workerCompleted = new AutoResetEvent(false);
         private void startProgressFetchingByMultiThread(ProductData data)
         {
             try
@@ -536,13 +608,12 @@ namespace PricesCollector
                 foreach (var item in myDict)
                 {
                     ProductData data = item.Value;
-                    List<Product> otherSellerList = data.SortedList();
-                    string otherSellerStringToDB = "";
-                    foreach (var product in otherSellerList)
-                    {
-                        otherSellerStringToDB += product.price + "_" + product.name + "\n";
-                    }
-                    otherSellerStringToDB = otherSellerStringToDB.Trim();
+                    
+                    string otherSellerTikiStringToDB = Utilities.getOtherSellerString(data.SortedListTiki());
+                    string otherSellerLazadaStringToDB = Utilities.getOtherSellerString(data.SortedListLazada());
+                    string otherSellerShopeeStringToDB = Utilities.getOtherSellerString(data.SortedListShopee());
+                    string otherSellerSendoStringToDB = Utilities.getOtherSellerString(data.SortedListSendo());
+
 
                     //Console.WriteLine("{0} _ {1} _ {2} _ {3} _ {4}", item.Key, data.link_tiki, data.sellerName, data.currentPrice.ToString(), data.lowestPrice.ToString());
 
@@ -554,8 +625,14 @@ namespace PricesCollector
                     cmd.CommandText += "sku ='" + data.sku + "',";
                     cmd.CommandText += "current_price ='" + data.currentPrice.ToString() + "',";
                     cmd.CommandText += "discount_price ='" + data.discountPrice.ToString() + "',";
-                    cmd.CommandText += "lowest_price ='" + data.lowestPrice.ToString() + "',";
-                    cmd.CommandText += "other_seller ='" + otherSellerStringToDB + "' ";
+                    cmd.CommandText += "lowest_price_tiki ='" + data.lowestPriceTiki.ToString() + "',";
+                    cmd.CommandText += "lowest_price_lazada ='" + data.lowestPriceLazada.ToString() + "',";
+                    cmd.CommandText += "lowest_price_shopee ='" + data.lowestPriceShopee.ToString() + "',";
+                    cmd.CommandText += "lowest_price_sendo ='" + data.lowestPriceSendo.ToString() + "',";
+                    cmd.CommandText += "other_seller_tiki ='" + otherSellerTikiStringToDB + "',";
+                    cmd.CommandText += "other_seller_lazada ='" + otherSellerLazadaStringToDB + "',";
+                    cmd.CommandText += "other_seller_shopee ='" + otherSellerShopeeStringToDB + "',";
+                    cmd.CommandText += "other_seller_sendo ='" + otherSellerSendoStringToDB + "' ";
                     cmd.CommandText += "where id='" + item.Key + "';";
                     cmd.ExecuteNonQuery();
                 }
@@ -575,7 +652,11 @@ namespace PricesCollector
 
             if (this.OpenConnection() == true)
             {
-                string columnsToDisplay = "id,seller_name,product_group,product_name,sku,msku,current_price,minimum_price,lowest_price,discount_price,other_seller,active,link_tiki,link_lazada";
+                string columnsToDisplay = "id,seller_name,product_group,product_name,sku,msku," +
+                    "current_price,discount_price,minimum_price," +
+                    "other_seller_tiki,other_seller_lazada,other_seller_shopee,other_seller_sendo," +
+                    "lowest_price_tiki,lowest_price_lazada,lowest_price_shopee,lowest_price_sendo," +
+                    "active,link_tiki,link_lazada,link_shopee,link_sendo";
                 mySqlDataAdapter = new MySqlDataAdapter("select "+ columnsToDisplay + " from product", connection);
                 DataSet DS = new DataSet();
                 mySqlDataAdapter.Fill(DS);
@@ -588,13 +669,13 @@ namespace PricesCollector
 
                 foreach (DataRow _row in tableFromDb.Rows)
                 {
-                    int currentPrice = Int32.Parse(_row.ItemArray[Utilities.colNameToIndex("current_price", dataGridView2)].ToString());
-                    int lowestPrice = Int32.Parse(_row.ItemArray[Utilities.colNameToIndex("lowest_price", dataGridView2)].ToString());
-                    //Console.WriteLine("{0}==={1}",currentPrice, lowestPrice);
+                    int currentPriceTiki = Int32.Parse(_row.ItemArray[Utilities.colNameToIndex("current_price", dataGridView2)].ToString());
+                    int lowestPriceTiki = Int32.Parse(_row.ItemArray[Utilities.colNameToIndex("lowest_price_tiki", dataGridView2)].ToString());
+                    //bool isActive = _row.ItemArray[Utilities.colNameToIndex("active", dataGridView2)].ToString().ToLower() == "true" ? true : false;
 
                     MyRow myRow = new MyRow();
                     myRow.row = _row;
-                    if ((lowestPrice < currentPrice && lowestPrice != 0) || currentPrice == 0)
+                    if ((lowestPriceTiki < currentPriceTiki && lowestPriceTiki != 0) || currentPriceTiki == 0 )
                     {
                         myRow.isLowest = false;
                     }
@@ -616,15 +697,26 @@ namespace PricesCollector
 
                     dataGridView2.Rows.Add(_row.ItemArray);
 
-                    //DataGridViewComboBoxCell cellCombo = new DataGridViewComboBoxCell();
-                    //string str = _row["other_seller"].ToString();
-                    //List<string> s = str.Split('\n').ToList();
-                    //cellCombo.DataSource = s;
-                    //dataGridView2.Rows[rowIndex].Cells["other_seller"].Value = str;
 
-                    //Color
+                    //Color for lowest price
+                    string maxCol, minCol;
+                    int max, min;
+                    Utilities.getMinMaxAndColumnName(dataGridView2.Rows[rowIndex].Cells, out maxCol, out max, out minCol, out min);
+                    
+                    if (max > 0)
+                    {
+                        dataGridView2.Rows[rowIndex].Cells[maxCol].Style.BackColor = Color.Pink;
+                    }
+                    if (min != 999999999 && min != max)
+                    {
+                        dataGridView2.Rows[rowIndex].Cells[minCol].Style.BackColor = Color.Green;
+                    }
+
+
+
+                    //Color for Tiki price
                     int currentPrice = Int32.Parse( dataGridView2.Rows[rowIndex].Cells["current_price"].Value.ToString());
-                    int lowestPrice = Int32.Parse(dataGridView2.Rows[rowIndex].Cells["lowest_price"].Value.ToString());
+                    int lowestPrice = Int32.Parse(dataGridView2.Rows[rowIndex].Cells["lowest_price_tiki"].Value.ToString());
 
                     if ((lowestPrice < currentPrice && lowestPrice != 0) || currentPrice == 0 )
                     {
@@ -634,6 +726,11 @@ namespace PricesCollector
                     {
                         dataGridView2.Rows[rowIndex].Cells["current_price"].Style.BackColor = Color.Green;
                     }
+
+
+
+
+
 
                     //Link color
                     var obj = (DataGridViewTextBoxCell)dataGridView2.Rows[rowIndex].Cells["link_tiki"];
@@ -654,7 +751,7 @@ namespace PricesCollector
 
             if (this.OpenConnection() == true)
             {
-                string columnsToDisplay = "id,seller_name,product_group,product_name,sku,msku,current_price,minimum_price,lowest_price,discount_price,other_seller,active,link_tiki,link_lazada";
+                string columnsToDisplay = "id,seller_name,product_group,product_name,sku,msku,current_price,minimum_price,lowest_price_tiki,discount_price,other_seller_tiki,active,link_tiki,link_lazada";
                 mySqlDataAdapter = new MySqlDataAdapter("select " + columnsToDisplay + " from product", connection);
                 DataSet DS = new DataSet();
                 mySqlDataAdapter.Fill(DS);
@@ -668,7 +765,7 @@ namespace PricesCollector
                 foreach (DataRow _row in tableFromDb.Rows)
                 {
                     int currentPrice = Int32.Parse(_row.ItemArray[Utilities.colNameToIndex("current_price", dataGridView1)].ToString());
-                    int lowestPrice = Int32.Parse(_row.ItemArray[Utilities.colNameToIndex("lowest_price", dataGridView1)].ToString());
+                    int lowestPrice = Int32.Parse(_row.ItemArray[Utilities.colNameToIndex("lowest_price_tiki", dataGridView1)].ToString());
                     //Console.WriteLine("{0}==={1}",currentPrice, lowestPrice);
 
                     MyRow myRow = new MyRow();
@@ -696,14 +793,14 @@ namespace PricesCollector
                     dataGridView1.Rows.Add(_row.ItemArray);
 
                     //DataGridViewComboBoxCell cellCombo = new DataGridViewComboBoxCell();
-                    //string str = _row["other_seller"].ToString();
+                    //string str = _row["other_seller_tiki"].ToString();
                     //List<string> s = str.Split('\n').ToList();
                     //cellCombo.DataSource = s;
-                    //dataGridView1.Rows[rowIndex].Cells["other_seller"].Value = str;
+                    //dataGridView1.Rows[rowIndex].Cells["other_seller_tiki"].Value = str;
 
                     //Color
                     int currentPrice = Int32.Parse(dataGridView1.Rows[rowIndex].Cells["current_price"].Value.ToString());
-                    int lowestPrice = Int32.Parse(dataGridView1.Rows[rowIndex].Cells["lowest_price"].Value.ToString());
+                    int lowestPrice = Int32.Parse(dataGridView1.Rows[rowIndex].Cells["lowest_price_tiki"].Value.ToString());
 
                     if ((lowestPrice < currentPrice && lowestPrice != 0) || currentPrice == 0)
                     {
