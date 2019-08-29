@@ -626,13 +626,23 @@ namespace PricesCollector
                     cmd.CommandText += "current_price ='" + data.currentPrice.ToString() + "',";
                     cmd.CommandText += "discount_price ='" + data.discountPrice.ToString() + "',";
                     cmd.CommandText += "lowest_price_tiki ='" + data.lowestPriceTiki.ToString() + "',";
-                    cmd.CommandText += "lowest_price_lazada ='" + data.lowestPriceLazada.ToString() + "',";
-                    cmd.CommandText += "lowest_price_shopee ='" + data.lowestPriceShopee.ToString() + "',";
-                    cmd.CommandText += "lowest_price_sendo ='" + data.lowestPriceSendo.ToString() + "',";
-                    cmd.CommandText += "other_seller_tiki ='" + otherSellerTikiStringToDB + "',";
-                    cmd.CommandText += "other_seller_lazada ='" + otherSellerLazadaStringToDB + "',";
-                    cmd.CommandText += "other_seller_shopee ='" + otherSellerShopeeStringToDB + "',";
-                    cmd.CommandText += "other_seller_sendo ='" + otherSellerSendoStringToDB + "' ";
+                    cmd.CommandText += "other_seller_tiki ='" + otherSellerTikiStringToDB;
+
+                    if (tabControl1.SelectedIndex == 1)
+                    {
+                        cmd.CommandText += "',";
+                        cmd.CommandText += "lowest_price_lazada ='" + data.lowestPriceLazada.ToString() + "',";
+                        cmd.CommandText += "lowest_price_shopee ='" + data.lowestPriceShopee.ToString() + "',";
+                        cmd.CommandText += "lowest_price_sendo ='" + data.lowestPriceSendo.ToString() + "',";
+                        cmd.CommandText += "other_seller_lazada ='" + otherSellerLazadaStringToDB + "',";
+                        cmd.CommandText += "other_seller_shopee ='" + otherSellerShopeeStringToDB + "',";
+                        cmd.CommandText += "other_seller_sendo ='" + otherSellerSendoStringToDB + "' ";
+                    }
+                    else
+                    {
+                        cmd.CommandText += "' ";
+                    }
+
                     cmd.CommandText += "where id='" + item.Key + "';";
                     cmd.ExecuteNonQuery();
                 }
@@ -667,69 +677,75 @@ namespace PricesCollector
                 DataTable tableFromDb = DS.Tables[0];
                 List<MyRow> rowList = new List<MyRow>();
 
+                // Grouping the red or not read cell
                 foreach (DataRow _row in tableFromDb.Rows)
                 {
                     int currentPriceTiki = Int32.Parse(_row.ItemArray[Utilities.colNameToIndex("current_price", dataGridView2)].ToString());
-                    int lowestPriceTiki = Int32.Parse(_row.ItemArray[Utilities.colNameToIndex("lowest_price_tiki", dataGridView2)].ToString());
-                    //bool isActive = _row.ItemArray[Utilities.colNameToIndex("active", dataGridView2)].ToString().ToLower() == "true" ? true : false;
+                    List<int> listOtherPrice = new List<int>();
+                    int temp = Int32.Parse(_row.ItemArray[Utilities.colNameToIndex("lowest_price_tiki", dataGridView2)].ToString());
+                    if(temp != 0) listOtherPrice.Add(temp);
+                    temp = Int32.Parse(_row.ItemArray[Utilities.colNameToIndex("lowest_price_lazada", dataGridView2)].ToString());
+                    if (temp != 0) listOtherPrice.Add(temp);
+                    temp = Int32.Parse(_row.ItemArray[Utilities.colNameToIndex("lowest_price_shopee", dataGridView2)].ToString());
+                    if (temp != 0) listOtherPrice.Add(temp);
+                    temp = Int32.Parse(_row.ItemArray[Utilities.colNameToIndex("lowest_price_sendo", dataGridView2)].ToString());
+                    if (temp != 0) listOtherPrice.Add(temp);
+
+
+                    int lowestPriceTotal = 0;
+                    if (listOtherPrice.Count != 0) lowestPriceTotal = listOtherPrice.Min();
+
+                    bool isActive = _row.ItemArray[Utilities.colNameToIndex("active", dataGridView2)].ToString().ToLower() == "true" ? true : false;
 
                     MyRow myRow = new MyRow();
                     myRow.row = _row;
-                    if ((lowestPriceTiki < currentPriceTiki && lowestPriceTiki != 0) || currentPriceTiki == 0 )
+                    if ((lowestPriceTotal < currentPriceTiki && lowestPriceTotal != 0) || (currentPriceTiki == 0 && isActive == true))
                     {
-                        myRow.isLowest = false;
+                        myRow.isLowest = false; // RED group
                     }
                     else
                     {
-                        myRow.isLowest = true;
+                        myRow.isLowest = true; // Green group
                     }
                     rowList.Add(myRow);
                 }
 
                 List<MyRow> sortedRowList = rowList.OrderBy(o => o.isLowest).ToList();
 
-
                 int rowIndex = 0;
                 foreach(MyRow row in sortedRowList)
-                //foreach (DataRow _row in tableFromDb.Rows)
                 {
                     var _row = row.row;
 
                     dataGridView2.Rows.Add(_row.ItemArray);
 
-
-                    //Color for lowest price
+                    //Color for lowest price [Tiki, Lazada, SHopee, Sendo]
                     string maxCol, minCol;
                     int max, min;
                     Utilities.getMinMaxAndColumnName(dataGridView2.Rows[rowIndex].Cells, out maxCol, out max, out minCol, out min);
                     
                     if (max > 0)
                     {
-                        dataGridView2.Rows[rowIndex].Cells[maxCol].Style.BackColor = Color.Pink;
+                        dataGridView2.Rows[rowIndex].Cells[maxCol].Style.BackColor = Color.LightPink;
                     }
-                    if (min != 999999999 && min != max)
+                    if (min != Int32.MaxValue && min != max)
                     {
-                        dataGridView2.Rows[rowIndex].Cells[minCol].Style.BackColor = Color.Green;
+                        dataGridView2.Rows[rowIndex].Cells[minCol].Style.BackColor = Color.LightGreen;
                     }
 
 
-
-                    //Color for Tiki price
+                    //Color for Tiki price cell
                     int currentPrice = Int32.Parse( dataGridView2.Rows[rowIndex].Cells["current_price"].Value.ToString());
-                    int lowestPrice = Int32.Parse(dataGridView2.Rows[rowIndex].Cells["lowest_price_tiki"].Value.ToString());
-
+                    int lowestPrice = min;// Int32.Parse(dataGridView2.Rows[rowIndex].Cells["lowest_price_tiki"].Value.ToString());
+                    
                     if ((lowestPrice < currentPrice && lowestPrice != 0) || currentPrice == 0 )
                     {
                         dataGridView2.Rows[rowIndex].Cells["current_price"].Style.BackColor = Color.Red;
                     }
                     else
                     {
-                        dataGridView2.Rows[rowIndex].Cells["current_price"].Style.BackColor = Color.Green;
+                        dataGridView2.Rows[rowIndex].Cells["current_price"].Style.BackColor = Color.LightGreen;
                     }
-
-
-
-
 
 
                     //Link color
@@ -808,7 +824,7 @@ namespace PricesCollector
                     }
                     else
                     {
-                        dataGridView1.Rows[rowIndex].Cells["current_price"].Style.BackColor = Color.Green;
+                        dataGridView1.Rows[rowIndex].Cells["current_price"].Style.BackColor = Color.LightGreen;
                     }
 
                     //Link color

@@ -146,170 +146,7 @@ namespace PricesCollector
             }
         }
 
-        private Product geProductDataFromLazada(string link)
-        {
-            Product product = new Product();
-            product.price = 0;
-            product.name = "Lazada";
 
-            string html = getHtmlFromWebsite(link);
-            var htmlDocument = new HtmlDocument();
-            htmlDocument.LoadHtml(html);
-
-            //Parse the Javascript values
-            var javascriptGroups = htmlDocument.DocumentNode.Descendants().Where(n => n.Name == "script");
-
-            foreach (var group in javascriptGroups)
-            {
-                if (group.InnerText.Contains("priceCurrency"))
-                {
-                    JObject json = JObject.Parse(group.InnerText);
-                    JToken productPrice = json["offers"]["price"];
-                    JToken sellerName = json["offers"]["seller"]["name"];
-
-                    product.price = Int32.Parse(productPrice.ToString());
-                    product.name = sellerName.ToString();
-
-                    break;
-                }
-                else
-                {
-                    continue;
-                }
-            }
-
-            return product;
-        }
-
-        private Product geProductDataFromShopee(string link)
-        {
-            Product product = new Product();
-
-            product.name = "Shopee";
-            product.price = 0;
-
-
-            string html = getHtmlFromWebsite(link);
-            var htmlDocument = new HtmlDocument();
-            htmlDocument.LoadHtml(html);
-
-            foreach(var line in html.Split('\n'))
-            {
-                if(line.Contains("class='price'"))
-                {
-                    Regex rx = new Regex(@"<div class=.price.*emprop=.offers.*itemscope.[\s\S]+content=.(\d+)\.\d+.\/><link",
-                        RegexOptions.Compiled | RegexOptions.IgnoreCase);
-
-                    // Find matches.
-                    MatchCollection matches = rx.Matches(line);
-
-                    foreach (Match match in matches)
-                    {
-                        try
-                        {
-
-                            GroupCollection groups = match.Groups;
-                            string productPrice = groups[1].Value;
-                            product.price = Int32.Parse(productPrice);
-                        }
-                        catch
-                        { }
-                    }
-                }
-            }
-
-            return product;
-        }
-
-        private Product geProductDataFromSendo(string link)
-        {
-            Product product = new Product();
-
-            product.name = "Sendo";
-            product.price = 0;
-
-            
-            string html = getHtmlFromWebsite(link);
-            var htmlDocument = new HtmlDocument();
-            htmlDocument.LoadHtml(html);
-
-            //Parse the Javascript values
-            var javascriptGroups = htmlDocument.DocumentNode.Descendants().Where(n => n.Name == "script");
-
-            foreach (var group in javascriptGroups)
-            {
-                if (group.InnerText.Contains("ProductBasic"))
-                {
-                    string textToFind = "__INITIAL_STATE__=";
-                    int index = group.InnerText.IndexOf(textToFind);
-                    if (index != -1)
-                    {
-
-                        string jsonStr = group.InnerText.Substring(index);
-                        jsonStr = jsonStr.Replace(textToFind, "");
-                        
-                        JObject json = JObject.Parse(jsonStr);
-
-                        JToken token = json["@"]["data"]["ProductBasic"]["_"];
-                        string key = token["__active__"].ToString();
-
-                        try
-                        {
-                            product.price = Int32.Parse(token[key]["data"]["final_price"].ToString());
-                            product.name = token[key]["data"]["shop_info"]["shop_name"].ToString();
-                        }
-                        catch
-                        {
-                        }
-
-                        break;
-                    }
-                }
-                else
-                {
-                    continue;
-                }
-            }
-
-            return product;
-
-            
-        }
-
-        private void populateOtherWebsite()
-        {
-            this.otherSellerLazada.Clear();
-            this.otherSellerShopee.Clear();
-            this.otherSellerSendo.Clear();
-
-            foreach (var link in this.linkLazadaRaw.Split('\n'))
-            {
-                if (link.Trim() == "") continue;
-                Console.WriteLine("populateOtherWebsite: Lazada {0}--{1}", this.productId, link);
-
-                Product p = geProductDataFromLazada(link);
-                this.otherSellerLazada.Add(p);
-            }
-
-            foreach (var link in this.linkShopeeRaw.Split('\n'))
-            {
-                if (link.Trim() == "") continue;
-                Console.WriteLine("populateOtherWebsite: Shopee {0}--{1}", this.productId, link);
-
-                Product p = geProductDataFromShopee(link);
-                this.otherSellerShopee.Add(p);
-            }
-
-            foreach (var link in this.linkSendoRaw.Split('\n'))
-            {
-                if (link.Trim() == "") continue;
-                Console.WriteLine("populateOtherWebsite: Sendo {0}--{1}", this.productId, link);
-
-                Product p = geProductDataFromSendo(link);
-                this.otherSellerSendo.Add(p);
-            }
-
-        }
 
         private string getHtmlFromWebsite(string urlAddress)
         {
@@ -365,11 +202,10 @@ namespace PricesCollector
             //Parse the discount-container
             try
             {
-                var discountHtmlNode = htmlDocument.DocumentNode.SelectSingleNode("//div[@id='discount-container']");
-                var subNode = discountHtmlNode.SelectSingleNode("//span[@class='price']");
-                if (subNode != null)
+                var discountHtmlNode = htmlDocument.DocumentNode.SelectSingleNode("//div[@id='discount-container']//span[@class='price']");
+                if (discountHtmlNode != null)
                 {
-                    string discountValue = subNode.InnerHtml;
+                    string discountValue = discountHtmlNode.InnerHtml;
                     Regex digitsOnly = new Regex(@"[^\d]");
                     discountValue = digitsOnly.Replace(discountValue, "");
                     this.discountPrice = Int32.Parse(discountValue);
@@ -444,6 +280,173 @@ namespace PricesCollector
                 populateOtherWebsite();
             }
         }
+
+        private void populateOtherWebsite()
+        {
+            this.otherSellerLazada.Clear();
+            this.otherSellerShopee.Clear();
+            this.otherSellerSendo.Clear();
+
+            foreach (var link in this.linkLazadaRaw.Split('\n'))
+            {
+                if (link.Trim() == "") continue;
+                Console.WriteLine("populateOtherWebsite: Lazada {0}--{1}", this.productId, link);
+
+                Product p = geProductDataFromLazada(link);
+                this.otherSellerLazada.Add(p);
+            }
+
+            foreach (var link in this.linkShopeeRaw.Split('\n'))
+            {
+                if (link.Trim() == "") continue;
+                Console.WriteLine("populateOtherWebsite: Shopee {0}--{1}", this.productId, link);
+
+                Product p = geProductDataFromShopee(link);
+                this.otherSellerShopee.Add(p);
+            }
+
+            foreach (var link in this.linkSendoRaw.Split('\n'))
+            {
+                if (link.Trim() == "") continue;
+                Console.WriteLine("populateOtherWebsite: Sendo {0}--{1}", this.productId, link);
+
+                Product p = geProductDataFromSendo(link);
+                this.otherSellerSendo.Add(p);
+            }
+
+        }
+
+        private Product geProductDataFromLazada(string link)
+        {
+            Product product = new Product();
+            product.price = 0;
+            product.name = "Lazada";
+
+            string html = getHtmlFromWebsite(link);
+            var htmlDocument = new HtmlDocument();
+            htmlDocument.LoadHtml(html);
+
+            //Parse the Javascript values
+            var javascriptGroups = htmlDocument.DocumentNode.Descendants().Where(n => n.Name == "script");
+
+            foreach (var group in javascriptGroups)
+            {
+                if (group.InnerText.Contains("priceCurrency"))
+                {
+                    JObject json = JObject.Parse(group.InnerText);
+                    JToken productPrice = json["offers"]["price"];
+                    JToken sellerName = json["offers"]["seller"]["name"];
+
+                    product.price = Int32.Parse(productPrice.ToString());
+                    product.name = sellerName.ToString();
+
+                    break;
+                }
+                else
+                {
+                    continue;
+                }
+            }
+
+            return product;
+        }
+
+        private Product geProductDataFromShopee(string link)
+        {
+            Product product = new Product();
+
+            product.name = "Shopee";
+            product.price = 0;
+
+
+            string html = getHtmlFromWebsite(link);
+            var htmlDocument = new HtmlDocument();
+            htmlDocument.LoadHtml(html);
+
+            foreach (var line in html.Split('\n'))
+            {
+                if (line.Contains("class='price'"))
+                {
+                    Regex rx = new Regex(@"<div class=.price.*emprop=.offers.*itemscope.[\s\S]+content=.(\d+)\.\d+.\/><link",
+                        RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
+                    // Find matches.
+                    MatchCollection matches = rx.Matches(line);
+
+                    foreach (Match match in matches)
+                    {
+                        try
+                        {
+
+                            GroupCollection groups = match.Groups;
+                            string productPrice = groups[1].Value;
+                            product.price = Int32.Parse(productPrice);
+                        }
+                        catch
+                        { }
+                    }
+                }
+            }
+
+            return product;
+        }
+
+        private Product geProductDataFromSendo(string link)
+        {
+            Product product = new Product();
+
+            product.name = "Sendo";
+            product.price = 0;
+
+
+            string html = getHtmlFromWebsite(link);
+            var htmlDocument = new HtmlDocument();
+            htmlDocument.LoadHtml(html);
+
+            //Parse the Javascript values
+            var javascriptGroups = htmlDocument.DocumentNode.Descendants().Where(n => n.Name == "script");
+
+            foreach (var group in javascriptGroups)
+            {
+                if (group.InnerText.Contains("ProductBasic"))
+                {
+                    string textToFind = "__INITIAL_STATE__=";
+                    int index = group.InnerText.IndexOf(textToFind);
+                    if (index != -1)
+                    {
+
+                        string jsonStr = group.InnerText.Substring(index);
+                        jsonStr = jsonStr.Replace(textToFind, "");
+
+                        JObject json = JObject.Parse(jsonStr);
+
+                        JToken token = json["@"]["data"]["ProductBasic"]["_"];
+                        string key = token["__active__"].ToString();
+
+                        try
+                        {
+                            product.price = Int32.Parse(token[key]["data"]["final_price"].ToString());
+                            product.name = token[key]["data"]["shop_info"]["shop_name"].ToString();
+                        }
+                        catch
+                        {
+                        }
+
+                        break;
+                    }
+                }
+                else
+                {
+                    continue;
+                }
+            }
+
+            return product;
+
+
+        }
+
+
 
         public void populateDataFromTikiLinkVersion1()
         {

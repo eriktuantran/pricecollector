@@ -398,6 +398,34 @@ namespace PricesCollector
             maxCol = "lowest_price_tiki";
             max = dict[maxCol];
             minCol = "lowest_price_tiki";
+            min = Int32.MaxValue;
+
+            foreach (var item in dict)
+            {
+                if (item.Value > max)
+                {
+                    maxCol = item.Key;
+                    max = item.Value;
+                }
+
+                if (item.Value != 0 && item.Value < min)
+                {
+                    minCol = item.Key;
+                    min = item.Value;
+                }
+            }
+        }
+        public static void getMinMaxAndColumnName2(DataGridViewCellCollection cells, out string maxCol, out int max, out string minCol, out int min)
+        {
+            Dictionary<string, int> dict = new Dictionary<string, int>();
+            dict["lowest_price_tiki"] = Int32.Parse(cells["lowest_price_tiki"].Value.ToString());
+            dict["lowest_price_lazada"] = Int32.Parse(cells["lowest_price_lazada"].Value.ToString());
+            dict["lowest_price_shopee"] = Int32.Parse(cells["lowest_price_shopee"].Value.ToString());
+            dict["lowest_price_sendo"] = Int32.Parse(cells["lowest_price_sendo"].Value.ToString());
+
+            maxCol = "lowest_price_tiki";
+            max = dict[maxCol];
+            minCol = "lowest_price_tiki";
             min = 999999999;
 
             foreach (var item in dict)
@@ -415,6 +443,7 @@ namespace PricesCollector
                 }
             }
         }
+
 
     }
 }
