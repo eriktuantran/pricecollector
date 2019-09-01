@@ -12,7 +12,7 @@ namespace PricesCollector
 {
     class MyRow
     {
-        public bool isLowest = false;
+        public int group = 0;
         public DataRow row;
     };
 
@@ -274,7 +274,7 @@ namespace PricesCollector
             }
         }
 
-        public static void bgWorkerExportExcelFile_DoWork(MySqlConnection connection)
+        public static void triggerExportExcelFile(MySqlConnection connection)
         {
             DateTime now = DateTime.Now;
             string timeStamp = now.ToString("yyyy-MM-dd-HH-mm-ss");
