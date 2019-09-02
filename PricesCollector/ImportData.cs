@@ -25,7 +25,11 @@ namespace PricesCollector
             this.connection = connection;
             btnDelete.Enabled = false;
             txtLinkTiki.DetectUrls = false;
-            txtOtherWebsite.DetectUrls = false;
+            txtLinkLazada.DetectUrls = false;
+
+            this.Height = 650;
+            this.Width = 850;
+            btnOK.Location = new Point(420-50, 570);
         }
         //open connection to database
         private bool OpenConnection()
@@ -77,7 +81,7 @@ namespace PricesCollector
             {
                 txtId.Text = "";
             }
-            txtSyncCode.Text = cmbGroup.Text = txtCode.Text = txtSku.Text = txtMsku.Text = txtMinimumPrice.Text = txtLinkTiki.Text = txtOtherWebsite.Text = "";
+            txtSyncCode.Text = cmbGroup.Text = txtCode.Text = txtSku.Text = txtMsku.Text = txtMinimumPrice.Text = txtLinkTiki.Text = txtLinkLazada.Text = "";
         }
 
         private void btnOpenCsv_Click(object sender, EventArgs e)
@@ -336,7 +340,7 @@ namespace PricesCollector
             row.rowData["active"] = chkActive.Checked?"1":"0";
             row.rowData["minimum_price"] = txtMinimumPrice.Text.Trim();
             row.rowData["link_tiki"] = txtLinkTiki.Text.Trim();
-            row.rowData["link_lazada"] = txtOtherWebsite.Text.Trim();
+            row.rowData["link_lazada"] = txtLinkLazada.Text.Trim();
 
             foreach (var item in row.rowData)
             {
@@ -400,7 +404,7 @@ namespace PricesCollector
                             chkActive.Checked = reader.GetString(5).ToString().ToLower()=="true"?true:false;
                             txtMinimumPrice.Text = reader.GetString(6).ToString();
                             txtLinkTiki.Text = reader.GetString(7).ToString();
-                            txtOtherWebsite.Text = reader.GetString(8).ToString();
+                            txtLinkLazada.Text = reader.GetString(8).ToString();
                             btnAddProduct.Text = "Update";
                             btnDelete.Enabled = true;
                         }

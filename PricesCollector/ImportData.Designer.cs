@@ -34,6 +34,15 @@
             this.btnOpenCsv = new System.Windows.Forms.Button();
             this.btnOK = new System.Windows.Forms.Button();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.label13 = new System.Windows.Forms.Label();
+            this.label14 = new System.Windows.Forms.Label();
+            this.richTextBox2 = new System.Windows.Forms.RichTextBox();
+            this.label11 = new System.Windows.Forms.Label();
+            this.label12 = new System.Windows.Forms.Label();
+            this.richTextBox1 = new System.Windows.Forms.RichTextBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.label10 = new System.Windows.Forms.Label();
+            this.txtLinkLazada = new System.Windows.Forms.RichTextBox();
             this.label9 = new System.Windows.Forms.Label();
             this.txtMinimumPrice = new System.Windows.Forms.TextBox();
             this.btnDelete = new System.Windows.Forms.Button();
@@ -54,20 +63,20 @@
             this.label3 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.txtLinkTiki = new System.Windows.Forms.RichTextBox();
-            this.label10 = new System.Windows.Forms.Label();
-            this.label1 = new System.Windows.Forms.Label();
-            this.txtOtherWebsite = new System.Windows.Forms.RichTextBox();
+            this.label15 = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.SuspendLayout();
             // 
             // groupBox1
             // 
+            this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox1.Controls.Add(this.chkCleanDb);
             this.groupBox1.Controls.Add(this.btnOpenCsv);
             this.groupBox1.Location = new System.Drawing.Point(12, 15);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(1261, 149);
+            this.groupBox1.Size = new System.Drawing.Size(1427, 149);
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Import from CSV file with column headers: id,product_sync_code,product_group,prod" +
@@ -96,7 +105,7 @@
             // btnOK
             // 
             this.btnOK.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.btnOK.Location = new System.Drawing.Point(558, 620);
+            this.btnOK.Location = new System.Drawing.Point(647, 971);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(162, 53);
             this.btnOK.TabIndex = 1;
@@ -106,9 +115,19 @@
             // 
             // groupBox2
             // 
+            this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox2.Controls.Add(this.label15);
+            this.groupBox2.Controls.Add(this.label13);
+            this.groupBox2.Controls.Add(this.label14);
+            this.groupBox2.Controls.Add(this.richTextBox2);
+            this.groupBox2.Controls.Add(this.label11);
+            this.groupBox2.Controls.Add(this.label12);
+            this.groupBox2.Controls.Add(this.richTextBox1);
             this.groupBox2.Controls.Add(this.label1);
             this.groupBox2.Controls.Add(this.label10);
-            this.groupBox2.Controls.Add(this.txtOtherWebsite);
+            this.groupBox2.Controls.Add(this.txtLinkLazada);
             this.groupBox2.Controls.Add(this.label9);
             this.groupBox2.Controls.Add(this.txtMinimumPrice);
             this.groupBox2.Controls.Add(this.btnDelete);
@@ -131,15 +150,99 @@
             this.groupBox2.Controls.Add(this.txtLinkTiki);
             this.groupBox2.Location = new System.Drawing.Point(12, 185);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(1261, 429);
+            this.groupBox2.Size = new System.Drawing.Size(1427, 757);
             this.groupBox2.TabIndex = 2;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Add / Update product:";
             // 
+            // label13
+            // 
+            this.label13.AutoSize = true;
+            this.label13.Location = new System.Drawing.Point(37, 604);
+            this.label13.Name = "label13";
+            this.label13.Size = new System.Drawing.Size(56, 25);
+            this.label13.TabIndex = 23;
+            this.label13.Text = "links";
+            // 
+            // label14
+            // 
+            this.label14.AutoSize = true;
+            this.label14.Location = new System.Drawing.Point(19, 572);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(74, 25);
+            this.label14.TabIndex = 22;
+            this.label14.Text = "Sendo";
+            // 
+            // richTextBox2
+            // 
+            this.richTextBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.richTextBox2.Location = new System.Drawing.Point(106, 530);
+            this.richTextBox2.Name = "richTextBox2";
+            this.richTextBox2.Size = new System.Drawing.Size(1304, 145);
+            this.richTextBox2.TabIndex = 21;
+            this.richTextBox2.Text = "";
+            // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Location = new System.Drawing.Point(37, 447);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(56, 25);
+            this.label11.TabIndex = 20;
+            this.label11.Text = "links";
+            // 
+            // label12
+            // 
+            this.label12.AutoSize = true;
+            this.label12.Location = new System.Drawing.Point(7, 415);
+            this.label12.Name = "label12";
+            this.label12.Size = new System.Drawing.Size(86, 25);
+            this.label12.TabIndex = 19;
+            this.label12.Text = "Shopee";
+            // 
+            // richTextBox1
+            // 
+            this.richTextBox1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.richTextBox1.Location = new System.Drawing.Point(106, 373);
+            this.richTextBox1.Name = "richTextBox1";
+            this.richTextBox1.Size = new System.Drawing.Size(1304, 145);
+            this.richTextBox1.TabIndex = 18;
+            this.richTextBox1.Text = "";
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(37, 289);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(56, 25);
+            this.label1.TabIndex = 17;
+            this.label1.Text = "links";
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(10, 257);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(83, 25);
+            this.label10.TabIndex = 16;
+            this.label10.Text = "Lazada";
+            // 
+            // txtLinkLazada
+            // 
+            this.txtLinkLazada.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtLinkLazada.Location = new System.Drawing.Point(106, 215);
+            this.txtLinkLazada.Name = "txtLinkLazada";
+            this.txtLinkLazada.Size = new System.Drawing.Size(1304, 145);
+            this.txtLinkLazada.TabIndex = 15;
+            this.txtLinkLazada.Text = "";
+            // 
             // label9
             // 
             this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(803, 40);
+            this.label9.Location = new System.Drawing.Point(1034, 90);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(151, 25);
             this.label9.TabIndex = 13;
@@ -147,17 +250,17 @@
             // 
             // txtMinimumPrice
             // 
-            this.txtMinimumPrice.Location = new System.Drawing.Point(961, 37);
+            this.txtMinimumPrice.Location = new System.Drawing.Point(1192, 87);
             this.txtMinimumPrice.Name = "txtMinimumPrice";
-            this.txtMinimumPrice.Size = new System.Drawing.Size(283, 31);
+            this.txtMinimumPrice.Size = new System.Drawing.Size(218, 31);
             this.txtMinimumPrice.TabIndex = 14;
             // 
             // btnDelete
             // 
             this.btnDelete.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnDelete.Location = new System.Drawing.Point(1119, 99);
+            this.btnDelete.Location = new System.Drawing.Point(282, 694);
             this.btnDelete.Name = "btnDelete";
-            this.btnDelete.Size = new System.Drawing.Size(125, 69);
+            this.btnDelete.Size = new System.Drawing.Size(125, 55);
             this.btnDelete.TabIndex = 12;
             this.btnDelete.Text = "Delete";
             this.btnDelete.UseVisualStyleBackColor = true;
@@ -166,7 +269,7 @@
             // btnNewId
             // 
             this.btnNewId.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnNewId.Location = new System.Drawing.Point(264, 27);
+            this.btnNewId.Location = new System.Drawing.Point(234, 27);
             this.btnNewId.Name = "btnNewId";
             this.btnNewId.Size = new System.Drawing.Size(90, 50);
             this.btnNewId.TabIndex = 11;
@@ -177,9 +280,9 @@
             // btnAddProduct
             // 
             this.btnAddProduct.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnAddProduct.Location = new System.Drawing.Point(961, 99);
+            this.btnAddProduct.Location = new System.Drawing.Point(105, 694);
             this.btnAddProduct.Name = "btnAddProduct";
-            this.btnAddProduct.Size = new System.Drawing.Size(134, 69);
+            this.btnAddProduct.Size = new System.Drawing.Size(134, 55);
             this.btnAddProduct.TabIndex = 10;
             this.btnAddProduct.Text = "Add";
             this.btnAddProduct.UseVisualStyleBackColor = true;
@@ -187,30 +290,30 @@
             // 
             // txtMsku
             // 
-            this.txtMsku.Location = new System.Drawing.Point(519, 137);
+            this.txtMsku.Location = new System.Drawing.Point(786, 87);
             this.txtMsku.Name = "txtMsku";
-            this.txtMsku.Size = new System.Drawing.Size(252, 31);
+            this.txtMsku.Size = new System.Drawing.Size(225, 31);
             this.txtMsku.TabIndex = 9;
             // 
             // txtSku
             // 
-            this.txtSku.Location = new System.Drawing.Point(106, 137);
+            this.txtSku.Location = new System.Drawing.Point(786, 38);
             this.txtSku.Name = "txtSku";
-            this.txtSku.Size = new System.Drawing.Size(248, 31);
+            this.txtSku.Size = new System.Drawing.Size(225, 31);
             this.txtSku.TabIndex = 8;
             // 
             // txtSyncCode
             // 
-            this.txtSyncCode.Location = new System.Drawing.Point(519, 87);
+            this.txtSyncCode.Location = new System.Drawing.Point(465, 87);
             this.txtSyncCode.Name = "txtSyncCode";
-            this.txtSyncCode.Size = new System.Drawing.Size(252, 31);
+            this.txtSyncCode.Size = new System.Drawing.Size(222, 31);
             this.txtSyncCode.TabIndex = 7;
             // 
             // txtId
             // 
             this.txtId.Location = new System.Drawing.Point(106, 37);
             this.txtId.Name = "txtId";
-            this.txtId.Size = new System.Drawing.Size(138, 31);
+            this.txtId.Size = new System.Drawing.Size(114, 31);
             this.txtId.TabIndex = 6;
             this.txtId.TextChanged += new System.EventHandler(this.txtId_TextChanged);
             // 
@@ -218,13 +321,13 @@
             // 
             this.txtCode.Location = new System.Drawing.Point(106, 87);
             this.txtCode.Name = "txtCode";
-            this.txtCode.Size = new System.Drawing.Size(248, 31);
+            this.txtCode.Size = new System.Drawing.Size(218, 31);
             this.txtCode.TabIndex = 5;
             // 
             // chkActive
             // 
             this.chkActive.AutoSize = true;
-            this.chkActive.Location = new System.Drawing.Point(817, 111);
+            this.chkActive.Location = new System.Drawing.Point(1110, 36);
             this.chkActive.Name = "chkActive";
             this.chkActive.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
             this.chkActive.Size = new System.Drawing.Size(103, 29);
@@ -235,7 +338,7 @@
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(38, 140);
+            this.label8.Location = new System.Drawing.Point(709, 41);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(55, 25);
             this.label8.TabIndex = 3;
@@ -253,7 +356,7 @@
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(439, 140);
+            this.label7.Location = new System.Drawing.Point(706, 90);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(73, 25);
             this.label7.TabIndex = 3;
@@ -262,7 +365,7 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(399, 90);
+            this.label5.Location = new System.Drawing.Point(345, 90);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(113, 25);
             this.label5.TabIndex = 3;
@@ -271,15 +374,15 @@
             // cmbGroup
             // 
             this.cmbGroup.FormattingEnabled = true;
-            this.cmbGroup.Location = new System.Drawing.Point(519, 36);
+            this.cmbGroup.Location = new System.Drawing.Point(465, 36);
             this.cmbGroup.Name = "cmbGroup";
-            this.cmbGroup.Size = new System.Drawing.Size(252, 33);
+            this.cmbGroup.Size = new System.Drawing.Size(222, 33);
             this.cmbGroup.TabIndex = 2;
             // 
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(441, 40);
+            this.label4.Location = new System.Drawing.Point(387, 40);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(71, 25);
             this.label4.TabIndex = 1;
@@ -297,53 +400,38 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(41, 209);
+            this.label2.Location = new System.Drawing.Point(48, 176);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(52, 25);
+            this.label2.Size = new System.Drawing.Size(45, 25);
             this.label2.TabIndex = 1;
-            this.label2.Text = "Link";
+            this.label2.Text = "link";
             // 
-            // txtLink
+            // txtLinkTiki
             // 
-            this.txtLinkTiki.Location = new System.Drawing.Point(106, 188);
-            this.txtLinkTiki.Name = "txtLink";
-            this.txtLinkTiki.Size = new System.Drawing.Size(1138, 67);
+            this.txtLinkTiki.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtLinkTiki.Location = new System.Drawing.Point(106, 134);
+            this.txtLinkTiki.Name = "txtLinkTiki";
+            this.txtLinkTiki.Size = new System.Drawing.Size(1304, 67);
             this.txtLinkTiki.TabIndex = 0;
             this.txtLinkTiki.Text = "";
             // 
-            // label10
+            // label15
             // 
-            this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(28, 311);
-            this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(65, 25);
-            this.label10.TabIndex = 16;
-            this.label10.Text = "Other";
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(8, 343);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(85, 25);
-            this.label1.TabIndex = 17;
-            this.label1.Text = "website";
-            // 
-            // txtOtherWebsite
-            // 
-            this.txtOtherWebsite.Location = new System.Drawing.Point(106, 269);
-            this.txtOtherWebsite.Name = "txtOtherWebsite";
-            this.txtOtherWebsite.Size = new System.Drawing.Size(1138, 145);
-            this.txtOtherWebsite.TabIndex = 15;
-            this.txtOtherWebsite.Text = "";
+            this.label15.AutoSize = true;
+            this.label15.Location = new System.Drawing.Point(47, 146);
+            this.label15.Name = "label15";
+            this.label15.Size = new System.Drawing.Size(46, 25);
+            this.label15.TabIndex = 24;
+            this.label15.Text = "Tiki";
             // 
             // ImportData
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1285, 685);
-            this.Controls.Add(this.groupBox2);
+            this.ClientSize = new System.Drawing.Size(1451, 1036);
             this.Controls.Add(this.btnOK);
+            this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "ImportData";
@@ -386,6 +474,13 @@
         private System.Windows.Forms.TextBox txtMinimumPrice;
         private System.Windows.Forms.Label label10;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.RichTextBox txtOtherWebsite;
+        private System.Windows.Forms.RichTextBox txtLinkLazada;
+        private System.Windows.Forms.Label label13;
+        private System.Windows.Forms.Label label14;
+        private System.Windows.Forms.RichTextBox richTextBox2;
+        private System.Windows.Forms.Label label11;
+        private System.Windows.Forms.Label label12;
+        private System.Windows.Forms.RichTextBox richTextBox1;
+        private System.Windows.Forms.Label label15;
     }
 }

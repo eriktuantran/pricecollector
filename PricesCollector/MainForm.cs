@@ -48,242 +48,186 @@ namespace PricesCollector
         public MainForm()
         {
             InitializeComponent();
-            createDatagridview11();
-            createDatagridview2();
+            createDatagridview1(dataGridView1);
+            createDatagridview2(dataGridView2);
             tabControl1.SelectedIndex = 1;
         }
 
-
-        private void createDatagridview1()
+        private void createDatagridview1(DataGridView mydataGridView)
         {
             DataGridViewTextBoxColumn idColumn = new DataGridViewTextBoxColumn();
             idColumn.Name = "id";
             idColumn.HeaderText = "ID";
             idColumn.DefaultCellStyle.WrapMode = DataGridViewTriState.True;
             idColumn.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
-            dataGridView1.Columns.Add(idColumn);
+            mydataGridView.Columns.Add(idColumn);
 
-            dataGridView1.Columns.Add("seller_name", "Seller name");
-            dataGridView1.Columns.Add("product_group", "Group");
-            dataGridView1.Columns.Add("product_name", "Product name");
-            dataGridView1.Columns.Add("sku", "SKU");
-            dataGridView1.Columns.Add("msku", "MSKU");
-            dataGridView1.Columns.Add("current_price", "Tiki price");
-            dataGridView1.Columns.Add("minimum_price", "Minimum price");
-            dataGridView1.Columns.Add("lowest_price_tiki", "Lowest price");
-            dataGridView1.Columns.Add("discount_price", "Discount price");
+            mydataGridView.Columns.Add("seller_name", "Seller name");
+            mydataGridView.Columns.Add("product_group", "Group");
+            mydataGridView.Columns.Add("product_name", "Product name");
+            mydataGridView.Columns.Add("sku", "SKU");
+            mydataGridView.Columns.Add("msku", "MSKU");
 
-            DataGridViewTextBoxColumn otherSellerColumn = new DataGridViewTextBoxColumn();
-            otherSellerColumn.Name = "other_seller_tiki";
-            otherSellerColumn.HeaderText = "Other Seller";
-            otherSellerColumn.DefaultCellStyle.WrapMode = DataGridViewTriState.True;
-            //otherSellerColumn.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
-            dataGridView1.Columns.Add(otherSellerColumn);
+            DataGridViewTextBoxColumn currentPrice = new DataGridViewTextBoxColumn();
+            currentPrice.Name = "current_price";
+            currentPrice.HeaderText = "Tiki price";
+            currentPrice.DefaultCellStyle.WrapMode = DataGridViewTriState.True;
+            currentPrice.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+            mydataGridView.Columns.Add(currentPrice);
 
-            DataGridViewCheckBoxColumn checkColumn = new DataGridViewCheckBoxColumn();
-            checkColumn.Name = "active";
-            checkColumn.HeaderText = "Active";
-            checkColumn.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
-            dataGridView1.Columns.Add(checkColumn);
+            DataGridViewTextBoxColumn discountPrice = new DataGridViewTextBoxColumn();
+            discountPrice.Name = "discount_price";
+            discountPrice.HeaderText = "Discount price";
+            discountPrice.DefaultCellStyle.WrapMode = DataGridViewTriState.True;
+            discountPrice.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+            mydataGridView.Columns.Add(discountPrice);
 
-            dataGridView1.Columns.Add("link_tiki", "Tiki link");
-
-
-            //Datagridview Width/Height not overflow
-            dataGridView1.Columns[Utilities.colNameToIndex("link_tiki", dataGridView1)].Width = 500;
-            dataGridView1.Width = this.tabControl1.Width - 10;
-            dataGridView1.Height = this.tabControl1.Height - 30;
-            dataGridView1.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
-        }
-        private void createDatagridview11()
-        {
-            DataGridViewTextBoxColumn idColumn = new DataGridViewTextBoxColumn();
-            idColumn.Name = "id";
-            idColumn.HeaderText = "ID";
-            idColumn.DefaultCellStyle.WrapMode = DataGridViewTriState.True;
-            idColumn.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
-            dataGridView1.Columns.Add(idColumn);
-
-            dataGridView1.Columns.Add("seller_name", "Seller name");
-            dataGridView1.Columns.Add("product_group", "Group");
-            dataGridView1.Columns.Add("product_name", "Product name");
-            dataGridView1.Columns.Add("sku", "SKU");
-            dataGridView1.Columns.Add("msku", "MSKU");
-
-            dataGridView1.Columns.Add("current_price", "Tiki price");
-            dataGridView1.Columns.Add("discount_price", "Discount price");
-            dataGridView1.Columns.Add("minimum_price", "Minimum price");
+            DataGridViewTextBoxColumn minimumPrice = new DataGridViewTextBoxColumn();
+            minimumPrice.Name = "minimum_price";
+            minimumPrice.HeaderText = "Minimum price";
+            minimumPrice.DefaultCellStyle.WrapMode = DataGridViewTriState.True;
+            minimumPrice.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+            mydataGridView.Columns.Add(minimumPrice);
 
             DataGridViewTextBoxColumn otherTiki = new DataGridViewTextBoxColumn();
             otherTiki.Name = "other_seller_tiki";
             otherTiki.HeaderText = "Other Tiki";
             otherTiki.DefaultCellStyle.WrapMode = DataGridViewTriState.True;
             //otherTiki.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
-            dataGridView1.Columns.Add(otherTiki);
+            mydataGridView.Columns.Add(otherTiki);
 
-            //DataGridViewTextBoxColumn otherLazada = new DataGridViewTextBoxColumn();
-            //otherLazada.Name = "other_seller_lazada";
-            //otherLazada.HeaderText = "Other Lazada";
-            //otherLazada.DefaultCellStyle.WrapMode = DataGridViewTriState.True;
-            ////otherLazada.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
-            //dataGridView1.Columns.Add(otherLazada);
-
-            //DataGridViewTextBoxColumn otherShopee = new DataGridViewTextBoxColumn();
-            //otherShopee.Name = "other_seller_shopee";
-            //otherShopee.HeaderText = "Other Shopee";
-            //otherShopee.DefaultCellStyle.WrapMode = DataGridViewTriState.True;
-            ////otherShopee.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
-            //dataGridView1.Columns.Add(otherShopee);
-
-            //DataGridViewTextBoxColumn otherSendo = new DataGridViewTextBoxColumn();
-            //otherSendo.Name = "other_seller_sendo";
-            //otherSendo.HeaderText = "Other Sendo";
-            //otherSendo.DefaultCellStyle.WrapMode = DataGridViewTriState.True;
-            ////otherSendo.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
-            //dataGridView1.Columns.Add(otherSendo);
-
-            dataGridView1.Columns.Add("lowest_price_tiki", "Lowest Tiki");
-            //dataGridView1.Columns.Add("lowest_price_lazada", "Lowest Lazada");
-            //dataGridView1.Columns.Add("lowest_price_shopee", "Lowest Shopee");
-            //dataGridView1.Columns.Add("lowest_price_sendo", "Lowest Sendo");
-
+            mydataGridView.Columns.Add("lowest_price_tiki", "Lowest Tiki");
 
             DataGridViewCheckBoxColumn checkColumn = new DataGridViewCheckBoxColumn();
             checkColumn.Name = "active";
             checkColumn.HeaderText = "Active";
             checkColumn.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
-            dataGridView1.Columns.Add(checkColumn);
+            mydataGridView.Columns.Add(checkColumn);
 
             DataGridViewTextBoxColumn linkTiki = new DataGridViewTextBoxColumn();
             linkTiki.Name = "link_tiki";
             linkTiki.HeaderText = "Tiki link";
             linkTiki.DefaultCellStyle.WrapMode = DataGridViewTriState.True;
             linkTiki.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
-            dataGridView1.Columns.Add(linkTiki);
-
-            //DataGridViewTextBoxColumn linkLazada = new DataGridViewTextBoxColumn();
-            //linkLazada.Name = "link_lazada";
-            //linkLazada.HeaderText = "Lazada links";
-            //linkLazada.DefaultCellStyle.WrapMode = DataGridViewTriState.True;
-            //linkLazada.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
-            //dataGridView1.Columns.Add(linkLazada);
-
-            //DataGridViewTextBoxColumn linkShopee = new DataGridViewTextBoxColumn();
-            //linkShopee.Name = "link_shopee";
-            //linkShopee.HeaderText = "Shopee links";
-            //linkShopee.DefaultCellStyle.WrapMode = DataGridViewTriState.True;
-            //linkShopee.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
-            //dataGridView1.Columns.Add(linkShopee);
-
-            //DataGridViewTextBoxColumn linkSendo = new DataGridViewTextBoxColumn();
-            //linkSendo.Name = "link_sendo";
-            //linkSendo.HeaderText = "Sendo links";
-            //linkSendo.DefaultCellStyle.WrapMode = DataGridViewTriState.True;
-            //linkSendo.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
-            //dataGridView1.Columns.Add(linkSendo);
-
-
+            mydataGridView.Columns.Add(linkTiki);
 
             //Datagridview Width/Height not overflow
-            dataGridView1.Columns[Utilities.colNameToIndex("link_tiki", dataGridView1)].Width = 100;// 500;
-            dataGridView1.Width = this.tabControl1.Width - 10;
-            dataGridView1.Height = this.tabControl1.Height - 30;
-            dataGridView1.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
+            mydataGridView.Columns[Utilities.colNameToIndex("link_tiki", mydataGridView)].Width = 100;// 500;
+            mydataGridView.Width = this.tabControl1.Width - 15;
+            mydataGridView.Height = this.tabControl1.Height - 30;
+            mydataGridView.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
         }
-        private void createDatagridview2()
+        private void createDatagridview2(DataGridView mydataGridView)
         {
             DataGridViewTextBoxColumn idColumn = new DataGridViewTextBoxColumn();
             idColumn.Name = "id";
             idColumn.HeaderText = "ID";
             idColumn.DefaultCellStyle.WrapMode = DataGridViewTriState.True;
             idColumn.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
-            dataGridView2.Columns.Add(idColumn);
+            mydataGridView.Columns.Add(idColumn);
 
-            dataGridView2.Columns.Add("seller_name", "Seller name");
-            dataGridView2.Columns.Add("product_group", "Group");
-            dataGridView2.Columns.Add("product_name", "Product name");
-            dataGridView2.Columns.Add("sku", "SKU");
-            dataGridView2.Columns.Add("msku", "MSKU");
+            mydataGridView.Columns.Add("seller_name", "Seller name");
+            mydataGridView.Columns.Add("product_group", "Group");
+            mydataGridView.Columns.Add("product_name", "Product name");
+            mydataGridView.Columns.Add("sku", "SKU");
+            mydataGridView.Columns.Add("msku", "MSKU");
 
-            dataGridView2.Columns.Add("current_price", "Tiki price");
-            dataGridView2.Columns.Add("discount_price", "Discount price");
-            dataGridView2.Columns.Add("minimum_price", "Minimum price");
+            DataGridViewTextBoxColumn currentPrice = new DataGridViewTextBoxColumn();
+            currentPrice.Name = "current_price";
+            currentPrice.HeaderText = "Tiki price";
+            currentPrice.DefaultCellStyle.WrapMode = DataGridViewTriState.True;
+            currentPrice.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+            mydataGridView.Columns.Add(currentPrice);
+
+            DataGridViewTextBoxColumn discountPrice = new DataGridViewTextBoxColumn();
+            discountPrice.Name = "discount_price";
+            discountPrice.HeaderText = "Discount price";
+            discountPrice.DefaultCellStyle.WrapMode = DataGridViewTriState.True;
+            discountPrice.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+            mydataGridView.Columns.Add(discountPrice);
+
+            DataGridViewTextBoxColumn minimumPrice = new DataGridViewTextBoxColumn();
+            minimumPrice.Name = "minimum_price";
+            minimumPrice.HeaderText = "Minimum price";
+            minimumPrice.DefaultCellStyle.WrapMode = DataGridViewTriState.True;
+            minimumPrice.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+            mydataGridView.Columns.Add(minimumPrice);
 
             DataGridViewTextBoxColumn otherTiki = new DataGridViewTextBoxColumn();
             otherTiki.Name = "other_seller_tiki";
             otherTiki.HeaderText = "Other Tiki";
             otherTiki.DefaultCellStyle.WrapMode = DataGridViewTriState.True;
             //otherTiki.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
-            dataGridView2.Columns.Add(otherTiki);
+            mydataGridView.Columns.Add(otherTiki);
 
             DataGridViewTextBoxColumn otherLazada = new DataGridViewTextBoxColumn();
             otherLazada.Name = "other_seller_lazada";
             otherLazada.HeaderText = "Other Lazada";
             otherLazada.DefaultCellStyle.WrapMode = DataGridViewTriState.True;
             //otherLazada.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
-            dataGridView2.Columns.Add(otherLazada);
+            mydataGridView.Columns.Add(otherLazada);
 
             DataGridViewTextBoxColumn otherShopee = new DataGridViewTextBoxColumn();
             otherShopee.Name = "other_seller_shopee";
             otherShopee.HeaderText = "Other Shopee";
             otherShopee.DefaultCellStyle.WrapMode = DataGridViewTriState.True;
             //otherShopee.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
-            dataGridView2.Columns.Add(otherShopee);
+            mydataGridView.Columns.Add(otherShopee);
 
             DataGridViewTextBoxColumn otherSendo = new DataGridViewTextBoxColumn();
             otherSendo.Name = "other_seller_sendo";
             otherSendo.HeaderText = "Other Sendo";
             otherSendo.DefaultCellStyle.WrapMode = DataGridViewTriState.True;
             //otherSendo.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
-            dataGridView2.Columns.Add(otherSendo);
-
-            dataGridView2.Columns.Add("lowest_price_tiki", "Lowest Tiki");
-            dataGridView2.Columns.Add("lowest_price_lazada", "Lowest Lazada");
-            dataGridView2.Columns.Add("lowest_price_shopee", "Lowest Shopee");
-            dataGridView2.Columns.Add("lowest_price_sendo", "Lowest Sendo");
+            mydataGridView.Columns.Add(otherSendo);
+            
+            mydataGridView.Columns.Add("lowest_price_tiki", "Lowest Tiki");
+            mydataGridView.Columns.Add("lowest_price_lazada", "Lowest Lazada");
+            mydataGridView.Columns.Add("lowest_price_shopee", "Lowest Shopee");
+            mydataGridView.Columns.Add("lowest_price_sendo", "Lowest Sendo");
 
 
             DataGridViewCheckBoxColumn checkColumn = new DataGridViewCheckBoxColumn();
             checkColumn.Name = "active";
             checkColumn.HeaderText = "Active";
             checkColumn.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
-            dataGridView2.Columns.Add(checkColumn);
+            mydataGridView.Columns.Add(checkColumn);
 
             DataGridViewTextBoxColumn linkTiki = new DataGridViewTextBoxColumn();
             linkTiki.Name = "link_tiki";
             linkTiki.HeaderText = "Tiki link";
             linkTiki.DefaultCellStyle.WrapMode = DataGridViewTriState.True;
             linkTiki.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
-            dataGridView2.Columns.Add(linkTiki);
+            mydataGridView.Columns.Add(linkTiki);
 
             DataGridViewTextBoxColumn linkLazada = new DataGridViewTextBoxColumn();
             linkLazada.Name = "link_lazada";
             linkLazada.HeaderText = "Lazada links";
             linkLazada.DefaultCellStyle.WrapMode = DataGridViewTriState.True;
             linkLazada.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
-            dataGridView2.Columns.Add(linkLazada);
+            mydataGridView.Columns.Add(linkLazada);
 
             DataGridViewTextBoxColumn linkShopee = new DataGridViewTextBoxColumn();
             linkShopee.Name = "link_shopee";
             linkShopee.HeaderText = "Shopee links";
             linkShopee.DefaultCellStyle.WrapMode = DataGridViewTriState.True;
             linkShopee.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
-            dataGridView2.Columns.Add(linkShopee);
+            mydataGridView.Columns.Add(linkShopee);
 
             DataGridViewTextBoxColumn linkSendo = new DataGridViewTextBoxColumn();
             linkSendo.Name = "link_sendo";
             linkSendo.HeaderText = "Sendo links";
             linkSendo.DefaultCellStyle.WrapMode = DataGridViewTriState.True;
             linkSendo.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
-            dataGridView2.Columns.Add(linkSendo);
+            mydataGridView.Columns.Add(linkSendo);
 
 
 
             //Datagridview Width/Height not overflow
-            dataGridView2.Columns[Utilities.colNameToIndex("link_tiki", dataGridView2)].Width = 100;// 500;
-            dataGridView2.Width = this.tabControl1.Width - 10;
-            dataGridView2.Height = this.tabControl1.Height - 30;
-            dataGridView2.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
+            mydataGridView.Columns[Utilities.colNameToIndex("link_tiki", mydataGridView)].Width = 100;// 500;
+            mydataGridView.Width = this.tabControl1.Width - 15;
+            mydataGridView.Height = this.tabControl1.Height - 30;
+            mydataGridView.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
         }
 
 
