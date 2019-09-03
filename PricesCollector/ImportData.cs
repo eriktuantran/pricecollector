@@ -127,9 +127,15 @@ namespace PricesCollector
                 output += "'" + this.rowData["active"] + "', ";
                 output += "'" + this.rowData["minimum_price"] + "', ";
                 output += "'" + this.rowData["link_tiki"] + "', ";
-                output += "'" + this.rowData["link_lazada"] + "', ";
-                output += "'" + this.rowData["link_shopee"] + "', ";
-                output += "'" + this.rowData["link_sendo"] + "', ";
+
+                string link_lazada = this.rowData.ContainsKey("link_lazada")? this.rowData["link_lazada"] : "";
+                string link_shopee = this.rowData.ContainsKey("link_shopee")? this.rowData["link_shopee"] : "";
+                string link_sendo = this.rowData.ContainsKey("link_sendo")? this.rowData["link_sendo "] : "";
+
+                output += "'" + link_lazada + "', ";
+                output += "'" + link_shopee + "', ";
+                output += "'" + link_sendo  + "', ";
+
                 output += "'" + "Other Tiki" + "', ";
                 output += "'" + "Other Lazada" + "', ";
                 output += "'" + "Other Shopee" + "', ";
@@ -149,10 +155,10 @@ namespace PricesCollector
                 output += "msku='" + this.rowData["msku"] + "', ";
                 output += "active='" + this.rowData["active"] + "', ";
                 output += "minimum_price='" + this.rowData["minimum_price"] + "', ";
-                output += "link_tiki='" + this.rowData["link_tiki"] + "', ";
-                output += "link_lazada='" + this.rowData["link_lazada"] + "', ";
-                output += "link_shopee='" + this.rowData["link_shopee"] + "', ";
-                output += "link_sendo='" + this.rowData["link_sendo"] + "' ";
+                output += "link_tiki='" + this.rowData["link_tiki"] + "' ";
+                if (this.rowData.ContainsKey("link_lazada")) output += ", link_lazada='" + this.rowData["link_lazada"] + "' ";
+                if (this.rowData.ContainsKey("link_shopee")) output += ", link_shopee='" + this.rowData["link_shopee"] + "' ";
+                if (this.rowData.ContainsKey("link_sendo")) output += ", link_sendo='" + this.rowData["link_sendo"] + "' ";
                 output += "where id='" + this.rowData["id"] + "';";
 
                 return output;
