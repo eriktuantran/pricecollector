@@ -26,10 +26,12 @@ namespace PricesCollector
             btnDelete.Enabled = false;
             txtLinkTiki.DetectUrls = false;
             txtLinkLazada.DetectUrls = false;
+            txtLinkShopee.DetectUrls = false;
+            txtLinkSendo.DetectUrls = false;
 
-            this.Height = 650;
-            this.Width = 850;
-            btnOK.Location = new Point(420-50, 570);
+            this.Height = 600;
+            this.Width = 900;
+            btnOK.Location = new Point(450-50, 520);
         }
         //open connection to database
         private bool OpenConnection()
@@ -125,9 +127,9 @@ namespace PricesCollector
                 output += "'" + this.rowData["active"] + "', ";
                 output += "'" + this.rowData["minimum_price"] + "', ";
                 output += "'" + this.rowData["link_tiki"] + "', ";
-                output += "'" + "" + "', ";
-                output += "'" + "" + "', ";
-                output += "'" + "" + "', ";
+                output += "'" + this.rowData["link_lazada"] + "', ";
+                output += "'" + this.rowData["link_shopee"] + "', ";
+                output += "'" + this.rowData["link_sendo"] + "', ";
                 output += "'" + "Other Tiki" + "', ";
                 output += "'" + "Other Lazada" + "', ";
                 output += "'" + "Other Shopee" + "', ";
@@ -147,7 +149,10 @@ namespace PricesCollector
                 output += "msku='" + this.rowData["msku"] + "', ";
                 output += "active='" + this.rowData["active"] + "', ";
                 output += "minimum_price='" + this.rowData["minimum_price"] + "', ";
-                output += "link_tiki='" + this.rowData["link_tiki"] + "' ";
+                output += "link_tiki='" + this.rowData["link_tiki"] + "', ";
+                output += "link_lazada='" + this.rowData["link_lazada"] + "', ";
+                output += "link_shopee='" + this.rowData["link_shopee"] + "', ";
+                output += "link_sendo='" + this.rowData["link_sendo"] + "' ";
                 output += "where id='" + this.rowData["id"] + "';";
 
                 return output;
@@ -341,10 +346,12 @@ namespace PricesCollector
             row.rowData["minimum_price"] = txtMinimumPrice.Text.Trim();
             row.rowData["link_tiki"] = txtLinkTiki.Text.Trim();
             row.rowData["link_lazada"] = txtLinkLazada.Text.Trim();
+            row.rowData["link_shopee"] = txtLinkShopee.Text.Trim();
+            row.rowData["link_sendo"] = txtLinkSendo.Text.Trim();
 
             foreach (var item in row.rowData)
             {
-                if(item.Key == "sku" || item.Key == "link_lazada")
+                if(item.Key == "sku" || item.Key == "link_lazada" || item.Key == "link_shopee" || item.Key == "link_sendo")
                 {
                     continue; //Allow empty
                 }
@@ -386,7 +393,9 @@ namespace PricesCollector
             if (this.OpenConnection())
             {
                 MySqlDataReader reader = null;
-                string selectCmd = "select product_sync_code,product_group,product_code,sku,msku,active,minimum_price,link_tiki,link_lazada from product where id='" + txtId.Text.Trim()+"';";
+                string selectCmd = "select product_sync_code,product_group,product_code,sku,msku,active,minimum_price," +
+                    "link_tiki,link_lazada,link_shopee,link_sendo " +
+                    "from product where id='" + txtId.Text.Trim()+"';";
                 MySqlCommand command = new MySqlCommand(selectCmd, connection);
                 reader = command.ExecuteReader();
 
@@ -405,6 +414,8 @@ namespace PricesCollector
                             txtMinimumPrice.Text = reader.GetString(6).ToString();
                             txtLinkTiki.Text = reader.GetString(7).ToString();
                             txtLinkLazada.Text = reader.GetString(8).ToString();
+                            txtLinkShopee.Text = reader.GetString(9).ToString();
+                            txtLinkSendo.Text = reader.GetString(10).ToString();
                             btnAddProduct.Text = "Update";
                             btnDelete.Enabled = true;
                         }

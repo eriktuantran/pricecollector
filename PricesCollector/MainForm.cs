@@ -21,8 +21,8 @@ namespace PricesCollector
 
     enum Tab
     {
-        Tiki = 0,
-        OtherWebsite = 1
+        TabTiki = 0,
+        TabOtherWebsite = 1
     }
 
     public partial class MainForm : Form
@@ -50,7 +50,8 @@ namespace PricesCollector
             InitializeComponent();
             createDatagridview1(dataGridView1);
             createDatagridview2(dataGridView2);
-            tabControl1.SelectedIndex = 1;
+            tabControl1.SelectedIndex = (int)Tab.TabOtherWebsite;
+            
         }
 
         private void createDatagridview1(DataGridView mydataGridView)
@@ -116,6 +117,7 @@ namespace PricesCollector
             mydataGridView.Width = this.tabControl1.Width - 15;
             mydataGridView.Height = this.tabControl1.Height - 30;
             mydataGridView.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
+            mydataGridView.Columns[0].Frozen = true;
         }
         private void createDatagridview2(DataGridView mydataGridView)
         {
@@ -204,21 +206,21 @@ namespace PricesCollector
             linkLazada.Name = "link_lazada";
             linkLazada.HeaderText = "Lazada links";
             linkLazada.DefaultCellStyle.WrapMode = DataGridViewTriState.True;
-            linkLazada.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+            //linkLazada.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
             mydataGridView.Columns.Add(linkLazada);
 
             DataGridViewTextBoxColumn linkShopee = new DataGridViewTextBoxColumn();
             linkShopee.Name = "link_shopee";
             linkShopee.HeaderText = "Shopee links";
             linkShopee.DefaultCellStyle.WrapMode = DataGridViewTriState.True;
-            linkShopee.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+            //linkShopee.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
             mydataGridView.Columns.Add(linkShopee);
 
             DataGridViewTextBoxColumn linkSendo = new DataGridViewTextBoxColumn();
             linkSendo.Name = "link_sendo";
             linkSendo.HeaderText = "Sendo links";
             linkSendo.DefaultCellStyle.WrapMode = DataGridViewTriState.True;
-            linkSendo.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+            //linkSendo.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
             mydataGridView.Columns.Add(linkSendo);
 
 
@@ -228,6 +230,7 @@ namespace PricesCollector
             mydataGridView.Width = this.tabControl1.Width - 15;
             mydataGridView.Height = this.tabControl1.Height - 30;
             mydataGridView.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
+            mydataGridView.Columns[0].Frozen = true;
         }
 
 
@@ -549,7 +552,7 @@ namespace PricesCollector
                     continue;
                 }
 
-                if (tabControl1.SelectedIndex == 1) // Tab other website is selected
+                if (tabControl1.SelectedIndex == (int)Tab.TabOtherWebsite) // Tab other website is selected
                 {
                     data.isFullFetching = true;
                 }
@@ -671,7 +674,7 @@ namespace PricesCollector
                     cmd.CommandText += "lowest_price_tiki ='" + data.lowestPriceTiki.ToString() + "',";
                     cmd.CommandText += "other_seller_tiki ='" + otherSellerTikiStringToDB;
 
-                    if (tabControl1.SelectedIndex == 1)
+                    if (tabControl1.SelectedIndex == (int)Tab.TabOtherWebsite)
                     {
                         cmd.CommandText += "',";
                         cmd.CommandText += "lowest_price_lazada ='" + data.lowestPriceLazada.ToString() + "',";
@@ -814,7 +817,7 @@ namespace PricesCollector
 
         private void refreshDatagridviewValue()
         {
-            if (tabControl1.SelectedIndex == 0)
+            if (tabControl1.SelectedIndex == (int)Tab.TabTiki)
             {
                 Console.WriteLine("Refresh view");
                 dataGridView1.Rows.Clear();
@@ -898,7 +901,7 @@ namespace PricesCollector
                 }
 
             } // end checking tabControl1 = 0
-            else if(tabControl1.SelectedIndex == 1)
+            else if(tabControl1.SelectedIndex == (int)Tab.TabOtherWebsite)
             {
                 //Datagridview 2
                 refreshDatagridviewValueDatagridview2();
@@ -1025,9 +1028,15 @@ namespace PricesCollector
         /// 
         private void exportExcelToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Utilities.triggerExportExcelFile(this.connection);
+            if(this.tabControl1.SelectedIndex == (int)Tab.TabTiki )
+            {
+                Utilities.triggerExportExcelFileVersion2(this.connection, dataGridView1);
+            }
+            else
+            {
+                Utilities.triggerExportExcelFileVersion2(this.connection, dataGridView2);
+            }
         }
-
 
 
         /// <summary>
