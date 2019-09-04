@@ -29,19 +29,29 @@ namespace PricesCollector
     {
         private string connectionString = "";//"server=127.0.0.1;user id=root;password=3V5wn0Kv9RRc8gQA;persistsecurityinfo=True;database=pricecollector";
         private int timeoutUpdateDB = 0;
-        private bool globalRunningState = false;
+        private bool globalRunningStateTiki = false;
+        private bool globalRunningStateOtherWebsite = false;
         private bool isManualFetching = false;
 
         private MySqlConnection connection;
         private MySqlDataAdapter mySqlDataAdapter;
 
-        private MyDictionary myDict = new MyDictionary();
+        private MyDictionary myDictTiki = new MyDictionary();
+        private MyDictionary myDictOtherWebsite = new MyDictionary();
 
-        private bool isFetching
+        private bool isFetchingTiki
         {
             get
             {
-                return backgroundWorkerForFetchingList.Count != 0;
+                return backgroundWorkerForFetchingListTiki.Count != 0;
+            }
+        }
+
+        private bool isFetchingOtherWebsite
+        {
+            get
+            {
+                return backgroundWorkerForFetchingListOtherWebsite.Count != 0;
             }
         }
 
@@ -50,7 +60,7 @@ namespace PricesCollector
             InitializeComponent();
             createDatagridview1(dataGridView1);
             createDatagridview2(dataGridView2);
-            tabControl1.SelectedIndex = (int)Tab.TabOtherWebsite;
+            tabControl1.SelectedIndex = (int)Tab.TabTiki;
             
         }
 
@@ -250,18 +260,33 @@ namespace PricesCollector
             {
                 getValueFromSettingForm();
             }
-
+            
+            // Db connection
             connection = new MySqlConnection(connectionString);
 
+            // Data gridview
             refreshDatagridviewValue();
             refreshDatagridviewValueDatagridview2();
-            timerUpdateDb.Enabled = true;
-            timerUpdateDb.Interval = 10 * 1000;
-            progressBarUpdateDb.Value = 0;
-            startProgressBarUpdateDb(10);
 
-            //Enable the global flag
-            globalRunningState = true;
+            //Timer Tiki
+            timerUpdateDbTiki.Enabled = true;
+            timerUpdateDbTiki.Interval = 10 * 1000;
+            progressBarUpdateDbTiki.Value = 0;
+            startProgressBarUpdateDbTiki(10);
+
+            //Enable the global flag tiki
+            globalRunningStateTiki = true;
+
+
+            //Timer other website
+            timerUpdateDbOtherWebsite.Enabled = true;
+            timerUpdateDbOtherWebsite.Interval = 10 * 1000;
+            progressBarUpdateDbOtherWebsite.Value = 0;
+            startProgressBarUpdateDbOtherWebsite(10);
+
+            //Enable the global flag other website
+            globalRunningStateOtherWebsite = true;
+
         }
 
         void populateFormIntialValue(ConfigDictionary dict)
@@ -454,7 +479,7 @@ namespace PricesCollector
 
         private void fetchDataToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if(isFetching)
+            if(isFetchingTiki || isFetchingOtherWebsite)
             {
                 Console.WriteLine("Fetching threads are already running");
                 MessageBox.Show("It is busy, please wait!", "Busy...", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -467,30 +492,42 @@ namespace PricesCollector
             isManualFetching = true;
 
             //Stop the timer update DB
-            timerUpdateDb.Enabled = false;
-            stopProgressBarUpdateDb();
+            timerUpdateDbTiki.Enabled = false;
+            stopProgressBarUpdateDbTiki();
 
-            polulateLinkToDictionary();
-            refreshDBPricesMultiThreadAsync();
+            polulateLinkToDictionary(myDictTiki);
+            refreshDBPricesMultiThreadAsyncTiki(myDictTiki);
             //refreshDatagridviewValue(); // No need to update right now, it will be updated later when multi thread done
         }
 
-        private void timerUpdateDB_Tick(object sender, EventArgs e)
+        private void timerUpdateDBTiki_Tick(object sender, EventArgs e)
         {
-            Console.WriteLine("Timer update DB ticked");
+            Console.WriteLine("Timer update Tiki ticked");
 
             //Stop the timer update DB
-            timerUpdateDb.Enabled = false;
-            stopProgressBarUpdateDb();
+            timerUpdateDbTiki.Enabled = false;
+            stopProgressBarUpdateDbTiki();
 
-            polulateLinkToDictionary();
-            refreshDBPricesMultiThreadAsync();
+            polulateLinkToDictionary(myDictTiki);
+            refreshDBPricesMultiThreadAsyncTiki(myDictTiki);
+            //refreshDatagridviewValue(); // No need to update right now, it will be updated later when multi thread done
+        }
+        private void timerUpdateDbOtherWebsite_Tick(object sender, EventArgs e)
+        {
+            Console.WriteLine("Timer update Other website ticked");
+
+            //Stop the timer update DB
+            timerUpdateDbOtherWebsite.Enabled = false;
+            stopProgressBarUpdateDbOtherWebsite();
+
+            polulateLinkToDictionary(myDictOtherWebsite);
+            refreshDBPricesMultiThreadAsyncOtherWebsite(myDictOtherWebsite);
             //refreshDatagridviewValue(); // No need to update right now, it will be updated later when multi thread done
         }
 
-        private void polulateLinkToDictionary()
+        private void polulateLinkToDictionary(MyDictionary _myDict)
         {
-            myDict.Clear();
+            _myDict.Clear();
 
             if (this.OpenConnection() == true)
             {
@@ -520,7 +557,7 @@ namespace PricesCollector
                             dat.linkLazadaRaw = linkLazada;
                             dat.linkShopeeRaw = linkShopee;
                             dat.linkSendoRaw = linkSendo;
-                            myDict[id] = dat;
+                            _myDict[id] = dat;
                         }
                         catch { }
                     }
@@ -538,11 +575,12 @@ namespace PricesCollector
         /// </summary>
         /// 
 
-        List<BackgroundWorker> backgroundWorkerForFetchingList = new List<BackgroundWorker>();
+        List<BackgroundWorker> backgroundWorkerForFetchingListTiki = new List<BackgroundWorker>();
+        List<BackgroundWorker> backgroundWorkerForFetchingListOtherWebsite = new List<BackgroundWorker>();
 
-        private void refreshDBPricesMultiThreadAsync()
+        private void refreshDBPricesMultiThreadAsyncTiki(MyDictionary _myDict)
         {
-            foreach (var item in myDict)
+            foreach (var item in _myDict)
             {
                 ProductData data = item.Value;
                 if(data.isActive == false)
@@ -552,24 +590,49 @@ namespace PricesCollector
                     continue;
                 }
 
-                if (tabControl1.SelectedIndex == (int)Tab.TabOtherWebsite) // Tab other website is selected
-                {
-                    data.isFullFetching = true;
-                }
+                data.isFullFetching = false;
 
                 startProgressFetchingByMultiThread(data);
             }
-            progressBarFetching.Maximum = backgroundWorkerForFetchingList.Count;
+            progressBarFetchingTiki.Maximum = backgroundWorkerForFetchingListTiki.Count;
+        }
+        private void refreshDBPricesMultiThreadAsyncOtherWebsite(MyDictionary _myDict)
+        {
+            foreach (var item in _myDict)
+            {
+                ProductData data = item.Value;
+                if (data.isActive == false)
+                {
+                    //This item is not active
+                    //Console.WriteLine("Skip this product, it is not active");
+                    continue;
+                }
+           
+                data.isFullFetching = true;
+                
+                startProgressFetchingByMultiThread(data);
+            }
+            progressBarFetchingOtherWebsite.Maximum = backgroundWorkerForFetchingListOtherWebsite.Count;
         }
 
-        private AutoResetEvent _workerCompleted = new AutoResetEvent(false);
+        
         private void startProgressFetchingByMultiThread(ProductData data)
         {
             try
             {
-                BackgroundWorker bgw = CreateBackgroundWorkerForFetching();
-                backgroundWorkerForFetchingList.Add(bgw);
-                bgw.RunWorkerAsync(data);
+                if(data.isFullFetching == false)
+                {
+                    BackgroundWorker bgw = CreateBackgroundWorkerForFetchingTiki();
+                    backgroundWorkerForFetchingListTiki.Add(bgw);
+                    bgw.RunWorkerAsync(data);
+                }
+                else
+                {
+                    BackgroundWorker bgw = CreateBackgroundWorkerForFetchingOtherWebsite();
+                    backgroundWorkerForFetchingListOtherWebsite.Add(bgw);
+                    bgw.RunWorkerAsync(data);
+                }
+                
             }
             catch (Exception ex)
             {
@@ -577,15 +640,25 @@ namespace PricesCollector
             }
         }
 
-        private BackgroundWorker CreateBackgroundWorkerForFetching()
+        private BackgroundWorker CreateBackgroundWorkerForFetchingTiki()
         {
             var bw = new BackgroundWorker();
             bw.WorkerSupportsCancellation = true;
             bw.WorkerReportsProgress = true;
             bw.DoWork += bgWorkerForFetching_DoWork;
-            bw.RunWorkerCompleted += bgWorkerForFetching_RunWorkerCompleted;
+            bw.RunWorkerCompleted += bgWorkerForFetchingTiki_RunWorkerCompleted;
             return bw;
         }
+        private BackgroundWorker CreateBackgroundWorkerForFetchingOtherWebsite()
+        {
+            var bw = new BackgroundWorker();
+            bw.WorkerSupportsCancellation = true;
+            bw.WorkerReportsProgress = true;
+            bw.DoWork += bgWorkerForFetching_DoWork;
+            bw.RunWorkerCompleted += bgWorkerForFetchingOtherWebsite_RunWorkerCompleted;
+            return bw;
+        }
+
 
         private void bgWorkerForFetching_DoWork(object sender, DoWorkEventArgs e)
         {
@@ -598,46 +671,93 @@ namespace PricesCollector
             e.Result = data;
         }
 
-        private void bgWorkerForFetching_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        private void bgWorkerForFetchingTiki_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             BackgroundWorker bgw = (BackgroundWorker)sender;
-            backgroundWorkerForFetchingList.Remove(bgw);
+            backgroundWorkerForFetchingListTiki.Remove(bgw);
             bgw.Dispose();
 
-            if (globalRunningState == false && isManualFetching == false)
+            if (globalRunningStateTiki == false && isManualFetching == false)
             {
                 return; //button stop clicked
             }
 
-            if (progressBarFetching.Value < progressBarFetching.Maximum)
+            if (progressBarFetchingTiki.Value < progressBarFetchingTiki.Maximum)
             {
-                progressBarFetching.Value++;
+                progressBarFetchingTiki.Value++;
             }
 
-            if (backgroundWorkerForFetchingList.Count == 0) //All threads have finished the job
+            if (backgroundWorkerForFetchingListTiki.Count == 0) //All threads have finished the job
             {
                 Console.WriteLine("All threads have finished the job");
 
-                updateDbWhenFetchingDone(); //Store to DB
+                updateDbWhenFetchingDone(myDictTiki); //Store to DB
                 refreshDatagridviewValue(); //Fetch from DB
-                progressBarFetching.Value = 0;
+                progressBarFetchingTiki.Value = 0;
 
                 //Restart the timer update DB
-                timerUpdateDb.Interval = timeoutUpdateDB * 1000;
-                timerUpdateDb.Enabled = true;
+                timerUpdateDbTiki.Interval = timeoutUpdateDB * 1000;
+                timerUpdateDbTiki.Enabled = true;
 
                 //Reset the manual fetching, it is done
                 if (isManualFetching == true)
                 {
                     isManualFetching = false;
-                    if(globalRunningState == false)
+                    if(globalRunningStateTiki == false)
                     {
                         return;
                     }
                 }
 
                 //Start timer update DB
-                startProgressBarUpdateDb(timeoutUpdateDB);
+                startProgressBarUpdateDbTiki(timeoutUpdateDB);
+            }
+
+            if (e.Error != null)
+            {
+                Console.WriteLine("ERROR: " + e.Error.ToString());
+            }
+        }
+        private void bgWorkerForFetchingOtherWebsite_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            BackgroundWorker bgw = (BackgroundWorker)sender;
+            backgroundWorkerForFetchingListOtherWebsite.Remove(bgw);
+            bgw.Dispose();
+
+            if (globalRunningStateOtherWebsite == false && isManualFetching == false)
+            {
+                return; //button stop clicked
+            }
+
+            if (progressBarFetchingOtherWebsite.Value < progressBarFetchingOtherWebsite.Maximum)
+            {
+                progressBarFetchingOtherWebsite.Value++;
+            }
+
+            if (backgroundWorkerForFetchingListOtherWebsite.Count == 0) //All threads have finished the job
+            {
+                Console.WriteLine("All threads have finished the job other website");
+
+                updateDbWhenFetchingDone(myDictOtherWebsite); //Store to DB
+                refreshDatagridviewValue(); //Fetch from DB
+                progressBarFetchingOtherWebsite.Value = 0;
+
+                //Restart the timer update DB
+                timerUpdateDbOtherWebsite.Interval = timeoutUpdateDB * 1000;
+                timerUpdateDbOtherWebsite.Enabled = true;
+
+                //Reset the manual fetching, it is done
+                if (isManualFetching == true)
+                {
+                    isManualFetching = false;
+                    if (globalRunningStateOtherWebsite == false)
+                    {
+                        return;
+                    }
+                }
+
+                //Start timer update DB
+                startProgressBarUpdateDbOtherWebsite(timeoutUpdateDB);
             }
 
             if (e.Error != null)
@@ -646,7 +766,8 @@ namespace PricesCollector
             }
         }
 
-        private void updateDbWhenFetchingDone()
+
+        private void updateDbWhenFetchingDone(MyDictionary myDict)
         {
             if (this.OpenConnection() == true)
             {
@@ -666,17 +787,18 @@ namespace PricesCollector
                     MySqlCommand cmd = new MySqlCommand();
                     cmd.Connection = connection;
                     cmd.CommandText = "update product set ";
-                    cmd.CommandText += "seller_name ='" + data.sellerName + "',";
-                    cmd.CommandText += "product_name ='" + data.productName + "',";
-                    cmd.CommandText += "sku ='" + data.sku + "',";
-                    cmd.CommandText += "current_price ='" + data.currentPrice.ToString() + "',";
-                    cmd.CommandText += "discount_price ='" + data.discountPrice.ToString() + "',";
-                    cmd.CommandText += "lowest_price_tiki ='" + data.lowestPriceTiki.ToString() + "',";
-                    cmd.CommandText += "other_seller_tiki ='" + otherSellerTikiStringToDB;
-
-                    if (tabControl1.SelectedIndex == (int)Tab.TabOtherWebsite)
+                    if (data.isFullFetching == false)
                     {
-                        cmd.CommandText += "',";
+                        cmd.CommandText += "seller_name ='" + data.sellerName + "',";
+                        cmd.CommandText += "product_name ='" + data.productName + "',";
+                        cmd.CommandText += "sku ='" + data.sku + "',";
+                        cmd.CommandText += "current_price ='" + data.currentPrice.ToString() + "',";
+                        cmd.CommandText += "discount_price ='" + data.discountPrice.ToString() + "',";
+                        cmd.CommandText += "lowest_price_tiki ='" + data.lowestPriceTiki.ToString() + "',";
+                        cmd.CommandText += "other_seller_tiki ='" + otherSellerTikiStringToDB + "' ";
+                    }
+                    else
+                    {
                         cmd.CommandText += "lowest_price_lazada ='" + data.lowestPriceLazada.ToString() + "',";
                         cmd.CommandText += "lowest_price_shopee ='" + data.lowestPriceShopee.ToString() + "',";
                         cmd.CommandText += "lowest_price_sendo ='" + data.lowestPriceSendo.ToString() + "',";
@@ -684,11 +806,7 @@ namespace PricesCollector
                         cmd.CommandText += "other_seller_shopee ='" + otherSellerShopeeStringToDB + "',";
                         cmd.CommandText += "other_seller_sendo ='" + otherSellerSendoStringToDB + "' ";
                     }
-                    else
-                    {
-                        cmd.CommandText += "' ";
-                    }
-
+                    
                     cmd.CommandText += "where id='" + item.Key + "';";
                     cmd.ExecuteNonQuery();
                 }
@@ -915,17 +1033,23 @@ namespace PricesCollector
         /// 
         private void timeoutUpdateDBChangedFromSettingFormEvent()
         {
-            if(isFetching)
+            if(isFetchingTiki || isFetchingOtherWebsite)
             {
                 Console.WriteLine("Fetching threads are already running");
                 return;
             }
 
-            timerUpdateDb.Enabled = false;
-            timerUpdateDb.Interval = timeoutUpdateDB * 1000;
-            timerUpdateDb.Enabled = true;
+            //Tiki part
+            timerUpdateDbTiki.Enabled = false;
+            timerUpdateDbTiki.Interval = timeoutUpdateDB * 1000;
+            timerUpdateDbTiki.Enabled = true;
+            startProgressBarUpdateDbTiki(timeoutUpdateDB);
 
-            startProgressBarUpdateDb(timeoutUpdateDB);
+            //Other websites part
+            timerUpdateDbOtherWebsite.Enabled = false;
+            timerUpdateDbOtherWebsite.Interval = timeoutUpdateDB * 1000;
+            timerUpdateDbOtherWebsite.Enabled = true;
+            startProgressBarUpdateDbOtherWebsite(timeoutUpdateDB);
         }
 
 
@@ -933,34 +1057,43 @@ namespace PricesCollector
         /// Progress bar update DB
         /// </summary>
         
-        BackgroundWorker _backgroundWorkerForProgressBar;
+        BackgroundWorker backgroundWorkerForProgressBarTiki;
+        BackgroundWorker backgroundWorkerForProgressBarOtherWebsite;
 
-        private BackgroundWorker CreateBackgroundWorker()
-        {
-            Console.WriteLine("### CreateBackgroundWorker");
-            var bw = new BackgroundWorker();
-            bw.WorkerSupportsCancellation = true;
-            bw.WorkerReportsProgress = true;
-            bw.DoWork += bgWorkerProgressBarUpdateDb_DoWork;
-            bw.ProgressChanged += bgWorkerProgressBarUpdateDb_ProgressChanged;
-            bw.RunWorkerCompleted += bgWorkerProgressBarUpdateDb_RunWorkerCompleted;
-            return bw;
-        }
-
-        private void startProgressBarUpdateDb(int timerInSecond)
+        private void startProgressBarUpdateDbTiki(int timerInSecond)
         {
             try
             {
                 //Cancel whatever it is you're doing!
-                if (_backgroundWorkerForProgressBar != null)
+                if (backgroundWorkerForProgressBarTiki != null)
                 {
-                    _backgroundWorkerForProgressBar.CancelAsync();
+                    backgroundWorkerForProgressBarTiki.CancelAsync();
                 }
 
-                _backgroundWorkerForProgressBar = CreateBackgroundWorker();
+                backgroundWorkerForProgressBarTiki = CreateBackgroundWorkerTiki();
 
                 //And start doing this immediately!
-                _backgroundWorkerForProgressBar.RunWorkerAsync(timerInSecond);
+                backgroundWorkerForProgressBarTiki.RunWorkerAsync(timerInSecond);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+            }
+        }
+        private void startProgressBarUpdateDbOtherWebsite(int timerInSecond)
+        {
+            try
+            {
+                //Cancel whatever it is you're doing!
+                if (backgroundWorkerForProgressBarOtherWebsite != null)
+                {
+                    backgroundWorkerForProgressBarOtherWebsite.CancelAsync();
+                }
+
+                backgroundWorkerForProgressBarOtherWebsite = CreateBackgroundWorkerOtherWebsite();
+
+                //And start doing this immediately!
+                backgroundWorkerForProgressBarOtherWebsite.RunWorkerAsync(timerInSecond);
             }
             catch (Exception ex)
             {
@@ -968,13 +1101,50 @@ namespace PricesCollector
             }
         }
 
-        private void stopProgressBarUpdateDb()
+        private BackgroundWorker CreateBackgroundWorkerTiki()
+        {
+            Console.WriteLine("### CreateBackgroundWorker");
+            var bw = new BackgroundWorker();
+            bw.WorkerSupportsCancellation = true;
+            bw.WorkerReportsProgress = true;
+            bw.DoWork += bgWorkerProgressBarUpdateDb_DoWork;
+            bw.ProgressChanged += bgWorkerProgressBarUpdateDbTiki_ProgressChanged;
+            bw.RunWorkerCompleted += bgWorkerProgressBarUpdateDb_RunWorkerCompleted;
+            return bw;
+        }
+        private BackgroundWorker CreateBackgroundWorkerOtherWebsite()
+        {
+            Console.WriteLine("### CreateBackgroundWorker Other website");
+            var bw = new BackgroundWorker();
+            bw.WorkerSupportsCancellation = true;
+            bw.WorkerReportsProgress = true;
+            bw.DoWork += bgWorkerProgressBarUpdateDb_DoWork;
+            bw.ProgressChanged += bgWorkerProgressBarUpdateDbOtherWebsite_ProgressChanged;
+            bw.RunWorkerCompleted += bgWorkerProgressBarUpdateDb_RunWorkerCompleted;
+            return bw;
+        }
+
+        private void stopProgressBarUpdateDbTiki()
         {
             try
             {
-                if (_backgroundWorkerForProgressBar != null)
+                if (backgroundWorkerForProgressBarTiki != null)
                 {
-                    _backgroundWorkerForProgressBar.CancelAsync();
+                    backgroundWorkerForProgressBarTiki.CancelAsync();
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+            }
+        }
+        private void stopProgressBarUpdateDbOtherWebsite()
+        {
+            try
+            {
+                if (backgroundWorkerForProgressBarOtherWebsite != null)
+                {
+                    backgroundWorkerForProgressBarOtherWebsite.CancelAsync();
                 }
             }
             catch (Exception ex)
@@ -1003,14 +1173,23 @@ namespace PricesCollector
             }
         }
 
-        private void bgWorkerProgressBarUpdateDb_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        private void bgWorkerProgressBarUpdateDbTiki_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
-            if(globalRunningState == false)
+            if(globalRunningStateTiki == false)
             {
                 return;// btn stop clicked
             }
 
-            progressBarUpdateDb.Value = Int32.Parse(e.ProgressPercentage.ToString());
+            progressBarUpdateDbTiki.Value = Int32.Parse(e.ProgressPercentage.ToString());
+        }
+        private void bgWorkerProgressBarUpdateDbOtherWebsite_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            if (globalRunningStateOtherWebsite == false)
+            {
+                return;// btn stop clicked
+            }
+
+            progressBarUpdateDbOtherWebsite.Value = Int32.Parse(e.ProgressPercentage.ToString());
         }
 
         private void bgWorkerProgressBarUpdateDb_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
@@ -1045,30 +1224,56 @@ namespace PricesCollector
         /// <param name="sender"></param>
         /// <param name="e"></param>
         /// 
-        private void btnStop_Click(object sender, EventArgs e)
+        private void btnStopTiki_Click(object sender, EventArgs e)
         {
-            if(isFetching)
+            if(isFetchingTiki)
             {
                 MessageBox.Show("It is fetching, please wait!", "Resource busy", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
-            if (globalRunningState == true)
+            if (globalRunningStateTiki == true)
             {
-                globalRunningState = false;
-                btnStop.Text = "Start";
-                timerUpdateDb.Stop();
-                stopProgressBarUpdateDb();
-                progressBarFetching.Value = 0;
-                progressBarUpdateDb.Value = 0;
+                globalRunningStateTiki = false;
+                btnStopTiki.Text = "Start";
+                timerUpdateDbTiki.Stop();
+                stopProgressBarUpdateDbTiki();
+                progressBarFetchingTiki.Value = 0;
+                progressBarUpdateDbTiki.Value = 0;
             }
             else
             {
-                globalRunningState = true;
-                btnStop.Text = "Stop";
-                timerUpdateDb.Interval = timeoutUpdateDB * 1000;
-                timerUpdateDb.Start();
-                startProgressBarUpdateDb(timeoutUpdateDB);
+                globalRunningStateTiki = true;
+                btnStopTiki.Text = "Stop";
+                timerUpdateDbTiki.Interval = timeoutUpdateDB * 1000;
+                timerUpdateDbTiki.Start();
+                startProgressBarUpdateDbTiki(timeoutUpdateDB);
+            }
+        }
+        private void btnStopOtherWebsite_Click(object sender, EventArgs e)
+        {
+            if (isFetchingOtherWebsite)
+            {
+                MessageBox.Show("It is fetching, please wait!", "Resource busy", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            if (globalRunningStateOtherWebsite == true)
+            {
+                globalRunningStateOtherWebsite = false;
+                btnStopOtherWebsite.Text = "Start";
+                timerUpdateDbOtherWebsite.Stop();
+                stopProgressBarUpdateDbOtherWebsite();
+                progressBarFetchingOtherWebsite.Value = 0;
+                progressBarUpdateDbOtherWebsite.Value = 0;
+            }
+            else
+            {
+                globalRunningStateOtherWebsite = true;
+                btnStopOtherWebsite.Text = "Stop";
+                timerUpdateDbOtherWebsite.Interval = timeoutUpdateDB * 1000;
+                timerUpdateDbOtherWebsite.Start();
+                startProgressBarUpdateDbOtherWebsite(timeoutUpdateDB);
             }
         }
 
@@ -1084,5 +1289,7 @@ namespace PricesCollector
             Console.WriteLine(selectedIndex);
             refreshDatagridviewValue();
         }
+
+
     }
 }

@@ -193,91 +193,93 @@ namespace PricesCollector
 
         public void populateDataFromTikiLinkVersion2()
         {
-            string urlAddress = this.linkTiki;
-            string html = getHtmlFromWebsite(urlAddress);
-
-            var htmlDocument = new HtmlDocument();
-            htmlDocument.LoadHtml(html);
-
-            //Parse the discount-container
-            try
-            {
-                var discountHtmlNode = htmlDocument.DocumentNode.SelectSingleNode("//div[@id='discount-container']//span[@class='price']");
-                if (discountHtmlNode != null)
-                {
-                    string discountValue = discountHtmlNode.InnerHtml;
-                    Regex digitsOnly = new Regex(@"[^\d]");
-                    discountValue = digitsOnly.Replace(discountValue, "");
-                    this.discountPrice = Int32.Parse(discountValue);
-                }
-            }
-            catch { }
-
-            //Parse the Javascript values
-            var javascriptGroups = htmlDocument.DocumentNode.Descendants().Where(n => n.Name == "script");
-
-            string lines = "";
-            foreach (var group in javascriptGroups)
-            {
-                if (group.InnerText.Contains("currentSeller"))
-                {
-                    lines = group.InnerText;
-                    Regex rx = new Regex(@"var (\w+)\s*=\s*(.*);", RegexOptions.Compiled | RegexOptions.IgnoreCase);
-
-                    // Find matches.
-                    MatchCollection matches = rx.Matches(lines);
-
-                    // Report on each match.
-                    foreach (Match match in matches)
-                    {
-                        GroupCollection groups = match.Groups;
-                        try
-                        {
-                            JObject json = JObject.Parse("{value :" + groups[2].Value + "}");
-
-                            string jsVarName = groups[1].Value;
-                            JToken jsVarValue = json["value"];
-                            switch (jsVarName)
-                            {
-                                case "currentSeller":
-                                    this.sku = jsVarValue["sku"].ToString();
-                                    this.sellerName = jsVarValue["name"].ToString();
-                                    break;
-                                case "otherSeller":
-                                    this.otherSellerTiki.Clear();
-                                    foreach (var obj in jsVarValue)
-                                    {
-                                        Product p = new Product();
-                                        p.name = (string)obj["name"];
-                                        p.price = Int32.Parse((string)obj["price"]);
-                                        this.otherSellerTiki.Add(p);
-                                    }
-                                    break;
-                                case "price":
-                                    this.currentPrice = Int32.Parse(jsVarValue.ToString());
-                                    break;
-                                case "name":
-                                    this.productName = jsVarValue.ToString();
-                                    break;
-                                case "listPrice":
-                                    break;
-                                case "defaultProduct":
-                                    break;
-                                case "stockItem":
-                                    break;
-                                default: break;
-                            }
-                        }
-                        catch {}
-                    }
-                    break; // Found "currentSeller"
-                }
-            }
-
             if (this.isFullFetching)
             {
                 // Fetch other websites
                 populateOtherWebsite();
+            }
+            else
+            {
+                string urlAddress = this.linkTiki;
+                string html = getHtmlFromWebsite(urlAddress);
+
+                var htmlDocument = new HtmlDocument();
+                htmlDocument.LoadHtml(html);
+
+                //Parse the discount-container
+                try
+                {
+                    var discountHtmlNode = htmlDocument.DocumentNode.SelectSingleNode("//div[@id='discount-container']//span[@class='price']");
+                    if (discountHtmlNode != null)
+                    {
+                        string discountValue = discountHtmlNode.InnerHtml;
+                        Regex digitsOnly = new Regex(@"[^\d]");
+                        discountValue = digitsOnly.Replace(discountValue, "");
+                        this.discountPrice = Int32.Parse(discountValue);
+                    }
+                }
+                catch { }
+
+                //Parse the Javascript values
+                var javascriptGroups = htmlDocument.DocumentNode.Descendants().Where(n => n.Name == "script");
+
+                string lines = "";
+                foreach (var group in javascriptGroups)
+                {
+                    if (group.InnerText.Contains("currentSeller"))
+                    {
+                        lines = group.InnerText;
+                        Regex rx = new Regex(@"var (\w+)\s*=\s*(.*);", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+
+                        // Find matches.
+                        MatchCollection matches = rx.Matches(lines);
+
+                        // Report on each match.
+                        foreach (Match match in matches)
+                        {
+                            GroupCollection groups = match.Groups;
+                            try
+                            {
+                                JObject json = JObject.Parse("{value :" + groups[2].Value + "}");
+
+                                string jsVarName = groups[1].Value;
+                                JToken jsVarValue = json["value"];
+                                switch (jsVarName)
+                                {
+                                    case "currentSeller":
+                                        this.sku = jsVarValue["sku"].ToString();
+                                        this.sellerName = jsVarValue["name"].ToString();
+                                        break;
+                                    case "otherSeller":
+                                        this.otherSellerTiki.Clear();
+                                        foreach (var obj in jsVarValue)
+                                        {
+                                            Product p = new Product();
+                                            p.name = (string)obj["name"];
+                                            p.price = Int32.Parse((string)obj["price"]);
+                                            this.otherSellerTiki.Add(p);
+                                        }
+                                        break;
+                                    case "price":
+                                        this.currentPrice = Int32.Parse(jsVarValue.ToString());
+                                        break;
+                                    case "name":
+                                        this.productName = jsVarValue.ToString();
+                                        break;
+                                    case "listPrice":
+                                        break;
+                                    case "defaultProduct":
+                                        break;
+                                    case "stockItem":
+                                        break;
+                                    default: break;
+                                }
+                            }
+                            catch { }
+                        }
+                        break; // Found "currentSeller"
+                    }
+                }
             }
         }
 

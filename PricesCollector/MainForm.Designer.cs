@@ -37,15 +37,19 @@
             this.importDataToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.importCSVToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exportExcelToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.timerUpdateDb = new System.Windows.Forms.Timer(this.components);
-            this.progressBarUpdateDb = new System.Windows.Forms.ProgressBar();
-            this.progressBarFetching = new System.Windows.Forms.ProgressBar();
-            this.btnStop = new System.Windows.Forms.Button();
+            this.timerUpdateDbTiki = new System.Windows.Forms.Timer(this.components);
+            this.progressBarFetchingTiki = new System.Windows.Forms.ProgressBar();
+            this.btnStopTiki = new System.Windows.Forms.Button();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.tabPage2 = new System.Windows.Forms.TabPage();
             this.dataGridView2 = new System.Windows.Forms.DataGridView();
+            this.progressBarUpdateDbTiki = new System.Windows.Forms.ProgressBar();
+            this.btnStopOtherWebsite = new System.Windows.Forms.Button();
+            this.progressBarFetchingOtherWebsite = new System.Windows.Forms.ProgressBar();
+            this.progressBarUpdateDbOtherWebsite = new System.Windows.Forms.ProgressBar();
+            this.timerUpdateDbOtherWebsite = new System.Windows.Forms.Timer(this.components);
             this.menuStrip1.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
@@ -112,39 +116,30 @@
             this.exportExcelToolStripMenuItem.Text = "Export Excel";
             this.exportExcelToolStripMenuItem.Click += new System.EventHandler(this.exportExcelToolStripMenuItem_Click);
             // 
-            // timerUpdateDb
+            // timerUpdateDbTiki
             // 
-            this.timerUpdateDb.Interval = 10000;
-            this.timerUpdateDb.Tick += new System.EventHandler(this.timerUpdateDB_Tick);
+            this.timerUpdateDbTiki.Interval = 10000;
+            this.timerUpdateDbTiki.Tick += new System.EventHandler(this.timerUpdateDBTiki_Tick);
             // 
-            // progressBarUpdateDb
+            // progressBarFetchingTiki
             // 
-            this.progressBarUpdateDb.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.progressBarUpdateDb.Location = new System.Drawing.Point(1087, 53);
-            this.progressBarUpdateDb.Margin = new System.Windows.Forms.Padding(4);
-            this.progressBarUpdateDb.Name = "progressBarUpdateDb";
-            this.progressBarUpdateDb.Size = new System.Drawing.Size(324, 42);
-            this.progressBarUpdateDb.TabIndex = 10;
+            this.progressBarFetchingTiki.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.progressBarFetchingTiki.Location = new System.Drawing.Point(594, 44);
+            this.progressBarFetchingTiki.Margin = new System.Windows.Forms.Padding(4);
+            this.progressBarFetchingTiki.Name = "progressBarFetchingTiki";
+            this.progressBarFetchingTiki.Size = new System.Drawing.Size(236, 42);
+            this.progressBarFetchingTiki.TabIndex = 11;
             // 
-            // progressBarFetching
+            // btnStopTiki
             // 
-            this.progressBarFetching.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.progressBarFetching.Location = new System.Drawing.Point(1436, 53);
-            this.progressBarFetching.Margin = new System.Windows.Forms.Padding(4);
-            this.progressBarFetching.Name = "progressBarFetching";
-            this.progressBarFetching.Size = new System.Drawing.Size(236, 42);
-            this.progressBarFetching.TabIndex = 11;
-            // 
-            // btnStop
-            // 
-            this.btnStop.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnStop.Location = new System.Drawing.Point(1702, 53);
-            this.btnStop.Name = "btnStop";
-            this.btnStop.Size = new System.Drawing.Size(108, 47);
-            this.btnStop.TabIndex = 12;
-            this.btnStop.Text = "Stop";
-            this.btnStop.UseVisualStyleBackColor = true;
-            this.btnStop.Click += new System.EventHandler(this.btnStop_Click);
+            this.btnStopTiki.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnStopTiki.Location = new System.Drawing.Point(860, 44);
+            this.btnStopTiki.Name = "btnStopTiki";
+            this.btnStopTiki.Size = new System.Drawing.Size(108, 47);
+            this.btnStopTiki.TabIndex = 12;
+            this.btnStopTiki.Text = "Stop";
+            this.btnStopTiki.UseVisualStyleBackColor = true;
+            this.btnStopTiki.Click += new System.EventHandler(this.btnStopTiki_Click);
             // 
             // tabControl1
             // 
@@ -178,11 +173,11 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.dataGridView1.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.AllCells;
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView1.Location = new System.Drawing.Point(14, 10);
+            this.dataGridView1.Location = new System.Drawing.Point(14, 7);
             this.dataGridView1.Margin = new System.Windows.Forms.Padding(4);
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.RowTemplate.Height = 33;
-            this.dataGridView1.Size = new System.Drawing.Size(1781, 680);
+            this.dataGridView1.Size = new System.Drawing.Size(1781, 668);
             this.dataGridView1.TabIndex = 1;
             this.dataGridView1.CellBeginEdit += new System.Windows.Forms.DataGridViewCellCancelEventHandler(this.dataGridView_CellBeginEdit);
             this.dataGridView1.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView_CellClick);
@@ -209,21 +204,67 @@
             this.dataGridView2.Location = new System.Drawing.Point(6, 6);
             this.dataGridView2.Name = "dataGridView2";
             this.dataGridView2.RowTemplate.Height = 33;
-            this.dataGridView2.Size = new System.Drawing.Size(1783, 682);
+            this.dataGridView2.Size = new System.Drawing.Size(1783, 671);
             this.dataGridView2.TabIndex = 0;
             this.dataGridView2.CellBeginEdit += new System.Windows.Forms.DataGridViewCellCancelEventHandler(this.dataGridView_CellBeginEdit);
             this.dataGridView2.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView_CellClick);
             this.dataGridView2.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView_CellEndEdit);
             this.dataGridView2.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView_CellValueChanged);
             // 
+            // progressBarUpdateDbTiki
+            // 
+            this.progressBarUpdateDbTiki.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.progressBarUpdateDbTiki.Location = new System.Drawing.Point(245, 44);
+            this.progressBarUpdateDbTiki.Margin = new System.Windows.Forms.Padding(4);
+            this.progressBarUpdateDbTiki.Name = "progressBarUpdateDbTiki";
+            this.progressBarUpdateDbTiki.Size = new System.Drawing.Size(324, 42);
+            this.progressBarUpdateDbTiki.TabIndex = 10;
+            // 
+            // btnStopOtherWebsite
+            // 
+            this.btnStopOtherWebsite.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnStopOtherWebsite.Location = new System.Drawing.Point(1675, 49);
+            this.btnStopOtherWebsite.Name = "btnStopOtherWebsite";
+            this.btnStopOtherWebsite.Size = new System.Drawing.Size(108, 47);
+            this.btnStopOtherWebsite.TabIndex = 16;
+            this.btnStopOtherWebsite.Text = "Stop";
+            this.btnStopOtherWebsite.UseVisualStyleBackColor = true;
+            this.btnStopOtherWebsite.Click += new System.EventHandler(this.btnStopOtherWebsite_Click);
+            // 
+            // progressBarFetchingOtherWebsite
+            // 
+            this.progressBarFetchingOtherWebsite.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.progressBarFetchingOtherWebsite.Location = new System.Drawing.Point(1409, 49);
+            this.progressBarFetchingOtherWebsite.Margin = new System.Windows.Forms.Padding(4);
+            this.progressBarFetchingOtherWebsite.Name = "progressBarFetchingOtherWebsite";
+            this.progressBarFetchingOtherWebsite.Size = new System.Drawing.Size(236, 42);
+            this.progressBarFetchingOtherWebsite.TabIndex = 15;
+            // 
+            // progressBarUpdateDbOtherWebsite
+            // 
+            this.progressBarUpdateDbOtherWebsite.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.progressBarUpdateDbOtherWebsite.Location = new System.Drawing.Point(1060, 49);
+            this.progressBarUpdateDbOtherWebsite.Margin = new System.Windows.Forms.Padding(4);
+            this.progressBarUpdateDbOtherWebsite.Name = "progressBarUpdateDbOtherWebsite";
+            this.progressBarUpdateDbOtherWebsite.Size = new System.Drawing.Size(324, 42);
+            this.progressBarUpdateDbOtherWebsite.TabIndex = 14;
+            // 
+            // timerUpdateDbOtherWebsite
+            // 
+            this.timerUpdateDbOtherWebsite.Interval = 10000;
+            this.timerUpdateDbOtherWebsite.Tick += new System.EventHandler(this.timerUpdateDbOtherWebsite_Tick);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1836, 831);
-            this.Controls.Add(this.btnStop);
-            this.Controls.Add(this.progressBarFetching);
-            this.Controls.Add(this.progressBarUpdateDb);
+            this.Controls.Add(this.btnStopOtherWebsite);
+            this.Controls.Add(this.progressBarFetchingOtherWebsite);
+            this.Controls.Add(this.progressBarUpdateDbOtherWebsite);
+            this.Controls.Add(this.btnStopTiki);
+            this.Controls.Add(this.progressBarFetchingTiki);
+            this.Controls.Add(this.progressBarUpdateDbTiki);
             this.Controls.Add(this.tabControl1);
             this.Controls.Add(this.menuStrip1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -249,11 +290,10 @@
         #endregion
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem fetchDataToolStripMenuItem;
-        private System.Windows.Forms.Timer timerUpdateDb;
-        private System.Windows.Forms.ProgressBar progressBarUpdateDb;
-        private System.Windows.Forms.ProgressBar progressBarFetching;
+        private System.Windows.Forms.Timer timerUpdateDbTiki;
+        private System.Windows.Forms.ProgressBar progressBarFetchingTiki;
         private System.Windows.Forms.ToolStripMenuItem settingToolStripMenuItem;
-        private System.Windows.Forms.Button btnStop;
+        private System.Windows.Forms.Button btnStopTiki;
         private System.Windows.Forms.ToolStripMenuItem importDataToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem importCSVToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem exportExcelToolStripMenuItem;
@@ -263,5 +303,10 @@
         private System.Windows.Forms.DataGridView dataGridView1;
         private System.Windows.Forms.TabPage tabPage2;
         private System.Windows.Forms.DataGridView dataGridView2;
+        private System.Windows.Forms.ProgressBar progressBarUpdateDbTiki;
+        private System.Windows.Forms.Button btnStopOtherWebsite;
+        private System.Windows.Forms.ProgressBar progressBarFetchingOtherWebsite;
+        private System.Windows.Forms.ProgressBar progressBarUpdateDbOtherWebsite;
+        private System.Windows.Forms.Timer timerUpdateDbOtherWebsite;
     }
 }
