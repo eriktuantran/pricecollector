@@ -28,7 +28,8 @@ namespace PricesCollector
     public partial class MainForm : Form
     {
         private string connectionString = "";//"server=127.0.0.1;user id=root;password=3V5wn0Kv9RRc8gQA;persistsecurityinfo=True;database=pricecollector";
-        private int timeoutUpdateDB = 0;
+        private int timeoutUpdateDBTiki = 0;
+        private int timeoutUpdateDBOtherWebsite = 0;
         private bool globalRunningStateTiki = false;
         private bool globalRunningStateOtherWebsite = false;
         private bool isManualFetching = false;
@@ -125,7 +126,7 @@ namespace PricesCollector
             //Datagridview Width/Height not overflow
             mydataGridView.Columns[Utilities.colNameToIndex("link_tiki", mydataGridView)].Width = 100;// 500;
             mydataGridView.Width = this.tabControl1.Width - 15;
-            mydataGridView.Height = this.tabControl1.Height - 30;
+            mydataGridView.Height = this.tabControl1.Height - 65;
             mydataGridView.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
             mydataGridView.Columns[0].Frozen = true;
         }
@@ -238,7 +239,7 @@ namespace PricesCollector
             //Datagridview Width/Height not overflow
             mydataGridView.Columns[Utilities.colNameToIndex("link_tiki", mydataGridView)].Width = 100;// 500;
             mydataGridView.Width = this.tabControl1.Width - 15;
-            mydataGridView.Height = this.tabControl1.Height - 30;
+            mydataGridView.Height = this.tabControl1.Height - 65;
             mydataGridView.AutoSizeRowsMode = DataGridViewAutoSizeRowsMode.AllCells;
             mydataGridView.Columns[0].Frozen = true;
         }
@@ -256,7 +257,7 @@ namespace PricesCollector
             populateFormIntialValue(dictRead);
 
             // Config file not exist
-            if (connectionString == "" || timeoutUpdateDB == 0)
+            if (connectionString == "" || timeoutUpdateDBTiki == 0 || timeoutUpdateDBOtherWebsite == 0)
             {
                 getValueFromSettingForm();
             }
@@ -270,7 +271,7 @@ namespace PricesCollector
 
             //Timer Tiki
             timerUpdateDbTiki.Enabled = true;
-            timerUpdateDbTiki.Interval = 10 * 1000;
+            timerUpdateDbTiki.Interval = timeoutUpdateDBTiki * 1000;
             progressBarUpdateDbTiki.Value = 0;
             startProgressBarUpdateDbTiki(10);
 
@@ -280,7 +281,7 @@ namespace PricesCollector
 
             //Timer other website
             timerUpdateDbOtherWebsite.Enabled = true;
-            timerUpdateDbOtherWebsite.Interval = 10 * 1000;
+            timerUpdateDbOtherWebsite.Interval = timeoutUpdateDBOtherWebsite * 1000;
             progressBarUpdateDbOtherWebsite.Value = 0;
             startProgressBarUpdateDbOtherWebsite(10);
 
@@ -291,9 +292,14 @@ namespace PricesCollector
 
         void populateFormIntialValue(ConfigDictionary dict)
         {
-            if (dict.ContainsKey("timeout") && dict["timeout"] != "")
+            if (dict.ContainsKey("timeouttiki") && dict["timeouttiki"] != "")
             {
-                timeoutUpdateDB = Int32.Parse(dict["timeout"]);
+                timeoutUpdateDBTiki = Int32.Parse(dict["timeouttiki"]);
+            }
+
+            if (dict.ContainsKey("timeoutother") && dict["timeoutother"] != "")
+            {
+                timeoutUpdateDBOtherWebsite = Int32.Parse(dict["timeoutother"]);
             }
 
             if (dict.ContainsKey("connectstring") && dict["connectstring"] != "")
@@ -311,7 +317,8 @@ namespace PricesCollector
             if (appSetting.isOKButtonClicked)
             {
                 this.connectionString = appSetting.connectionString;
-                this.timeoutUpdateDB = appSetting.timeout;
+                this.timeoutUpdateDBTiki = appSetting.timeoutTiki;
+                this.timeoutUpdateDBOtherWebsite = appSetting.timeoutOtherWebsite;
                 connection = new MySqlConnection(connectionString);
                 Console.WriteLine("Setting done");
             }
@@ -323,12 +330,38 @@ namespace PricesCollector
 
         private void settingToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            int prevtimeoutUpdateDB = this.timeoutUpdateDB;
+            int prevtimeoutUpdateDBTiki = this.timeoutUpdateDBTiki;
+            int prevtimeoutUpdateDBOtherWebsite = this.timeoutUpdateDBOtherWebsite;
             getValueFromSettingForm();
-            if (this.timeoutUpdateDB != prevtimeoutUpdateDB)
+            if (this.timeoutUpdateDBTiki != prevtimeoutUpdateDBTiki || this.timeoutUpdateDBOtherWebsite != prevtimeoutUpdateDBOtherWebsite)
             {
                 timeoutUpdateDBChangedFromSettingFormEvent();
             }
+        }
+
+        /// <summary>
+        /// Timeout value changed
+        /// </summary>
+        /// 
+        private void timeoutUpdateDBChangedFromSettingFormEvent()
+        {
+            if (isFetchingTiki || isFetchingOtherWebsite)
+            {
+                Console.WriteLine("Fetching threads are already running");
+                return;
+            }
+
+            //Tiki part
+            timerUpdateDbTiki.Enabled = false;
+            timerUpdateDbTiki.Interval = timeoutUpdateDBTiki * 1000;
+            timerUpdateDbTiki.Enabled = true;
+            startProgressBarUpdateDbTiki(timeoutUpdateDBTiki);
+
+            //Other websites part
+            timerUpdateDbOtherWebsite.Enabled = false;
+            timerUpdateDbOtherWebsite.Interval = timeoutUpdateDBOtherWebsite * 1000;
+            timerUpdateDbOtherWebsite.Enabled = true;
+            startProgressBarUpdateDbOtherWebsite(timeoutUpdateDBOtherWebsite);
         }
 
         //open connection to database
@@ -696,7 +729,7 @@ namespace PricesCollector
                 progressBarFetchingTiki.Value = 0;
 
                 //Restart the timer update DB
-                timerUpdateDbTiki.Interval = timeoutUpdateDB * 1000;
+                timerUpdateDbTiki.Interval = timeoutUpdateDBTiki * 1000;
                 timerUpdateDbTiki.Enabled = true;
 
                 //Reset the manual fetching, it is done
@@ -710,7 +743,7 @@ namespace PricesCollector
                 }
 
                 //Start timer update DB
-                startProgressBarUpdateDbTiki(timeoutUpdateDB);
+                startProgressBarUpdateDbTiki(timeoutUpdateDBTiki);
             }
 
             if (e.Error != null)
@@ -743,7 +776,7 @@ namespace PricesCollector
                 progressBarFetchingOtherWebsite.Value = 0;
 
                 //Restart the timer update DB
-                timerUpdateDbOtherWebsite.Interval = timeoutUpdateDB * 1000;
+                timerUpdateDbOtherWebsite.Interval = timeoutUpdateDBOtherWebsite * 1000;
                 timerUpdateDbOtherWebsite.Enabled = true;
 
                 //Reset the manual fetching, it is done
@@ -757,7 +790,7 @@ namespace PricesCollector
                 }
 
                 //Start timer update DB
-                startProgressBarUpdateDbOtherWebsite(timeoutUpdateDB);
+                startProgressBarUpdateDbOtherWebsite(timeoutUpdateDBOtherWebsite);
             }
 
             if (e.Error != null)
@@ -1027,30 +1060,7 @@ namespace PricesCollector
         }
 
 
-        /// <summary>
-        /// Timeout value changed
-        /// </summary>
-        /// 
-        private void timeoutUpdateDBChangedFromSettingFormEvent()
-        {
-            if(isFetchingTiki || isFetchingOtherWebsite)
-            {
-                Console.WriteLine("Fetching threads are already running");
-                return;
-            }
 
-            //Tiki part
-            timerUpdateDbTiki.Enabled = false;
-            timerUpdateDbTiki.Interval = timeoutUpdateDB * 1000;
-            timerUpdateDbTiki.Enabled = true;
-            startProgressBarUpdateDbTiki(timeoutUpdateDB);
-
-            //Other websites part
-            timerUpdateDbOtherWebsite.Enabled = false;
-            timerUpdateDbOtherWebsite.Interval = timeoutUpdateDB * 1000;
-            timerUpdateDbOtherWebsite.Enabled = true;
-            startProgressBarUpdateDbOtherWebsite(timeoutUpdateDB);
-        }
 
 
         /// <summary>
@@ -1062,6 +1072,7 @@ namespace PricesCollector
 
         private void startProgressBarUpdateDbTiki(int timerInSecond)
         {
+            Console.WriteLine("### startProgressBarUpdateDbTiki");
             try
             {
                 //Cancel whatever it is you're doing!
@@ -1082,6 +1093,7 @@ namespace PricesCollector
         }
         private void startProgressBarUpdateDbOtherWebsite(int timerInSecond)
         {
+            Console.WriteLine("### startProgressBarUpdateDbOtherWebsite");
             try
             {
                 //Cancel whatever it is you're doing!
@@ -1245,9 +1257,9 @@ namespace PricesCollector
             {
                 globalRunningStateTiki = true;
                 btnStopTiki.Text = "Stop";
-                timerUpdateDbTiki.Interval = timeoutUpdateDB * 1000;
+                timerUpdateDbTiki.Interval = timeoutUpdateDBTiki * 1000;
                 timerUpdateDbTiki.Start();
-                startProgressBarUpdateDbTiki(timeoutUpdateDB);
+                startProgressBarUpdateDbTiki(timeoutUpdateDBTiki);
             }
         }
         private void btnStopOtherWebsite_Click(object sender, EventArgs e)
@@ -1271,9 +1283,9 @@ namespace PricesCollector
             {
                 globalRunningStateOtherWebsite = true;
                 btnStopOtherWebsite.Text = "Stop";
-                timerUpdateDbOtherWebsite.Interval = timeoutUpdateDB * 1000;
+                timerUpdateDbOtherWebsite.Interval = timeoutUpdateDBOtherWebsite * 1000;
                 timerUpdateDbOtherWebsite.Start();
-                startProgressBarUpdateDbOtherWebsite(timeoutUpdateDB);
+                startProgressBarUpdateDbOtherWebsite(timeoutUpdateDBOtherWebsite);
             }
         }
 
@@ -1287,7 +1299,84 @@ namespace PricesCollector
         {
             int selectedIndex = tabControl1.SelectedIndex;
             Console.WriteLine(selectedIndex);
-            refreshDatagridviewValue();
+            //refreshDatagridviewValue();
+        }
+
+        /// <summary>
+        /// Search
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void btnSearchTiki_Click(object sender, EventArgs e)
+        {
+            searchValueInDataGridview(txtSearchTiki.Text, dataGridView1);
+        }
+        private void txtSearchTiki_TextChanged(object sender, EventArgs e)
+        {
+            searchValueInDataGridview(txtSearchTiki.Text, dataGridView1);
+        }
+        private void btnSearchOtherWebsite_Click(object sender, EventArgs e)
+        {
+            searchValueInDataGridview(txtSearchOtherWebsite.Text, dataGridView2);
+        }
+        private void txtSearchOtherWebsite_TextChanged(object sender, EventArgs e)
+        {
+            searchValueInDataGridview(txtSearchOtherWebsite.Text, dataGridView2);
+        }
+
+
+        private bool searchValueInDataGridview(string valueToSearch, DataGridView myDataGridView)
+        {
+            if(valueToSearch == "")
+            {
+                return false;
+            }
+
+            myDataGridView.ClearSelection();
+
+            valueToSearch = valueToSearch.ToLower();
+
+            try
+            {
+                foreach (DataGridViewRow row in myDataGridView.Rows)
+                {
+                    var productNameCell = row.Cells[Utilities.colNameToIndex("product_name", myDataGridView)];
+                    var skuCell = row.Cells[Utilities.colNameToIndex("sku", myDataGridView)];
+                    var mskuCell = row.Cells[Utilities.colNameToIndex("msku", myDataGridView)];
+                    if (productNameCell.Value != null)
+                    {
+                        if (productNameCell.Value.ToString().ToLower().StartsWith(valueToSearch))
+                        {
+                            row.Selected = true;
+                            myDataGridView.FirstDisplayedScrollingRowIndex = row.Index;
+                            return true;
+                        }
+                    }
+                    if (skuCell.Value != null)
+                    {
+                        if (skuCell.Value.ToString().ToLower().StartsWith(valueToSearch))
+                        {
+                            row.Selected = true;
+                            myDataGridView.FirstDisplayedScrollingRowIndex = row.Index;
+                            return true;
+                        }
+                    }
+                    if (mskuCell.Value != null)
+                    {
+                        if (mskuCell.Value.ToString().ToLower().StartsWith(valueToSearch))
+                        {
+                            row.Selected = true;
+                            myDataGridView.FirstDisplayedScrollingRowIndex = row.Index;
+                            return true;
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message, "Search Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            return false;
         }
 
 

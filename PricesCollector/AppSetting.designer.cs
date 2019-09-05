@@ -47,11 +47,15 @@
             this.dbConnectionTester = new System.ComponentModel.BackgroundWorker();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
-            this.timerValue = new System.Windows.Forms.NumericUpDown();
+            this.timerValueTiki = new System.Windows.Forms.NumericUpDown();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.label3 = new System.Windows.Forms.Label();
+            this.timerValueOtherWebsite = new System.Windows.Forms.NumericUpDown();
+            this.label4 = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
-            ((System.ComponentModel.ISupportInitialize)(this.timerValue)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.timerValueTiki)).BeginInit();
             this.groupBox1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.timerValueOtherWebsite)).BeginInit();
             this.groupBox2.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -176,7 +180,7 @@
             // 
             this.btnOK.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnOK.ForeColor = System.Drawing.Color.Black;
-            this.btnOK.Location = new System.Drawing.Point(247, 604);
+            this.btnOK.Location = new System.Drawing.Point(249, 656);
             this.btnOK.Name = "btnOK";
             this.btnOK.Size = new System.Drawing.Size(102, 53);
             this.btnOK.TabIndex = 0;
@@ -199,7 +203,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(232, 45);
+            this.label2.Location = new System.Drawing.Point(285, 45);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(82, 25);
             this.label2.TabIndex = 26;
@@ -210,44 +214,88 @@
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(23, 45);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(95, 25);
+            this.label1.Size = new System.Drawing.Size(128, 25);
             this.label1.TabIndex = 25;
-            this.label1.Text = "Timeout:";
+            this.label1.Text = "Timeout tiki:";
             // 
-            // timerValue
+            // timerValueTiki
             // 
-            this.timerValue.Location = new System.Drawing.Point(136, 42);
-            this.timerValue.Maximum = new decimal(new int[] {
+            this.timerValueTiki.Location = new System.Drawing.Point(189, 42);
+            this.timerValueTiki.Maximum = new decimal(new int[] {
             600,
             0,
             0,
             0});
-            this.timerValue.Minimum = new decimal(new int[] {
+            this.timerValueTiki.Minimum = new decimal(new int[] {
             1,
             0,
             0,
             0});
-            this.timerValue.Name = "timerValue";
-            this.timerValue.Size = new System.Drawing.Size(86, 31);
-            this.timerValue.TabIndex = 24;
-            this.timerValue.Value = new decimal(new int[] {
+            this.timerValueTiki.Name = "timerValueTiki";
+            this.timerValueTiki.Size = new System.Drawing.Size(86, 31);
+            this.timerValueTiki.TabIndex = 24;
+            this.timerValueTiki.Value = new decimal(new int[] {
             100,
             0,
             0,
             0});
-            this.timerValue.ValueChanged += new System.EventHandler(this.timerValue_ValueChanged);
+            this.timerValueTiki.ValueChanged += new System.EventHandler(this.timerValue_ValueChanged);
             // 
             // groupBox1
             // 
+            this.groupBox1.Controls.Add(this.label3);
+            this.groupBox1.Controls.Add(this.timerValueOtherWebsite);
+            this.groupBox1.Controls.Add(this.label4);
             this.groupBox1.Controls.Add(this.label2);
-            this.groupBox1.Controls.Add(this.timerValue);
+            this.groupBox1.Controls.Add(this.timerValueTiki);
             this.groupBox1.Controls.Add(this.label1);
             this.groupBox1.Location = new System.Drawing.Point(27, 37);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(545, 100);
+            this.groupBox1.Size = new System.Drawing.Size(545, 147);
             this.groupBox1.TabIndex = 27;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Timeout setting:";
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(285, 97);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(82, 25);
+            this.label3.TabIndex = 29;
+            this.label3.Text = "second";
+            // 
+            // timerValueOtherWebsite
+            // 
+            this.timerValueOtherWebsite.Location = new System.Drawing.Point(189, 94);
+            this.timerValueOtherWebsite.Maximum = new decimal(new int[] {
+            600,
+            0,
+            0,
+            0});
+            this.timerValueOtherWebsite.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.timerValueOtherWebsite.Name = "timerValueOtherWebsite";
+            this.timerValueOtherWebsite.Size = new System.Drawing.Size(86, 31);
+            this.timerValueOtherWebsite.TabIndex = 27;
+            this.timerValueOtherWebsite.Value = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
+            this.timerValueOtherWebsite.ValueChanged += new System.EventHandler(this.timerValueOtherWebsite_ValueChanged);
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(23, 97);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(150, 25);
+            this.label4.TabIndex = 28;
+            this.label4.Text = "Timeout other:";
             // 
             // groupBox2
             // 
@@ -264,7 +312,7 @@
             this.groupBox2.Controls.Add(this.label13);
             this.groupBox2.Controls.Add(this.label15);
             this.groupBox2.Controls.Add(this.txtDbPasswd);
-            this.groupBox2.Location = new System.Drawing.Point(27, 158);
+            this.groupBox2.Location = new System.Drawing.Point(27, 211);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(545, 402);
             this.groupBox2.TabIndex = 28;
@@ -275,7 +323,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(597, 690);
+            this.ClientSize = new System.Drawing.Size(597, 734);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.btnOK);
@@ -283,9 +331,10 @@
             this.Name = "AppSetting";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Setting";
-            ((System.ComponentModel.ISupportInitialize)(this.timerValue)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.timerValueTiki)).EndInit();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.timerValueOtherWebsite)).EndInit();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
             this.ResumeLayout(false);
@@ -311,8 +360,11 @@
         private System.ComponentModel.BackgroundWorker dbConnectionTester;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.NumericUpDown timerValue;
+        private System.Windows.Forms.NumericUpDown timerValueTiki;
         private System.Windows.Forms.GroupBox groupBox1;
         private System.Windows.Forms.GroupBox groupBox2;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.NumericUpDown timerValueOtherWebsite;
+        private System.Windows.Forms.Label label4;
     }
 }

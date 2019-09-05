@@ -16,7 +16,8 @@ namespace PricesCollector
     public partial class AppSetting : Form
     {
         public string connectionString = "";
-        public int timeout = 300;
+        public int timeoutTiki = 300;
+        public int timeoutOtherWebsite = 300;
 
         //DB
         private MySqlConnection connection;
@@ -68,9 +69,13 @@ namespace PricesCollector
             {
                 txtDbName.Text = readConfigDict["dbname"];
             }
-            if (readConfigDict.ContainsKey("timeout") && readConfigDict["timeout"] != "")
+            if (readConfigDict.ContainsKey("timeouttiki") && readConfigDict["timeouttiki"] != "")
             {
-                timerValue.Value = (decimal) Int32.Parse( readConfigDict["timeout"]);
+                timerValueTiki.Value = (decimal) Int32.Parse( readConfigDict["timeouttiki"]);
+            }
+            if (readConfigDict.ContainsKey("timeoutother") && readConfigDict["timeoutother"] != "")
+            {
+                timerValueOtherWebsite.Value = (decimal)Int32.Parse(readConfigDict["timeoutother"]);
             }
         }
 
@@ -85,7 +90,8 @@ namespace PricesCollector
             globalDictionary["dbpass"] = txtDbPasswd.Text;
             globalDictionary["dbname"] = txtDbName.Text;
 
-            globalDictionary["timeout"] = timerValue.Value.ToString();
+            globalDictionary["timeouttiki"] = timerValueTiki.Value.ToString();
+            globalDictionary["timeoutother"] = timerValueOtherWebsite.Value.ToString();
         }
 
         string updateConnectionString()
@@ -148,29 +154,29 @@ namespace PricesCollector
             this.Close();
         }
 
-        private void btnImageDirSelect_Click(object sender, EventArgs e)
-        {
-            using (var fbd = new FolderBrowserDialog())
-            {
-                DialogResult result = fbd.ShowDialog();
+        //private void btnImageDirSelect_Click(object sender, EventArgs e)
+        //{
+        //    using (var fbd = new FolderBrowserDialog())
+        //    {
+        //        DialogResult result = fbd.ShowDialog();
 
-                if (result == DialogResult.OK && !string.IsNullOrEmpty(fbd.SelectedPath))
-                {
-                    //txtImageDir.Text = fbd.SelectedPath;
-                }
-            }
+        //        if (result == DialogResult.OK && !string.IsNullOrEmpty(fbd.SelectedPath))
+        //        {
+        //            //txtImageDir.Text = fbd.SelectedPath;
+        //        }
+        //    }
 
-            updateDictionaryEvent();
-        }
+        //    updateDictionaryEvent();
+        //}
 
-        private void txtUrl_TextChanged(object sender, EventArgs e)
-        {
-            updateDictionaryEvent();
-        }
-        private void txtImageDir_TextChanged(object sender, EventArgs e)
-        {
-            updateDictionaryEvent();
-        }
+        //private void txtUrl_TextChanged(object sender, EventArgs e)
+        //{
+        //    updateDictionaryEvent();
+        //}
+        //private void txtImageDir_TextChanged(object sender, EventArgs e)
+        //{
+        //    updateDictionaryEvent();
+        //}
 
         private void btnTestDb_Click(object sender, EventArgs e)
         {
@@ -249,7 +255,12 @@ namespace PricesCollector
 
         private void timerValue_ValueChanged(object sender, EventArgs e)
         {
-            timeout = (int)timerValue.Value;
+            timeoutTiki = (int)timerValueTiki.Value;
+        }
+
+        private void timerValueOtherWebsite_ValueChanged(object sender, EventArgs e)
+        {
+            timeoutOtherWebsite = (int)timerValueOtherWebsite.Value;
         }
     }
 }

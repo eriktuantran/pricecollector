@@ -38,24 +38,32 @@
             this.importCSVToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.exportExcelToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.timerUpdateDbTiki = new System.Windows.Forms.Timer(this.components);
+            this.timerUpdateDbOtherWebsite = new System.Windows.Forms.Timer(this.components);
+            this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.progressBarFetchingOtherWebsite = new System.Windows.Forms.ProgressBar();
+            this.btnStopOtherWebsite = new System.Windows.Forms.Button();
+            this.progressBarUpdateDbOtherWebsite = new System.Windows.Forms.ProgressBar();
+            this.dataGridView2 = new System.Windows.Forms.DataGridView();
+            this.tabPage1 = new System.Windows.Forms.TabPage();
             this.progressBarFetchingTiki = new System.Windows.Forms.ProgressBar();
             this.btnStopTiki = new System.Windows.Forms.Button();
-            this.tabControl1 = new System.Windows.Forms.TabControl();
-            this.tabPage1 = new System.Windows.Forms.TabPage();
-            this.dataGridView1 = new System.Windows.Forms.DataGridView();
-            this.tabPage2 = new System.Windows.Forms.TabPage();
-            this.dataGridView2 = new System.Windows.Forms.DataGridView();
             this.progressBarUpdateDbTiki = new System.Windows.Forms.ProgressBar();
-            this.btnStopOtherWebsite = new System.Windows.Forms.Button();
-            this.progressBarFetchingOtherWebsite = new System.Windows.Forms.ProgressBar();
-            this.progressBarUpdateDbOtherWebsite = new System.Windows.Forms.ProgressBar();
-            this.timerUpdateDbOtherWebsite = new System.Windows.Forms.Timer(this.components);
+            this.dataGridView1 = new System.Windows.Forms.DataGridView();
+            this.tabControl1 = new System.Windows.Forms.TabControl();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.txtSearchTiki = new System.Windows.Forms.RichTextBox();
+            this.btnSearchTiki = new System.Windows.Forms.Button();
+            this.panel2 = new System.Windows.Forms.Panel();
+            this.btnSearchOtherWebsite = new System.Windows.Forms.Button();
+            this.txtSearchOtherWebsite = new System.Windows.Forms.RichTextBox();
             this.menuStrip1.SuspendLayout();
-            this.tabControl1.SuspendLayout();
-            this.tabPage1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.tabPage2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView2)).BeginInit();
+            this.tabPage1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
+            this.tabControl1.SuspendLayout();
+            this.panel1.SuspendLayout();
+            this.panel2.SuspendLayout();
             this.SuspendLayout();
             // 
             // menuStrip1
@@ -121,50 +129,98 @@
             this.timerUpdateDbTiki.Interval = 10000;
             this.timerUpdateDbTiki.Tick += new System.EventHandler(this.timerUpdateDBTiki_Tick);
             // 
-            // progressBarFetchingTiki
+            // timerUpdateDbOtherWebsite
             // 
-            this.progressBarFetchingTiki.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.progressBarFetchingTiki.Location = new System.Drawing.Point(594, 44);
-            this.progressBarFetchingTiki.Margin = new System.Windows.Forms.Padding(4);
-            this.progressBarFetchingTiki.Name = "progressBarFetchingTiki";
-            this.progressBarFetchingTiki.Size = new System.Drawing.Size(236, 42);
-            this.progressBarFetchingTiki.TabIndex = 11;
+            this.timerUpdateDbOtherWebsite.Interval = 10000;
+            this.timerUpdateDbOtherWebsite.Tick += new System.EventHandler(this.timerUpdateDbOtherWebsite_Tick);
             // 
-            // btnStopTiki
+            // tabPage2
             // 
-            this.btnStopTiki.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnStopTiki.Location = new System.Drawing.Point(860, 44);
-            this.btnStopTiki.Name = "btnStopTiki";
-            this.btnStopTiki.Size = new System.Drawing.Size(108, 47);
-            this.btnStopTiki.TabIndex = 12;
-            this.btnStopTiki.Text = "Stop";
-            this.btnStopTiki.UseVisualStyleBackColor = true;
-            this.btnStopTiki.Click += new System.EventHandler(this.btnStopTiki_Click);
+            this.tabPage2.Controls.Add(this.panel2);
+            this.tabPage2.Controls.Add(this.dataGridView2);
+            this.tabPage2.Location = new System.Drawing.Point(8, 39);
+            this.tabPage2.Name = "tabPage2";
+            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage2.Size = new System.Drawing.Size(1795, 714);
+            this.tabPage2.TabIndex = 1;
+            this.tabPage2.Text = "Other Website";
+            this.tabPage2.UseVisualStyleBackColor = true;
             // 
-            // tabControl1
+            // progressBarFetchingOtherWebsite
             // 
-            this.tabControl1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.progressBarFetchingOtherWebsite.Location = new System.Drawing.Point(1241, 15);
+            this.progressBarFetchingOtherWebsite.Name = "progressBarFetchingOtherWebsite";
+            this.progressBarFetchingOtherWebsite.Size = new System.Drawing.Size(218, 28);
+            this.progressBarFetchingOtherWebsite.TabIndex = 7;
+            // 
+            // btnStopOtherWebsite
+            // 
+            this.btnStopOtherWebsite.Location = new System.Drawing.Point(1489, 7);
+            this.btnStopOtherWebsite.Name = "btnStopOtherWebsite";
+            this.btnStopOtherWebsite.Size = new System.Drawing.Size(103, 45);
+            this.btnStopOtherWebsite.TabIndex = 6;
+            this.btnStopOtherWebsite.Text = "Stop";
+            this.btnStopOtherWebsite.UseVisualStyleBackColor = true;
+            this.btnStopOtherWebsite.Click += new System.EventHandler(this.btnStopOtherWebsite_Click);
+            // 
+            // progressBarUpdateDbOtherWebsite
+            // 
+            this.progressBarUpdateDbOtherWebsite.Location = new System.Drawing.Point(815, 15);
+            this.progressBarUpdateDbOtherWebsite.Name = "progressBarUpdateDbOtherWebsite";
+            this.progressBarUpdateDbOtherWebsite.Size = new System.Drawing.Size(392, 28);
+            this.progressBarUpdateDbOtherWebsite.TabIndex = 5;
+            // 
+            // dataGridView2
+            // 
+            this.dataGridView2.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.tabControl1.Controls.Add(this.tabPage1);
-            this.tabControl1.Controls.Add(this.tabPage2);
-            this.tabControl1.Location = new System.Drawing.Point(13, 78);
-            this.tabControl1.Name = "tabControl1";
-            this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(1811, 741);
-            this.tabControl1.TabIndex = 13;
-            this.tabControl1.SelectedIndexChanged += new System.EventHandler(this.tabControl1_SelectedIndexChanged);
+            this.dataGridView2.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dataGridView2.Location = new System.Drawing.Point(4, 76);
+            this.dataGridView2.Name = "dataGridView2";
+            this.dataGridView2.RowTemplate.Height = 33;
+            this.dataGridView2.Size = new System.Drawing.Size(1785, 632);
+            this.dataGridView2.TabIndex = 0;
+            this.dataGridView2.CellBeginEdit += new System.Windows.Forms.DataGridViewCellCancelEventHandler(this.dataGridView_CellBeginEdit);
+            this.dataGridView2.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView_CellClick);
+            this.dataGridView2.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView_CellEndEdit);
+            this.dataGridView2.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView_CellValueChanged);
             // 
             // tabPage1
             // 
+            this.tabPage1.Controls.Add(this.panel1);
             this.tabPage1.Controls.Add(this.dataGridView1);
             this.tabPage1.Location = new System.Drawing.Point(8, 39);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(1795, 694);
+            this.tabPage1.Size = new System.Drawing.Size(1795, 714);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Tiki";
             this.tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // progressBarFetchingTiki
+            // 
+            this.progressBarFetchingTiki.Location = new System.Drawing.Point(1236, 17);
+            this.progressBarFetchingTiki.Name = "progressBarFetchingTiki";
+            this.progressBarFetchingTiki.Size = new System.Drawing.Size(218, 28);
+            this.progressBarFetchingTiki.TabIndex = 4;
+            // 
+            // btnStopTiki
+            // 
+            this.btnStopTiki.Location = new System.Drawing.Point(1470, 9);
+            this.btnStopTiki.Name = "btnStopTiki";
+            this.btnStopTiki.Size = new System.Drawing.Size(103, 45);
+            this.btnStopTiki.TabIndex = 3;
+            this.btnStopTiki.Text = "Stop";
+            this.btnStopTiki.UseVisualStyleBackColor = true;
+            this.btnStopTiki.Click += new System.EventHandler(this.btnStopTiki_Click);
+            // 
+            // progressBarUpdateDbTiki
+            // 
+            this.progressBarUpdateDbTiki.Location = new System.Drawing.Point(824, 17);
+            this.progressBarUpdateDbTiki.Name = "progressBarUpdateDbTiki";
+            this.progressBarUpdateDbTiki.Size = new System.Drawing.Size(392, 28);
+            this.progressBarUpdateDbTiki.TabIndex = 2;
             // 
             // dataGridView1
             // 
@@ -173,98 +229,100 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.dataGridView1.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.AllCells;
             this.dataGridView1.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView1.Location = new System.Drawing.Point(14, 7);
+            this.dataGridView1.Location = new System.Drawing.Point(4, 77);
             this.dataGridView1.Margin = new System.Windows.Forms.Padding(4);
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.RowTemplate.Height = 33;
-            this.dataGridView1.Size = new System.Drawing.Size(1781, 668);
+            this.dataGridView1.Size = new System.Drawing.Size(1784, 630);
             this.dataGridView1.TabIndex = 1;
             this.dataGridView1.CellBeginEdit += new System.Windows.Forms.DataGridViewCellCancelEventHandler(this.dataGridView_CellBeginEdit);
             this.dataGridView1.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView_CellClick);
             this.dataGridView1.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView_CellEndEdit);
             this.dataGridView1.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView_CellValueChanged);
             // 
-            // tabPage2
+            // tabControl1
             // 
-            this.tabPage2.Controls.Add(this.dataGridView2);
-            this.tabPage2.Location = new System.Drawing.Point(8, 39);
-            this.tabPage2.Name = "tabPage2";
-            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(1795, 694);
-            this.tabPage2.TabIndex = 1;
-            this.tabPage2.Text = "Other Website";
-            this.tabPage2.UseVisualStyleBackColor = true;
-            // 
-            // dataGridView2
-            // 
-            this.dataGridView2.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.tabControl1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.dataGridView2.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.dataGridView2.Location = new System.Drawing.Point(6, 6);
-            this.dataGridView2.Name = "dataGridView2";
-            this.dataGridView2.RowTemplate.Height = 33;
-            this.dataGridView2.Size = new System.Drawing.Size(1783, 671);
-            this.dataGridView2.TabIndex = 0;
-            this.dataGridView2.CellBeginEdit += new System.Windows.Forms.DataGridViewCellCancelEventHandler(this.dataGridView_CellBeginEdit);
-            this.dataGridView2.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView_CellClick);
-            this.dataGridView2.CellEndEdit += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView_CellEndEdit);
-            this.dataGridView2.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView_CellValueChanged);
+            this.tabControl1.Controls.Add(this.tabPage1);
+            this.tabControl1.Controls.Add(this.tabPage2);
+            this.tabControl1.Location = new System.Drawing.Point(13, 58);
+            this.tabControl1.Name = "tabControl1";
+            this.tabControl1.SelectedIndex = 0;
+            this.tabControl1.Size = new System.Drawing.Size(1811, 761);
+            this.tabControl1.TabIndex = 13;
+            this.tabControl1.SelectedIndexChanged += new System.EventHandler(this.tabControl1_SelectedIndexChanged);
             // 
-            // progressBarUpdateDbTiki
+            // panel1
             // 
-            this.progressBarUpdateDbTiki.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.progressBarUpdateDbTiki.Location = new System.Drawing.Point(245, 44);
-            this.progressBarUpdateDbTiki.Margin = new System.Windows.Forms.Padding(4);
-            this.progressBarUpdateDbTiki.Name = "progressBarUpdateDbTiki";
-            this.progressBarUpdateDbTiki.Size = new System.Drawing.Size(324, 42);
-            this.progressBarUpdateDbTiki.TabIndex = 10;
+            this.panel1.Controls.Add(this.btnSearchTiki);
+            this.panel1.Controls.Add(this.txtSearchTiki);
+            this.panel1.Controls.Add(this.btnStopTiki);
+            this.panel1.Controls.Add(this.progressBarFetchingTiki);
+            this.panel1.Controls.Add(this.progressBarUpdateDbTiki);
+            this.panel1.Location = new System.Drawing.Point(6, 6);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(1782, 64);
+            this.panel1.TabIndex = 6;
             // 
-            // btnStopOtherWebsite
+            // txtSearchTiki
             // 
-            this.btnStopOtherWebsite.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnStopOtherWebsite.Location = new System.Drawing.Point(1675, 49);
-            this.btnStopOtherWebsite.Name = "btnStopOtherWebsite";
-            this.btnStopOtherWebsite.Size = new System.Drawing.Size(108, 47);
-            this.btnStopOtherWebsite.TabIndex = 16;
-            this.btnStopOtherWebsite.Text = "Stop";
-            this.btnStopOtherWebsite.UseVisualStyleBackColor = true;
-            this.btnStopOtherWebsite.Click += new System.EventHandler(this.btnStopOtherWebsite_Click);
+            this.txtSearchTiki.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtSearchTiki.Location = new System.Drawing.Point(3, 9);
+            this.txtSearchTiki.Name = "txtSearchTiki";
+            this.txtSearchTiki.Size = new System.Drawing.Size(575, 45);
+            this.txtSearchTiki.TabIndex = 5;
+            this.txtSearchTiki.Text = "";
+            this.txtSearchTiki.TextChanged += new System.EventHandler(this.txtSearchTiki_TextChanged);
             // 
-            // progressBarFetchingOtherWebsite
+            // btnSearchTiki
             // 
-            this.progressBarFetchingOtherWebsite.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.progressBarFetchingOtherWebsite.Location = new System.Drawing.Point(1409, 49);
-            this.progressBarFetchingOtherWebsite.Margin = new System.Windows.Forms.Padding(4);
-            this.progressBarFetchingOtherWebsite.Name = "progressBarFetchingOtherWebsite";
-            this.progressBarFetchingOtherWebsite.Size = new System.Drawing.Size(236, 42);
-            this.progressBarFetchingOtherWebsite.TabIndex = 15;
+            this.btnSearchTiki.Location = new System.Drawing.Point(594, 9);
+            this.btnSearchTiki.Name = "btnSearchTiki";
+            this.btnSearchTiki.Size = new System.Drawing.Size(111, 45);
+            this.btnSearchTiki.TabIndex = 6;
+            this.btnSearchTiki.Text = "Search";
+            this.btnSearchTiki.UseVisualStyleBackColor = true;
+            this.btnSearchTiki.Click += new System.EventHandler(this.btnSearchTiki_Click);
             // 
-            // progressBarUpdateDbOtherWebsite
+            // panel2
             // 
-            this.progressBarUpdateDbOtherWebsite.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.progressBarUpdateDbOtherWebsite.Location = new System.Drawing.Point(1060, 49);
-            this.progressBarUpdateDbOtherWebsite.Margin = new System.Windows.Forms.Padding(4);
-            this.progressBarUpdateDbOtherWebsite.Name = "progressBarUpdateDbOtherWebsite";
-            this.progressBarUpdateDbOtherWebsite.Size = new System.Drawing.Size(324, 42);
-            this.progressBarUpdateDbOtherWebsite.TabIndex = 14;
+            this.panel2.Controls.Add(this.btnSearchOtherWebsite);
+            this.panel2.Controls.Add(this.txtSearchOtherWebsite);
+            this.panel2.Controls.Add(this.progressBarFetchingOtherWebsite);
+            this.panel2.Controls.Add(this.progressBarUpdateDbOtherWebsite);
+            this.panel2.Controls.Add(this.btnStopOtherWebsite);
+            this.panel2.Location = new System.Drawing.Point(6, 6);
+            this.panel2.Name = "panel2";
+            this.panel2.Size = new System.Drawing.Size(1783, 64);
+            this.panel2.TabIndex = 8;
             // 
-            // timerUpdateDbOtherWebsite
+            // btnSearchOtherWebsite
             // 
-            this.timerUpdateDbOtherWebsite.Interval = 10000;
-            this.timerUpdateDbOtherWebsite.Tick += new System.EventHandler(this.timerUpdateDbOtherWebsite_Tick);
+            this.btnSearchOtherWebsite.Location = new System.Drawing.Point(594, 7);
+            this.btnSearchOtherWebsite.Name = "btnSearchOtherWebsite";
+            this.btnSearchOtherWebsite.Size = new System.Drawing.Size(111, 45);
+            this.btnSearchOtherWebsite.TabIndex = 9;
+            this.btnSearchOtherWebsite.Text = "Search";
+            this.btnSearchOtherWebsite.UseVisualStyleBackColor = true;
+            this.btnSearchOtherWebsite.Click += new System.EventHandler(this.btnSearchOtherWebsite_Click);
+            // 
+            // txtSearchOtherWebsite
+            // 
+            this.txtSearchOtherWebsite.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtSearchOtherWebsite.Location = new System.Drawing.Point(3, 7);
+            this.txtSearchOtherWebsite.Name = "txtSearchOtherWebsite";
+            this.txtSearchOtherWebsite.Size = new System.Drawing.Size(575, 45);
+            this.txtSearchOtherWebsite.TabIndex = 8;
+            this.txtSearchOtherWebsite.Text = "";
+            this.txtSearchOtherWebsite.TextChanged += new System.EventHandler(this.txtSearchOtherWebsite_TextChanged);
             // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1836, 831);
-            this.Controls.Add(this.btnStopOtherWebsite);
-            this.Controls.Add(this.progressBarFetchingOtherWebsite);
-            this.Controls.Add(this.progressBarUpdateDbOtherWebsite);
-            this.Controls.Add(this.btnStopTiki);
-            this.Controls.Add(this.progressBarFetchingTiki);
-            this.Controls.Add(this.progressBarUpdateDbTiki);
             this.Controls.Add(this.tabControl1);
             this.Controls.Add(this.menuStrip1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -277,11 +335,13 @@
             this.Load += new System.EventHandler(this.MainForm_Load);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
-            this.tabControl1.ResumeLayout(false);
-            this.tabPage1.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.tabPage2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView2)).EndInit();
+            this.tabPage1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
+            this.tabControl1.ResumeLayout(false);
+            this.panel1.ResumeLayout(false);
+            this.panel2.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -291,22 +351,28 @@
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem fetchDataToolStripMenuItem;
         private System.Windows.Forms.Timer timerUpdateDbTiki;
-        private System.Windows.Forms.ProgressBar progressBarFetchingTiki;
         private System.Windows.Forms.ToolStripMenuItem settingToolStripMenuItem;
-        private System.Windows.Forms.Button btnStopTiki;
         private System.Windows.Forms.ToolStripMenuItem importDataToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem importCSVToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem exportExcelToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuRefreshView;
-        private System.Windows.Forms.TabControl tabControl1;
-        private System.Windows.Forms.TabPage tabPage1;
-        private System.Windows.Forms.DataGridView dataGridView1;
-        private System.Windows.Forms.TabPage tabPage2;
-        private System.Windows.Forms.DataGridView dataGridView2;
-        private System.Windows.Forms.ProgressBar progressBarUpdateDbTiki;
-        private System.Windows.Forms.Button btnStopOtherWebsite;
-        private System.Windows.Forms.ProgressBar progressBarFetchingOtherWebsite;
-        private System.Windows.Forms.ProgressBar progressBarUpdateDbOtherWebsite;
         private System.Windows.Forms.Timer timerUpdateDbOtherWebsite;
+        private System.Windows.Forms.TabPage tabPage2;
+        private System.Windows.Forms.ProgressBar progressBarFetchingOtherWebsite;
+        private System.Windows.Forms.Button btnStopOtherWebsite;
+        private System.Windows.Forms.ProgressBar progressBarUpdateDbOtherWebsite;
+        private System.Windows.Forms.DataGridView dataGridView2;
+        private System.Windows.Forms.TabPage tabPage1;
+        private System.Windows.Forms.ProgressBar progressBarFetchingTiki;
+        private System.Windows.Forms.Button btnStopTiki;
+        private System.Windows.Forms.ProgressBar progressBarUpdateDbTiki;
+        private System.Windows.Forms.DataGridView dataGridView1;
+        private System.Windows.Forms.TabControl tabControl1;
+        private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.RichTextBox txtSearchTiki;
+        private System.Windows.Forms.Button btnSearchTiki;
+        private System.Windows.Forms.Panel panel2;
+        private System.Windows.Forms.Button btnSearchOtherWebsite;
+        private System.Windows.Forms.RichTextBox txtSearchOtherWebsite;
     }
 }
