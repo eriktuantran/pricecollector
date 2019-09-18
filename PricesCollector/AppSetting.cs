@@ -100,7 +100,7 @@ namespace PricesCollector
             database = txtDbName.Text.Trim();
             uid = txtDbUser.Text.Trim();
             password = txtDbPasswd.Text.Trim();
-            string _connectionString = "SERVER=" + server + ";" + "DATABASE=" + database + ";" + "UID=" + uid + ";" + "PASSWORD=" + password + ";";
+            string _connectionString = "SERVER=" + server + ";" + "DATABASE=" + database + ";" + "UID=" + uid + ";" + "PASSWORD=" + password + ";CharSet=utf8mb4;";
 
             this.connectionString = _connectionString;
             return _connectionString;
