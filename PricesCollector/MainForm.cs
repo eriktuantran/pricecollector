@@ -28,11 +28,16 @@ namespace PricesCollector
     public partial class MainForm : Form
     {
         private string connectionString = "";//"server=127.0.0.1;user id=root;password=3V5wn0Kv9RRc8gQA;persistsecurityinfo=True;database=pricecollector";
+
+        private string currentUserName = "";
+        private bool isAdminUser = false;
+
         private int timeoutUpdateDBTiki = 0;
         private int timeoutUpdateDBOtherWebsite = 0;
         private bool globalRunningStateTiki = false;
         private bool globalRunningStateOtherWebsite = false;
-        private bool isManualFetching = false;
+        private bool isManualFetchingTiki = false;
+        private bool isManualFetchingOtherWebsite = false;
 
         private MySqlConnection connection;
         private MySqlDataAdapter mySqlDataAdapter;
@@ -105,7 +110,8 @@ namespace PricesCollector
             otherTiki.Name = "other_seller_tiki";
             otherTiki.HeaderText = "Other Tiki";
             otherTiki.DefaultCellStyle.WrapMode = DataGridViewTriState.True;
-            //otherTiki.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+            //otherTiki.AutoSizeMode = DataGridViewAutoSizeColumnMode. AllCells;
+            otherTiki.MinimumWidth = 160;
             mydataGridView.Columns.Add(otherTiki);
 
             mydataGridView.Columns.Add("lowest_price_tiki", "Lowest Tiki");
@@ -171,6 +177,7 @@ namespace PricesCollector
             otherTiki.HeaderText = "Other Tiki";
             otherTiki.DefaultCellStyle.WrapMode = DataGridViewTriState.True;
             //otherTiki.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+            otherTiki.MinimumWidth = 160;
             mydataGridView.Columns.Add(otherTiki);
 
             DataGridViewTextBoxColumn otherLazada = new DataGridViewTextBoxColumn();
@@ -178,6 +185,7 @@ namespace PricesCollector
             otherLazada.HeaderText = "Other Lazada";
             otherLazada.DefaultCellStyle.WrapMode = DataGridViewTriState.True;
             //otherLazada.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+            otherLazada.MinimumWidth = 140;
             mydataGridView.Columns.Add(otherLazada);
 
             DataGridViewTextBoxColumn otherShopee = new DataGridViewTextBoxColumn();
@@ -185,6 +193,7 @@ namespace PricesCollector
             otherShopee.HeaderText = "Other Shopee";
             otherShopee.DefaultCellStyle.WrapMode = DataGridViewTriState.True;
             //otherShopee.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+            otherShopee.MinimumWidth = 100;
             mydataGridView.Columns.Add(otherShopee);
 
             DataGridViewTextBoxColumn otherSendo = new DataGridViewTextBoxColumn();
@@ -192,6 +201,7 @@ namespace PricesCollector
             otherSendo.HeaderText = "Other Sendo";
             otherSendo.DefaultCellStyle.WrapMode = DataGridViewTriState.True;
             //otherSendo.AutoSizeMode = DataGridViewAutoSizeColumnMode.AllCells;
+            otherSendo.MinimumWidth = 140;
             mydataGridView.Columns.Add(otherSendo);
             
             mydataGridView.Columns.Add("lowest_price_tiki", "Lowest Tiki");
@@ -273,7 +283,7 @@ namespace PricesCollector
             timerUpdateDbTiki.Enabled = true;
             timerUpdateDbTiki.Interval = timeoutUpdateDBTiki * 1000;
             progressBarUpdateDbTiki.Value = 0;
-            startProgressBarUpdateDbTiki(10);
+            startProgressBarUpdateDbTiki(timeoutUpdateDBTiki);
 
             //Enable the global flag tiki
             globalRunningStateTiki = true;
@@ -283,11 +293,13 @@ namespace PricesCollector
             timerUpdateDbOtherWebsite.Enabled = true;
             timerUpdateDbOtherWebsite.Interval = timeoutUpdateDBOtherWebsite * 1000;
             progressBarUpdateDbOtherWebsite.Value = 0;
-            startProgressBarUpdateDbOtherWebsite(10);
+            startProgressBarUpdateDbOtherWebsite(timeoutUpdateDBOtherWebsite);
 
             //Enable the global flag other website
             globalRunningStateOtherWebsite = true;
 
+            //Is right permission to modify the price
+            populateAdminList();
         }
 
         void populateFormIntialValue(ConfigDictionary dict)
@@ -306,6 +318,11 @@ namespace PricesCollector
             {
                 connectionString = dict["connectstring"];
             }
+
+            if (dict.ContainsKey("dbuser") && dict["dbuser"] != "")
+            {
+                currentUserName = dict["dbuser"];
+            }
         }
 
         void getValueFromSettingForm()
@@ -319,13 +336,60 @@ namespace PricesCollector
                 this.connectionString = appSetting.connectionString;
                 this.timeoutUpdateDBTiki = appSetting.timeoutTiki;
                 this.timeoutUpdateDBOtherWebsite = appSetting.timeoutOtherWebsite;
+                this.currentUserName = appSetting.uid;
                 connection = new MySqlConnection(connectionString);
+                populateAdminList();
                 Console.WriteLine("Setting done");
             }
             else
             {
                 Console.WriteLine("Setting Terminated");
             }
+        }
+
+        private void populateAdminList()
+        {
+            isAdminUser = false;
+            
+            if (this.OpenConnection() == true)
+            {
+                MySqlDataReader reader = null;
+                string selectCmd = "select admin_user from authentication;";
+
+                MySqlCommand command = new MySqlCommand(selectCmd, connection);
+                try
+                {
+                    reader = command.ExecuteReader();
+                }
+                catch
+                {
+                    Console.WriteLine("Authentication table has issue");
+                    CloseConnection();
+                    return;
+                }
+
+                if (reader.HasRows)
+                    {
+                        while (reader.Read())
+                        {
+                            try
+                            {
+                                string admin_user = reader.GetString(0);
+                                if (this.currentUserName == admin_user)
+                                {
+                                    isAdminUser = true;
+                                    break;
+                                }
+                            }
+                            catch { }
+                        }
+                        CloseConnection();
+                    }
+                    else
+                    {
+                        CloseConnection();
+                    }
+                }
         }
 
         private void settingToolStripMenuItem_Click(object sender, EventArgs e)
@@ -440,7 +504,7 @@ namespace PricesCollector
             }
             else if (e.ColumnIndex == Utilities.colNameToIndex("minimum_price", mydataGridView))
             {
-                Utilities.updateMinimumPriceCellValue(mydataGridView, e.RowIndex, productId, lastMinimumPrice, this.connection);
+                Utilities.updateMinimumPriceCellValue(mydataGridView, e.RowIndex, productId, lastMinimumPrice, this.connection, isAdminUser);
             }
 
         }
@@ -512,25 +576,50 @@ namespace PricesCollector
 
         private void fetchDataToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if(isFetchingTiki || isFetchingOtherWebsite)
+            if (tabControl1.SelectedIndex == (int)Tab.TabTiki)
             {
-                Console.WriteLine("Fetching threads are already running");
-                MessageBox.Show("It is busy, please wait!", "Busy...", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
+                if (isFetchingTiki)
+                {
+                    Console.WriteLine("Fetching threads are already running");
+                    MessageBox.Show("It is busy, please wait!", "Busy...", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+
+                Console.WriteLine("Manual fetching triggered");
+
+                //Manual fetching 
+                isManualFetchingTiki = true;
+
+                //Stop the timer update DB
+                timerUpdateDbTiki.Enabled = false;
+                stopProgressBarUpdateDbTiki();
+
+                polulateLinkToDictionary(myDictTiki);
+                refreshDBPricesMultiThreadAsyncTiki(myDictTiki);
+                //refreshDatagridviewValue(); // No need to update right now, it will be updated later when multi thread done
+
             }
+            else if(tabControl1.SelectedIndex == (int)Tab.TabOtherWebsite)
+            {
+                if (isFetchingOtherWebsite)
+                {
+                    Console.WriteLine("Fetching threads are already running");
+                    MessageBox.Show("It is busy, please wait!", "Busy...", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
 
-            Console.WriteLine("Manual fetching triggered");
+                Console.WriteLine("Manual fetching triggered");
 
-            //Manual fetching 
-            isManualFetching = true;
+                //Manual fetching 
+                isManualFetchingOtherWebsite = true;
 
-            //Stop the timer update DB
-            timerUpdateDbTiki.Enabled = false;
-            stopProgressBarUpdateDbTiki();
+                //Stop the timer update DB
+                timerUpdateDbOtherWebsite.Enabled = false;
+                stopProgressBarUpdateDbOtherWebsite();
 
-            polulateLinkToDictionary(myDictTiki);
-            refreshDBPricesMultiThreadAsyncTiki(myDictTiki);
-            //refreshDatagridviewValue(); // No need to update right now, it will be updated later when multi thread done
+                polulateLinkToDictionary(myDictOtherWebsite);
+                refreshDBPricesMultiThreadAsyncOtherWebsite(myDictOtherWebsite);
+            }
         }
 
         private void timerUpdateDBTiki_Tick(object sender, EventArgs e)
@@ -710,7 +799,7 @@ namespace PricesCollector
             backgroundWorkerForFetchingListTiki.Remove(bgw);
             bgw.Dispose();
 
-            if (globalRunningStateTiki == false && isManualFetching == false)
+            if (globalRunningStateTiki == false && isManualFetchingTiki == false)
             {
                 return; //button stop clicked
             }
@@ -733,9 +822,9 @@ namespace PricesCollector
                 timerUpdateDbTiki.Enabled = true;
 
                 //Reset the manual fetching, it is done
-                if (isManualFetching == true)
+                if (isManualFetchingTiki == true)
                 {
-                    isManualFetching = false;
+                    isManualFetchingTiki = false;
                     if(globalRunningStateTiki == false)
                     {
                         return;
@@ -757,7 +846,7 @@ namespace PricesCollector
             backgroundWorkerForFetchingListOtherWebsite.Remove(bgw);
             bgw.Dispose();
 
-            if (globalRunningStateOtherWebsite == false && isManualFetching == false)
+            if (globalRunningStateOtherWebsite == false && isManualFetchingOtherWebsite == false)
             {
                 return; //button stop clicked
             }
@@ -780,9 +869,9 @@ namespace PricesCollector
                 timerUpdateDbOtherWebsite.Enabled = true;
 
                 //Reset the manual fetching, it is done
-                if (isManualFetching == true)
+                if (isManualFetchingOtherWebsite == true)
                 {
-                    isManualFetching = false;
+                    isManualFetchingOtherWebsite = false;
                     if (globalRunningStateOtherWebsite == false)
                     {
                         return;

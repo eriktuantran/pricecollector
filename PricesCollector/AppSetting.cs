@@ -23,7 +23,7 @@ namespace PricesCollector
         private MySqlConnection connection;
         private string server;
         private string database;
-        private string uid;
+        public string uid;
         private string password;
 
         //Store config

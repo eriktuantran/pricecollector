@@ -229,7 +229,7 @@ namespace PricesCollector
             }
         }
 
-        static public void updateMinimumPriceCellValue(DataGridView mydataGridView, int rowIndex, string productId ,string lastMinimumPrice, MySqlConnection connection)
+        static public void updateMinimumPriceCellValue(DataGridView mydataGridView, int rowIndex, string productId ,string lastMinimumPrice, MySqlConnection connection, bool isAdminUser)
         {
             string colName = "minimum_price";
 
@@ -239,6 +239,13 @@ namespace PricesCollector
             {
                 cell.Value = "0";
                 return;
+            }
+
+            if (isAdminUser == false)
+            {
+                // mydataGridView.Rows[rowIndex].Cells[Utilities.colNameToIndex(colName, mydataGridView)].Value = lastMinimumPrice; // it will make the message box pop up twice
+                MessageBox.Show("Only admin users are allowed to update the minimum price", "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return; // only admin user is allowed to update the minimum price
             }
 
             string newMinimumPrice = mydataGridView.Rows[rowIndex].Cells[Utilities.colNameToIndex(colName, mydataGridView)].Value.ToString();
