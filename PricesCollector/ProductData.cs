@@ -1,4 +1,4 @@
-﻿using HtmlAgilityPack;
+using HtmlAgilityPack;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -226,56 +226,64 @@ namespace PricesCollector
                 string lines = "";
                 foreach (var group in javascriptGroups)
                 {
-                    if (group.InnerText.Contains("currentSeller"))
+                    if (group.InnerText.Contains("current_seller"))
                     {
                         lines = group.InnerText;
-                        Regex rx = new Regex(@"var (\w+)\s*=\s*(.*);", RegexOptions.Compiled | RegexOptions.IgnoreCase);
+                        Regex rx = new Regex(@"^.* = ({.*});.*", RegexOptions.Compiled | RegexOptions.IgnoreCase);
 
                         // Find matches.
                         MatchCollection matches = rx.Matches(lines);
 
                         // Report on each match.
+                        // To be fix, regex only have one match at the time being
                         foreach (Match match in matches)
                         {
                             GroupCollection groups = match.Groups;
+
+                            JObject my_json = JObject.Parse(groups[1].Value);
+
+                            JToken product = my_json["props"]["initialState"]["desktop"]["product"]["data"];
+
                             try
                             {
-                                JObject json = JObject.Parse("{value :" + groups[2].Value + "}");
-
-                                string jsVarName = groups[1].Value;
-                                JToken jsVarValue = json["value"];
-                                switch (jsVarName)
-                                {
-                                    case "currentSeller":
-                                        this.sku = jsVarValue["sku"].ToString();
-                                        this.sellerName = jsVarValue["name"].ToString();
-                                        break;
-                                    case "otherSeller":
-                                        this.otherSellerTiki.Clear();
-                                        foreach (var obj in jsVarValue)
-                                        {
-                                            Product p = new Product();
-                                            p.name = (string)obj["name"];
-                                            p.price = Int32.Parse((string)obj["price"]);
-                                            this.otherSellerTiki.Add(p);
-                                        }
-                                        break;
-                                    case "price":
-                                        this.currentPrice = Int32.Parse(jsVarValue.ToString());
-                                        break;
-                                    case "name":
-                                        this.productName = jsVarValue.ToString();
-                                        break;
-                                    case "listPrice":
-                                        break;
-                                    case "defaultProduct":
-                                        break;
-                                    case "stockItem":
-                                        break;
-                                    default: break;
-                                }
+                                this.sku = product["current_seller"]["sku"].ToString();
                             }
                             catch { }
+                            try
+                            {
+                                this.sellerName = product["current_seller"]["name"].ToString();
+                            }
+                            catch { }
+                            try
+                            {
+                                this.currentPrice = Int32.Parse(product["current_seller"]["price"].ToString());
+                            }
+                            catch { }
+                            try
+                            {
+                                this.productName = product["name"].ToString();
+                            }
+                            catch { }
+                            try
+                            {
+                                this.discountPrice = Int32.Parse(product["discount"].ToString());
+                            }
+                            catch { }
+
+                            JToken other_seller = product["other_sellers"];
+                            if (other_seller != null)
+                            {
+                                foreach (var obj in other_seller)
+                                {
+                                    Console.WriteLine("foreach");
+                                    Console.WriteLine(obj.ToString());
+
+                                    Product p = new Product();
+                                    p.name = (string)obj["name"];
+                                    p.price = Int32.Parse((string)obj["price"]);
+                                    this.otherSellerTiki.Add(p);
+                                }
+                            }
                         }
                         break; // Found "currentSeller"
                     }
@@ -336,10 +344,14 @@ namespace PricesCollector
                 if (group.InnerText.Contains("priceCurrency"))
                 {
                     JObject json = JObject.Parse(group.InnerText);
-                    JToken productPrice = json["offers"]["price"];
+                    JToken productPrice = json["offers"]["lowPrice"];
                     JToken sellerName = json["offers"]["seller"]["name"];
 
-                    product.price = Int32.Parse(productPrice.ToString());
+                    try
+                    {
+                        product.price = Int32.Parse(productPrice.ToString());
+                    }
+                    catch { }
                     product.name = sellerName.ToString();
 
                     break;
@@ -400,6 +412,7 @@ namespace PricesCollector
             product.name = "Sendo";
             product.price = 0;
 
+            return product; // TODO
 
             string html = getHtmlFromWebsite(link);
             var htmlDocument = new HtmlDocument();
